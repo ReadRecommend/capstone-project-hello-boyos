@@ -1,0 +1,12 @@
+# Work Diary
+
+
+
+## Week 1 (01/06/20 - 07/06/20)
+
+This week we formed our group and decided on our project (ReadRecommend). As I had used Jira before, I was chosen to be the Scrum Master for the group. I created the Jira project and GitHub repo for the project, and allocated the appropriate permissions to the other group members. We also had a meeting where we generated Epics and User Stories from the project description. I then added these stories to the Jira project. 
+
+
+
+For the meeting next week we are all researching architectures we think are appropriate for the project. We aim to decide on an architecture next week. Additionally, during next week's meeting we are aiming to allocate story points and priorities to each user story with Planning Poker.
+
