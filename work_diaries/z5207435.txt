@@ -1,0 +1,17 @@
+Week 1
+For the first tutorial I joined a team, and discussed with them the time and date of the next meeting, as well as our strengths
+Created as many user stories as I could from reading the project description, and then combined it with my group members
+Assisted with cutting down all of our user stories to remove duplicates and ensure we have entirely covered the scope
+Assisted with giving responsibilities and jobs to everyone before the next meeting, where I was assigned to keep the style of the proposal nice, assist with storyboards and generally assist others with their tasks
+
+Week 2
+Meeting with team on Wednesday
+Collaborated and researched with the team to work out and decide on what software and languages to use on our programs
+Decided on Postgresql for backend, Flask, SQLalchemy, and React.
+Did planning poker with the team to allocate story points to the user stories
+Discussed with team on the priority of user stories
+Assisted with giving responsibilities and jobs to everyone before the next meeting, where I was assigned to write the architecture section of the report and research whether to use PostgreSQL or SQLite, etc.
+Began working on the architecture section of the report
+Researched into the different technologies and libraries we can make use of, and how they fit together
+Completed the system architecture section of the report, including diagram
+Edited the diagram and report to mention that Flask will be primarily a RESTful API, based on feedback from peers
