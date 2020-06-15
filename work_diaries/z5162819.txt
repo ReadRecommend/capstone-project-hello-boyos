@@ -1,0 +1,14 @@
+WEEK 01
+This week the group of 5 was formed and Jira, Confluence and GitHub were set up. As a team we discussed which project 
+we would like to undertake and decided on the ReadRecommend system. We had a group meeting and created a draft of all
+the user stories for our project and decided on rolls for each team member so that the proposal could get underway.
+
+WEEK 02
+We played Planning Poker during our tutorial session so that we could estimate the user story points for each user story.
+By the end of this week I had almost fully completed the storyboard, however, I just needed to finalise the position of
+the graphics so they are better displayed on the A4 page of the report. We have decided that each group member should have
+their part of the proposal done by Monday so that we can finalise it before we begin our first sprint.
+
+WEEK 03
+Monday: I have finalised the storyboards and added them to the proposal document. I have subdivided the storyboards based on
+similar user stories to make them easier to read.
