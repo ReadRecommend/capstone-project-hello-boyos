@@ -11,14 +11,19 @@ print(conn) # state of connection after opening
 cur = conn.cursor()
 
 # Create all the tables from the schema
-schemafile = open(os.getcwd() + '/backend/database/schema.sql', 'r')
+schemafile = open(os.getcwd() + "/backend/database/schema.sql", "r")
 cur.execute(schemafile.read())
 conn.commit()
 
 # Add data to the tables
-datafile = open(os.getcwd() + '/backend/database/data.sql', 'r')
+datafile = open(os.getcwd() + "/backend/database/data.sql", "r")
 cur.execute(datafile.read())
 conn.commit()
+
+cur.execute("SELECT * FROM Books;")
+print("Books currently in the DB:")
+for tup in cur.fetchall():
+    print(tup)
 
 conn.close()
 print(conn) # state of connection after closing
