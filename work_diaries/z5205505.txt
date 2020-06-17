@@ -1,0 +1,8 @@
+Week 1:
+Basics set up
+Role distribution
+
+Week 2:
+Planning Poker played
+Drew up Data Flow Diagrams, Lvl0 - Lvl2
+They're all in a .rar file on the google doc
