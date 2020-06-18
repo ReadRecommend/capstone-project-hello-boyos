@@ -6,3 +6,6 @@ Week 2:
 Planning Poker played
 Drew up Data Flow Diagrams, Lvl0 - Lvl2
 They're all in a .rar file on the google doc
+
+Week 3:
+Basic SQL Alchemy added

@@ -3,10 +3,10 @@ import os
 
 # You will probably need to set up your own user, password and database on your own machine
 conn = psycopg2.connect(user = "postgres",
-                                password = "test123",
+                                password = "postgrease",
                                 host = "localhost",
                                 port = "5432",
-                                database = "test")
+                                database = "database3900")
 print(conn) # state of connection after opening
 cur = conn.cursor()
 
