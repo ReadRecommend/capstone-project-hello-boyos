@@ -9,15 +9,13 @@ class Collection(Base):
     id          = Column(Integer, primary_key=True)
     name        = Column(String)
     ownerid     = Column(Integer)
-    bookisbn    = Column(String)
 
     
     # TODO: contains
 
-    def __init__(self, name, ownerid, bookisbn): 
+    def __init__(self, name, ownerid): 
         self.name       = name
         self.ownerid    = ownerid
-        self.bookisbn   = bookisbn
 
     def __repr__(self):
        return "<Collection(name='%s', owner='%s', createdOn='%s')>" % ( 
