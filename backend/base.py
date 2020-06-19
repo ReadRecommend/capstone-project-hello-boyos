@@ -34,15 +34,15 @@ collections = Table(
     'collections', meta,
     Column('id', Integer, primary_key=True),
     Column('name', String),
-    Column('ownerID', Integer),
-    Column('bookISBN', String)
+    Column('ownerid', Integer),
+    Column('bookisbn', String)
 )
 
 reviews = Table(
     'reviews', meta,
     Column('id', Integer, primary_key=True),
-    Column('ownerID', Integer),
-    Column('bookISBN', String)
+    Column('ownerid', Integer),
+    Column('bookisbn', String)
 )
 
 
