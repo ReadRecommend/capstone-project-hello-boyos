@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String
 from user import User
+from book import Book
+from collection import Collection
+from review import Review
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-#                       sql type  ://username:password  @ip       /database
+#                       sql type  ://username:password  @ip       /database       echo engine to stdout
 engine = create_engine('postgresql://postgres:postgrease@localhost/database3900', echo = True)
 
 
@@ -31,7 +34,8 @@ collections = Table(
     'collections', meta,
     Column('id', Integer, primary_key=True),
     Column('name', String),
-    Column('ownerID', Integer)
+    Column('ownerID', Integer),
+    Column('bookISBN', String)
 )
 
 reviews = Table(
@@ -47,15 +51,28 @@ meta.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-newUser = User('debug','debug@gmail.com')
+# Basic Usage
+newUser = User('debugUser','debug@gmail.com')
 session.add(newUser)
 
-newUser2 = User('debug2','debug2@gmail.com')
-session.add(newUser2)
+newBook = Book('debugISBN', 'debugTitle', 'debugAuthor')
+session.add(newBook)
+
+newCollection = Collection('debugCollection', '123', 'debugISBN')
+session.add(newCollection)
+
+newReview = Review('123', 'debugISBN')
+session.add(newReview)
+session.commit()
+
 
 
 session.commit()
-# ourUsers = session.query(User).all()
-# print(ourUsers)
 
-# print(User)
+# Query methods
+# https://docs.sqlalchemy.org/en/13/orm/query.html
+ourUsers = session.query(User).first()
+
+print(ourUsers)
+
+

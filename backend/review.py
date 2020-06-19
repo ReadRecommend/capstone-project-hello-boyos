@@ -7,15 +7,27 @@ class Review(Base):
     __tablename__ = 'reviews'
 
     id          = Column(Integer, primary_key=True)
-    ownerID     = Column(Integer)
-    bookISBN    = Column(String)
+    ownerid     = Column(Integer)
+    bookisbn    = Column(String)
 
     # createdOn   = Column(String)
 
     # review      = Column(String)
     # score       = Column(Integer)
 
+    def __init__(self, ownerid, bookisbn): 
+        self.ownerid    = ownerid
+        self.bookisbn   = bookisbn
 
     def __repr__(self):
-       return "<Review(name='%s', owner='%s', bookISBN='%s')>" % ( 
-                            self.name, self.ownerID, self.bookISBN)
+       return "<Review(name='%s', owner='%s', bookisbn='%s')>" % ( 
+                            self.name, self.ownerid, self.bookisbn)
+
+    def setID(self, id):
+        self.id = id
+
+    def setownerid(self, ownerid):
+        self.ownerid = ownerid
+
+    def setbookisbn(self, bookisbn):
+        self.bookisbn = bookisbn

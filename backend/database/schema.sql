@@ -28,20 +28,20 @@ CREATE TABLE Books (
 CREATE TABLE Collections (
     id integer,
     name text,
-    ownerID integer,
-    bookISBN text,
+    ownerid integer,
+    bookisbn text,
     -- More attributes to come!
     primary key(id)
-    -- FOREIGN KEY (ownerID) REFERENCES Users(id),
-    -- FOREIGN KEY (bookISBN) REFERENCES Books(isbn)
+    -- FOREIGN KEY (ownerid) REFERENCES Users(id),
+    -- FOREIGN KEY (bookisbn) REFERENCES Books(isbn)
 );
 
 CREATE TABLE Reviews (
     id integer,
-    ownerID integer,
-    bookISBN text,
+    ownerid integer,
+    bookisbn text,
     -- More attributes to come!
     primary key(id)
-    -- FOREIGN KEY (ownerID) REFERENCES Users(id),
-    -- FOREIGN KEY (BookISBN) REFERENCES Books(isbn)
+    -- FOREIGN KEY (ownerid) REFERENCES Users(id),
+    -- FOREIGN KEY (bookisbn) REFERENCES Books(isbn)
 );

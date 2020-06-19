@@ -23,3 +23,12 @@ class User(Base):
     def __repr__(self):
        return "<User(name='%s', fullname='%s', email='%s')>" % ( 
                             self.username, self.email, self.email)
+
+    def setID(self, id):
+        self.id = id
+
+    def setUsername(self, username):
+        self.username = username
+
+    def setUsername(self, email):
+        self.email = email
