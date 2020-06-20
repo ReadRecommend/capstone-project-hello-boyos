@@ -11,7 +11,7 @@ class Book(Base):
     author          = Column(String)
 
     publisher       = Column(String)
-    publicationDate = Column(DateTime)
+    publicationdate = Column(DateTime)
 
     language        = Column(String)
     cover           = Column(String)
@@ -25,7 +25,7 @@ class Book(Base):
         self.title      = title
         self.author     = author
         self.publisher       = publisher
-        self.publicationDate      = publicationDate
+        self.publicationdate      = publicationDate
         self.language     = language
         self.cover       = cover
 
