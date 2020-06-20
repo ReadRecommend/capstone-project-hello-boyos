@@ -87,3 +87,4 @@ session.commit()
 ourUsers = session.query(User).first()
 
 print(ourUsers)
+
