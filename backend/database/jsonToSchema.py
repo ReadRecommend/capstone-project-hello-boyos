@@ -45,8 +45,16 @@ for book in data:
     publisher = publisher.replace("'", "''")
     description = description.replace("'", "''")
 
+    # Add the single quotes if not NULL
+    if publisher != "NULL":
+        publisher = "'" + publisher + "'"
+    if image != "NULL":
+        image = "'" + image + "'"
+    if description != "NULL":
+        description = "'" + description + "'"
+
     # Create the sql statements for the book
-    bookSqlStatement = "INSERT INTO Books VALUES ('{ISBN}', '{title}', '{publisher}', '{publicationdate}', '{language}', '{cover}', '{summary}');\n".format(
+    bookSqlStatement = "INSERT INTO Books VALUES ('{ISBN}', '{title}', {publisher}, {publicationdate}, '{language}', {cover}, {summary});\n".format(
         ISBN=isbn,
         title=title,
         publisher=publisher,
@@ -58,7 +66,8 @@ for book in data:
     bookSqlStatements.append(bookSqlStatement)
 
     # Create author table sql statements
-    authors = book["authors"]
+    # For some reason there was duplicate authors sometimes so it has to be turned into a set
+    authors = set(book["authors"])
     for author in authors:
         # Escape the single quotes for the SQL statement
         author = author.replace("'", "''")
