@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, TIMESTAMP
 from user import User
 from book import Book
 from collection import Collection
@@ -10,6 +10,7 @@ from usergoal import userGoal
 from author import Author
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql import func
 
 
 #                       sql type  ://username:password  @ip       /database       echo engine to stdout
@@ -34,7 +35,7 @@ books = Table(
     Column("title", String),
     Column("author", String),
     Column("publisher", String),
-    Column("publicationdate", DateTime),
+    Column("publicationdate", TIMESTAMP),
     Column("language", String),
     Column("cover", String),
 )
@@ -45,7 +46,7 @@ collections = Table(
     Column("id", Integer, primary_key=True),
     Column("name", String),
     Column("ownerid", Integer),
-    Column("dateadded", Integer),
+    Column("dateadded", TIMESTAMP),
 )
 
 inCollections = Table(
@@ -122,11 +123,11 @@ session.add(newGenre)
 newUserGoal = userGoal('123', '50')
 session.add(newUserGoal)
 
-# I dunno how to write datetime
-newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '2000-01-01', 'English', 'image.png')
+# I dunno how to write TIMESTAMP
+newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '20160622', 'English', 'image.png')
 session.add(newBook)
 
-newCollection = Collection("debugCollection", "123", "2000-01-01")
+newCollection = Collection("debugCollection", "123", '20160622')
 session.add(newCollection)
 
 session.commit()
