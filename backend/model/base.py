@@ -111,7 +111,7 @@ following = Table(
     Column("userid", Integer, primary_key=True),
     Column("followerid", Integer, primary_key=True),
 )
-
+meta.drop_all(engine)
 meta.create_all(engine)
 
 
