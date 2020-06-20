@@ -27,7 +27,7 @@ def strip_book(url):
     # Get the title of the book
     book["title"] = soup.find(id="bookTitle").text.strip()
 
-    # Clean and andd the list of authors to the dictionary
+    # Clean and add the list of authors to the dictionary
     author_list = (
         soup.find(id="bookAuthors")
         .text.split("by")[1]
@@ -95,7 +95,7 @@ if __name__ == "__main__":
         "--books",
         metavar="books",
         type=int,
-        help=f"The amount of books desired. Default: {100}",
+        help="The amount of books desired. Default: 500",
         default=500,
     )
 
@@ -123,8 +123,8 @@ if __name__ == "__main__":
         nargs="?",
         type=int,
         metavar="threads",
-        default=12,
-        help="The number of threads to use when scraping. Default: 12",
+        default=8,
+        help="The number of threads to use when scraping. Default: 8",
     )
 
     args = parser.parse_args()
