@@ -33,11 +33,11 @@ books = Table(
     meta,
     Column("isbn", String, primary_key=True),
     Column("title", String),
-    Column("author", String),
     Column("publisher", String),
     Column("publicationdate", DateTime),
     Column("language", String),
     Column("cover", String),
+    Column("summary", String),
 )
 
 collections = Table(
@@ -103,28 +103,35 @@ newUser = User("debugUser", "debug@gmail.com")
 session.add(newUser)
 
 
-
 # in collections will have to be modified later to dynamically update.
-newInCollection = inCollection("1", "debugISBN", '20160622 01:23:45')
+newInCollection = inCollection("1", "debugISBN", "20160622 01:23:45")
 session.add(newInCollection)
 
 newReview = Review("123", "debugISBN", "debugReview", "5")
 session.add(newReview)
 
-newFollower = Follower('123', '321')
+newFollower = Follower("123", "321")
 session.add(newFollower)
 
-newAuthor = Author('Tim', 'debugISBN')
+newAuthor = Author("Tim", "debugISBN")
 session.add(newAuthor)
 
-newGenre = Genre('debugISBN', 'Horror')
+newGenre = Genre("debugISBN", "Horror")
 session.add(newGenre)
 
-newUserGoal = userGoal('123', '50')
+newUserGoal = userGoal("123", "50")
 session.add(newUserGoal)
 
 # I dunno how to write DateTime
-newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '20160622', 'English', 'image.png')
+newBook = Book(
+    "debugISBN",
+    "debugTitle",
+    "debugPublisher",
+    "20160622",
+    "English",
+    "image.png",
+    "A cool summary",
+)
 session.add(newBook)
 
 newCollection = Collection("debugCollection", "123")

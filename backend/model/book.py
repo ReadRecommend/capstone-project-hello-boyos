@@ -8,26 +8,25 @@ class Book(Base):
 
     isbn            = Column(String, primary_key=True)
     title           = Column(String)
-    author          = Column(String)
 
     publisher       = Column(String)
     publicationdate = Column(DateTime)
 
     language        = Column(String)
     cover           = Column(String)
-    # summary         = Column(string)
+    summary         = Column(String)
 
     # TODO: Category
     # TODO: Reviews
 
-    def __init__(self, isbn, title, author, publisher, publicationDate, language, cover): 
+    def __init__(self, isbn, title, publisher, publicationDate, language, cover, summary): 
         self.isbn       = isbn
         self.title      = title
-        self.author     = author
         self.publisher       = publisher
         self.publicationdate      = publicationDate
         self.language     = language
         self.cover       = cover
+        self.summary    = summary
 
 
 
