@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
@@ -10,17 +10,24 @@ class Book(Base):
     title           = Column(String)
     author          = Column(String)
 
-    # publisher       = Column(String)
-    # publicationDate = Column(String)
+    publisher       = Column(String)
+    publicationDate = Column(DateTime)
+
+    language        = Column(String)
+    cover           = Column(String)
     # summary         = Column(string)
 
     # TODO: Category
     # TODO: Reviews
 
-    def __init__(self, isbn, title, author): 
+    def __init__(self, isbn, title, author, publisher, publicationDate, language, cover): 
         self.isbn       = isbn
         self.title      = title
         self.author     = author
+        self.publisher       = publisher
+        self.publicationDate      = publicationDate
+        self.language     = language
+        self.cover       = cover
 
 
 

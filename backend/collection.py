@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
@@ -10,16 +10,19 @@ class Collection(Base):
     name        = Column(String)
     ownerid     = Column(Integer)
 
+    dateAdded   = Column(DateTime)
+
     
     # TODO: contains
 
-    def __init__(self, name, ownerid): 
+    def __init__(self, name, ownerid, dateAdded): 
         self.name       = name
         self.ownerid    = ownerid
+        self.dateAdded  = dateAdded
 
     def __repr__(self):
-       return "<Collection(name='%s', owner='%s', createdOn='%s')>" % ( 
-                            self.name, self.owner, self.createdOn)
+       return "<Collection(name='%s', owner='%s', dateAdded='%s')>" % ( 
+                            self.name, self.owner, self.dateAdded)
     
     def setID(self, id):
         self.id = id

@@ -63,7 +63,8 @@ session = Session()
 newUser = User('debugUser','debug@gmail.com')
 session.add(newUser)
 
-newBook = Book('debugISBN', 'debugTitle', 'debugAuthor')
+# I dunno how to write datetime
+newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '1-1-2000', 'English', 'image.png')
 session.add(newBook)
 
 newCollection = Collection('debugCollection', '123')
@@ -75,8 +76,18 @@ session.add(newInCollection)
 
 newReview = Review('123', 'debugISBN', 'debugReview', '5')
 session.add(newReview)
-session.commit()
 
+newFollower = Follower('123', '321')
+session.add(newFollower)
+
+newAuthor = Author('Tim', 'debugISBN')
+session.add(newAuthor)
+
+newGenre = Genre('debugISBN', 'Horror')
+session.add(newGenre)
+
+newUserGoal = userGoal('123', '50')
+session.add(newUserGoal)
 
 
 session.commit()
