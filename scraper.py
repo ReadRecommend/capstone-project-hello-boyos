@@ -39,23 +39,35 @@ def strip_book(url):
     # For the following, check if the element exists, and if so add it to the dictionary
     if (isbn_element := soup.find(itemprop="isbn")) :
         book["isbn"] = isbn_element.text.strip()
+    else:
+        book["isbn"] = None
 
     if (genres := soup.find_all(class_="actionLinkLite bookPageGenreLink")) :
         book["genres"] = [genre.text.strip() for genre in genres]
+    else:
+        book["genres"] = None
 
     if (language_element := soup.find(itemprop="inLanguage")) :
         book["language"] = language_element.text.strip()
+    else:
+        book["language"] = None
 
     if (rating_element := soup.find(itemprop="ratingValue")) :
         book["rating"] = float(rating_element.text.strip())
+    else:
+        book[""] = None
 
     if (reviews_element := soup.find(itemprop="reviewCount")) :
         book["n_reviews"] = int(
             reviews_element.text.split("reviews")[0].strip().replace(",", "")
         )
+    else:
+        book["n_reviews"] = None
 
     if (image_element := soup.find(id="coverImage")) :
         book["image_url"] = image_element["src"]
+    else:
+        book["image_url"] = None
 
     book_details = soup.find(id="details").text
     if "first published" in book_details:
@@ -71,9 +83,14 @@ def strip_book(url):
             book_details.split("Published ")[1].split("by")[0].strip().split(" ")[-1]
         )
         book["publication_year"] = date_string
+    else:
+        book["publication_year"] = None
 
-    if (publisher_string := book_details.split("by")[1].split("\n")[0].strip()) :
-        book["publisher"] = publisher_string
+    try:
+        if (publisher_string := book_details.split("by")[1].split("\n")[0].strip()) :
+            book["publisher"] = publisher_string
+    except:
+        book["publisher"] = None
 
     # If a book's description is long it will be hidden, otherwise just grab the text
     descrFind = soup.find(id="description")
