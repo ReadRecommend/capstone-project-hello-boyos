@@ -10,19 +10,17 @@ class Collection(Base):
     name        = Column(String)
     ownerid     = Column(Integer)
 
-    dateAdded   = Column(DateTime)
 
     
     # TODO: contains
 
-    def __init__(self, name, ownerid, dateAdded): 
+    def __init__(self, name, ownerid): 
         self.name       = name
         self.ownerid    = ownerid
-        self.dateAdded  = dateAdded
 
     def __repr__(self):
        return "<Collection(name='%s', owner='%s', dateAdded='%s')>" % ( 
-                            self.name, self.owner, self.dateAdded)
+                            self.name, self.owner, self.dateadded)
     
     def setID(self, id):
         self.id = id
