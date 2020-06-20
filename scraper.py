@@ -72,8 +72,11 @@ def strip_book(url):
         )
         book["publication_year"] = date_string
 
-    if (publisher_string := book_details.split("by")[1].split("\n")[0].strip()) :
-        book["publisher"] = publisher_string
+    try:
+        if (publisher_string := book_details.split("by")[1].split("\n")[0].strip()) :
+            book["publisher"] = publisher_string
+    except:
+        print(f"No publisher available for {book['title']}")
 
     # If a book's description is long it will be hidden, otherwise just grab the text
     descrFind = soup.find(id="description")
