@@ -127,7 +127,7 @@ session.add(newUserGoal)
 newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '20160622', 'English', 'image.png')
 session.add(newBook)
 
-newCollection = Collection("debugCollection", "123", '20160622')
+newCollection = Collection("debugCollection", "123", '20160622 01:23:45')
 session.add(newCollection)
 
 session.commit()
