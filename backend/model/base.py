@@ -24,17 +24,18 @@ from sqlalchemy.sql import func
 import os
 
 
+#                       sql type  ://username:password  @ip       /database       echo engine to stdout
+engine = create_engine(
+    "postgresql://postgres:postgrease@localhost/database3900", echo=True
+)
+
+
 def loadSQL(path):
     global engine
     file = open(path, encoding="utf-8")
     fileSQL = text(file.read())
     engine.execute(fileSQL)
 
-
-#                       sql type  ://username:password  @ip       /database       echo engine to stdout
-engine = create_engine(
-    "postgresql://postgres:postgrease@localhost/database3900", echo=False
-)
 
 meta = MetaData()
 
@@ -52,7 +53,7 @@ books = Table(
     Column("isbn", String, primary_key=True),
     Column("title", String),
     Column("publisher", String),
-    Column("publicationdate", DateTime),
+    Column("publicationdate", Integer),
     Column("language", String),
     Column("cover", String),
     Column("summary", String),
@@ -101,7 +102,7 @@ genre = Table(
     "genres",
     meta,
     Column("bookisbn", String, primary_key=True),
-    Column("genre", String),
+    Column("genre", String, primary_key=True),
 )
 
 following = Table(
