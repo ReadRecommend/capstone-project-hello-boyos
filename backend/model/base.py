@@ -25,9 +25,7 @@ import os
 
 
 #                       sql type  ://username:password  @ip       /database       echo engine to stdout
-engine = create_engine(
-    "postgresql://postgres:postgrease@localhost/database3900", echo=True
-)
+engine = create_engine("postgresql://postgres:test123@localhost/test", echo=True)
 
 
 def loadSQL(path):
@@ -157,7 +155,7 @@ session = Session()
 # session.add(newCollection)
 
 
-loadSQL("backend/database/data.sql")
+loadSQL(os.getcwd() + "/backend/database/data.sql")
 
 session.commit()
 
