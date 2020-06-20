@@ -114,6 +114,7 @@ following = Table(
 
 meta.create_all(engine)
 
+
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -157,7 +158,6 @@ session = Session()
 
 
 loadSQL("backend/database/data.sql")
-
 
 session.commit()
 
