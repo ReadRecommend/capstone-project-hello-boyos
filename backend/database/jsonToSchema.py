@@ -5,50 +5,93 @@ f = open("books.json", "r")
 data = json.load(f)
 dummyID = 1
 bookSqlStatements = []
+authorSqlStatements = []
 genreSqlStatements = []
 for book in data:
-    if not "isbn" in book:
+    # Check for nulls
+    if book["isbn"] == None:
         # If it doesnt have a ISBN give it a dummy one
         isbn = str(dummyID)
         dummyID += 1
     else:
         isbn = book["isbn"]
 
-    if not "description" in book:
-        # Some dont have a description
-        description = ""
+    if book["publication_year"] == None:
+        publication_year = "NULL"
+    else:
+        publication_year = book["publication_year"]
+
+    if book["publisher"] == None:
+        publisher = "NULL"
+    else:
+        publisher = book["publisher"]
+
+    if book["image_url"] == None:
+        image = "NULL"
+    else:
+        image = book["image_url"]
+
+    if "description" not in book or book["description"] == None:
+        description = "NULL"
     else:
         description = book["description"]
 
     # Escape the single quotes for the SQL statement
     title = book["title"].replace("'", "''")
-    author = book["authors"][0].replace("'", "''")
+    language = book["language"].replace("'", "''")
+    rating = 0
+    image = image.replace("'", "''")
+    publication_year = publication_year.replace("'", "''")
+    publisher = publisher.replace("'", "''")
     description = description.replace("'", "''")
 
     # Create the sql statements for the book
-    bookSqlStatement = "INSERT INTO Books VALUES ('{ISBN}', '{title}', '{author}', '{summary}');\n".format(
-        ISBN=isbn, title=title, author=author, summary=description
+    bookSqlStatement = "INSERT INTO Books VALUES ('{ISBN}', '{title}', '{publisher}', '{publicationdate}', '{language}', '{cover}', '{summary}');\n".format(
+        ISBN=isbn,
+        title=title,
+        publisher=publisher,
+        publicationdate=publication_year,
+        language=language,
+        cover=image,
+        summary=description,
     )
     bookSqlStatements.append(bookSqlStatement)
 
-    if "genres" in book:
-        # If it has genres
-        # For some reason there was duplicate genres sometimes so it has to be turned into a set
-        genres = set(book["genres"])
-        for genre in genres:
-            # Escape the single quotes for the SQL statement
-            genre = genre.replace("'", "''")
+    # Create author table sql statements
+    authors = book["authors"]
+    for author in authors:
+        # Escape the single quotes for the SQL statement
+        author = author.replace("'", "''")
 
-            # Create the sql statements for the book + genre combo
-            genreSqlStatement = "INSERT INTO Genres VALUES ('{g}', '{ISBN}');\n".format(
-                g=genre, ISBN=isbn
-            )
-            genreSqlStatements.append(genreSqlStatement)
+        # Create the sql statements for the book + author combo
+        authorSqlStatement = "INSERT INTO Authors VALUES ('{author}', '{bookisbn}');\n".format(
+            author=author, bookisbn=isbn
+        )
+        authorSqlStatements.append(authorSqlStatement)
 
+    # Create genre table sql statements
+    # For some reason there was duplicate genres sometimes so it has to be turned into a set
+    genres = set(book["genres"])
+    for genre in genres:
+        # Escape the single quotes for the SQL statement
+        genre = genre.replace("'", "''")
+
+        # Create the sql statements for the book + genre combo
+        genreSqlStatement = "INSERT INTO Genres VALUES ('{ISBN}', '{g}');\n".format(
+            ISBN=isbn, g=genre
+        )
+        genreSqlStatements.append(genreSqlStatement)
+
+# Write the create sql statements to files
 outfile = open("data.sql", "w", encoding="utf-8")
 outfile.write("-- Books\n")
 for book in bookSqlStatements:
     outfile.write(book)
+
+outfile.write("\n")
+outfile.write("-- Authors\n")
+for author in authorSqlStatements:
+    outfile.write(author)
 
 outfile.write("\n")
 outfile.write("-- Genres\n")
