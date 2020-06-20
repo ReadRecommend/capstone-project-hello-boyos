@@ -6,12 +6,21 @@ Assisted with giving responsibilities and jobs to everyone before the next meeti
 
 Week 2
 Meeting with team on Wednesday
-Collaborated and researched with the team to work out and decide on what software and languages to use on our programs
-Decided on Postgresql for backend, Flask, SQLalchemy, and React.
+    Collaborated and researched with the team to work out and decide on what software and languages to use on our programs
+    Decided on Postgresql for backend, Flask, SQLalchemy, and React.
 Did planning poker with the team to allocate story points to the user stories
 Discussed with team on the priority of user stories
 Assisted with giving responsibilities and jobs to everyone before the next meeting, where I was assigned to write the architecture section of the report and research whether to use PostgreSQL or SQLite, etc.
 Began working on the architecture section of the report
-Researched into the different technologies and libraries we can make use of, and how they fit together
+    Researched into the different technologies and libraries we can make use of, and how they fit together
 Completed the system architecture section of the report, including diagram
 Edited the diagram and report to mention that Flask will be primarily a RESTful API, based on feedback from peers
+
+Week 3
+Meeting with team on Wednesday
+    Discussed with team opinions on what we can do for new novel functionality
+    Gave feedback on teammates on their sections with suggested improvements
+    Fixed up the structure and look of the project proposal
+    Assigned to set up the database
+Set up the database and created a simple schema, and dummy data
+Create a script to turn a json file of books into sql statements that can be inserted into the database

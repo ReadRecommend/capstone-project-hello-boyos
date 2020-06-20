@@ -7,7 +7,7 @@ class Genre(Base):
     __tablename__ = 'genres'
 
     bookisbn      = Column(String, primary_key=True)
-    genre          = Column(String)
+    genre          = Column(String, primary_key=True)
 
     
     # TODO: contains
