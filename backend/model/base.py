@@ -105,7 +105,7 @@ session.add(newUser)
 
 
 # in collections will have to be modified later to dynamically update.
-newInCollection = inCollection("1", "debugISBN")
+newInCollection = inCollection("1", "debugISBN", '20160622 01:23:45')
 session.add(newInCollection)
 
 newReview = Review("123", "debugISBN", "debugReview", "5")
@@ -127,7 +127,7 @@ session.add(newUserGoal)
 newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '20160622', 'English', 'image.png')
 session.add(newBook)
 
-newCollection = Collection("debugCollection", "123", '20160622 01:23:45')
+newCollection = Collection("debugCollection", "123")
 session.add(newCollection)
 
 session.commit()
