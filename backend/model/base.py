@@ -1,4 +1,13 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime
+from sqlalchemy import (
+    create_engine,
+    MetaData,
+    Table,
+    Column,
+    Integer,
+    String,
+    DateTime,
+    text,
+)
 from user import User
 from book import Book
 from collection import Collection
@@ -12,10 +21,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
 
+import os
+
+
+def loadSQL(path):
+    global engine
+    file = open(path, encoding="utf-8")
+    fileSQL = text(file.read())
+    engine.execute(fileSQL)
+
 
 #                       sql type  ://username:password  @ip       /database       echo engine to stdout
 engine = create_engine(
-    "postgresql://postgres:postgrease@localhost/database3900", echo=True
+    "postgresql://postgres:postgrease@localhost/database3900", echo=False
 )
 
 meta = MetaData()
@@ -98,44 +116,47 @@ meta.create_all(engine)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Basic Usage
-newUser = User("debugUser", "debug@gmail.com")
-session.add(newUser)
+# # Basic Usage
+# newUser = User("debugUser", "debug@gmail.com")
+# session.add(newUser)
+
+# # in collections will have to be modified later to dynamically update.
+# newInCollection = inCollection("1", "debugISBN", "20160622 01:23:45")
+# session.add(newInCollection)
+
+# newReview = Review("123", "debugISBN", "debugReview", "5")
+# session.add(newReview)
+
+# newFollower = Follower("123", "321")
+# session.add(newFollower)
+
+# newAuthor = Author("Tim", "debugISBN")
+# session.add(newAuthor)
+
+# newGenre = Genre("debugISBN", "Horror")
+# session.add(newGenre)
+
+# newUserGoal = userGoal("123", "50")
+# session.add(newUserGoal)
+
+# # I dunno how to write DateTime
+# newBook = Book(
+#     "debugISBN",
+#     "debugTitle",
+#     "debugPublisher",
+#     "20160622",
+#     "English",
+#     "image.png",
+#     "A cool summary",
+# )
+# session.add(newBook)
+
+# newCollection = Collection("debugCollection", "123")
+# session.add(newCollection)
 
 
-# in collections will have to be modified later to dynamically update.
-newInCollection = inCollection("1", "debugISBN", "20160622 01:23:45")
-session.add(newInCollection)
+loadSQL("backend/database/data.sql")
 
-newReview = Review("123", "debugISBN", "debugReview", "5")
-session.add(newReview)
-
-newFollower = Follower("123", "321")
-session.add(newFollower)
-
-newAuthor = Author("Tim", "debugISBN")
-session.add(newAuthor)
-
-newGenre = Genre("debugISBN", "Horror")
-session.add(newGenre)
-
-newUserGoal = userGoal("123", "50")
-session.add(newUserGoal)
-
-# I dunno how to write DateTime
-newBook = Book(
-    "debugISBN",
-    "debugTitle",
-    "debugPublisher",
-    "20160622",
-    "English",
-    "image.png",
-    "A cool summary",
-)
-session.add(newBook)
-
-newCollection = Collection("debugCollection", "123")
-session.add(newCollection)
 
 session.commit()
 
