@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, TIMESTAMP
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, DateTime
 from user import User
 from book import Book
 from collection import Collection
@@ -35,7 +35,7 @@ books = Table(
     Column("title", String),
     Column("author", String),
     Column("publisher", String),
-    Column("publicationdate", TIMESTAMP),
+    Column("publicationdate", DateTime),
     Column("language", String),
     Column("cover", String),
 )
@@ -46,7 +46,6 @@ collections = Table(
     Column("id", Integer, primary_key=True),
     Column("name", String),
     Column("ownerid", Integer),
-    Column("dateadded", TIMESTAMP),
 )
 
 inCollections = Table(
@@ -54,6 +53,7 @@ inCollections = Table(
     meta,
     Column("collectionid", Integer, primary_key=True),
     Column("bookisbn", String),
+    Column("dateadded", DateTime),
 )
 
 reviews = Table(
@@ -123,7 +123,7 @@ session.add(newGenre)
 newUserGoal = userGoal('123', '50')
 session.add(newUserGoal)
 
-# I dunno how to write TIMESTAMP
+# I dunno how to write DateTime
 newBook = Book('debugISBN', 'debugTitle', 'debugAuthor', 'debugPublisher', '20160622', 'English', 'image.png')
 session.add(newBook)
 
