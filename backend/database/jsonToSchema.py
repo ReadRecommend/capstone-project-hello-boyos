@@ -44,6 +44,7 @@ for book in data:
     publication_year = publication_year.replace("'", "''")
     publisher = publisher.replace("'", "''")
     description = description.replace("'", "''")
+    description = description.replace("\n", " ")
 
     # Add the single quotes if not NULL
     if publisher != "NULL":
@@ -93,16 +94,13 @@ for book in data:
 
 # Write the create sql statements to files
 outfile = open("data.sql", "w", encoding="utf-8")
-outfile.write("-- Books\n")
 for book in bookSqlStatements:
     outfile.write(book)
 
 outfile.write("\n")
-outfile.write("-- Authors\n")
 for author in authorSqlStatements:
     outfile.write(author)
 
 outfile.write("\n")
-outfile.write("-- Genres\n")
 for genre in genreSqlStatements:
     outfile.write(genre)
