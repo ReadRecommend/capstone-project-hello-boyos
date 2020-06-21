@@ -59,12 +59,12 @@ def add_book():
         return abort(400, e)
 
 
-@app.route("/reader", methods=["POST"])
+@app.route("/user", methods=["POST"])
 def add_reader():
     reader_data = request.json
     if Reader.query.filter(
         (Reader.email == reader_data.get("email"))
-        | (Reader.readername == reader_data.get("readername"))
+        | (Reader.username == reader_data.get("username"))
     ).first():
         return abort(403, "The readername or email already exists")
 
