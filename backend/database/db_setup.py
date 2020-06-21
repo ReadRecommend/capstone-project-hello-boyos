@@ -25,4 +25,3 @@ for tup in cur.fetchall():
 
 conn.close()
 print(conn)  # state of connection after closing
-

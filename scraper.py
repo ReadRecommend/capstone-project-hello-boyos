@@ -78,9 +78,9 @@ def strip_book(url):
             .split(" ")[-1]
         )
         book["publication_year"] = date_string
-    elif "Published " in book_details:
+    elif "Published" in book_details:
         date_string = (
-            book_details.split("Published ")[1].split("by")[0].strip().split(" ")[-1]
+            book_details.split("Published")[1].split("by")[0].strip().split(" ")[-1]
         )
         book["publication_year"] = date_string
     else:
