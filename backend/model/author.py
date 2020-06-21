@@ -1,21 +1,14 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from backend import db
 
-from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
+authors = db.Table(
+    "authors",
+    db.Column("book_id", db.String, db.ForeignKey("book.isbn"), primary_key=True),
+    db.Column("author_id", db.String, db.ForeignKey("author.name"), primary_key=True),
+)
 
-class Author(Base):
-    __tablename__ = 'authors'
 
-    author          = Column(String, primary_key=True)
-    bookisbn      = Column(String, primary_key=True)
-
-    
-    # TODO: contains
-
-    def __init__(self, author, bookisbn): 
-        self.author       = author
-        self.bookisbn    = bookisbn
+class Author(db.Model):
+    name = db.Column(db.String, primary_key=True)
 
     def __repr__(self):
-       return "<Author(author='%s', bookisbn='%s')>" % ( 
-                            self.author, self.bookisbn)
+        return f"<Author(name='{self.name}')>"

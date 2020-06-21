@@ -1,21 +1,14 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from backend import db
 
-from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
+genres = db.Table(
+    "genres",
+    db.Column("book_id", db.String, db.ForeignKey("book.isbn"), primary_key=True),
+    db.Column("genre_id", db.String, db.ForeignKey("genre.name"), primary_key=True),
+)
 
-class Genre(Base):
-    __tablename__ = 'genres'
 
-    bookisbn      = Column(String, primary_key=True)
-    genre          = Column(String, primary_key=True)
-
-    
-    # TODO: contains
-
-    def __init__(self, bookisbn, genre): 
-        self.bookisbn       = bookisbn
-        self.genre    = genre
+class Genre(db.Model):
+    name = db.Column(db.String, primary_key=True)
 
     def __repr__(self):
-       return "<Genre(bookisbn='%s', genre='%s')>" % ( 
-                            self.bookisbn, self.genre)
+        return f"<Genre(name='{self.name})>"

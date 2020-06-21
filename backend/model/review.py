@@ -1,39 +1,15 @@
-from sqlalchemy import Column, Integer, String
+from backend import db
+from datetime import datetime
 
-from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
 
-class Review(Base):
-    __tablename__ = 'reviews'
+class Review(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    book_id = db.Column(db.String, primary_key=True)
 
-    ownerid     = Column(Integer, primary_key=True)
-    bookisbn    = Column(String, primary_key=True)
+    creation_date = db.Column(db.Datetime, default=datetime.utcnow())
 
-    # createdOn   = Column(String)
-
-    review      = Column(String)
-    score       = Column(Integer)
-
-    def __init__(self, ownerid, bookisbn, review, score): 
-        self.ownerid    = ownerid
-        self.bookisbn   = bookisbn
-        self.review     = review
-        self.score      = score
+    review = db.Column(db.String)
+    score = db.Column(db.Integer)
 
     def __repr__(self):
-       return "<Review(name='%s', owner='%s', bookisbn='%s')>" % ( 
-                            self.name, self.ownerid, self.bookisbn)
-
-
-
-    def setOwnerID(self, ownerid):
-        self.ownerid = ownerid
-
-    def setbookisbn(self, bookisbn):
-        self.bookisbn = bookisbn
-
-    def setreview(self, review):
-        self.review = review
-
-    def setscore(self, score):
-        self.score = score
+        return f"<Review(user_id='{self.user_id}', book_isbn='{self.book_id}', creation_date='{self.creation_date}', score='{self.score}')>"

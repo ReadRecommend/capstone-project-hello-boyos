@@ -1,32 +1,18 @@
-from sqlalchemy import Column, Integer, String, DateTime
-
-from sqlalchemy.ext.declarative import declarative_base
-Base = declarative_base()
-
-class Collection(Base):
-    __tablename__ = 'collections'
-
-    id          = Column(Integer, primary_key=True)
-    name        = Column(String)
-    ownerid     = Column(Integer)
+from backend import db
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
-    
-    # TODO: contains
+class Collection(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
-    def __init__(self, name, ownerid): 
-        self.name       = name
-        self.ownerid    = ownerid
+    books = db.relationship("in_collections", back_populates="books")
+    books = association_proxy("in_collections", "book")
 
     def __repr__(self):
-       return "<Collection(name='%s', owner='%s', dateAdded='%s')>" % ( 
-                            self.name, self.owner, self.dateadded)
-    
-    def setID(self, id):
-        self.id = id
-    
-    def setName(self, name):
-        self.name = name
-    
-    def setownerid(self, ownerid):
-        self.ownerid = ownerid
+        return "<Collection(name='%s', owner='%s', dateAdded='%s')>" % (
+            self.name,
+            self.owner,
+            self.dateadded,
+        )

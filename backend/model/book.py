@@ -1,49 +1,37 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from backend import db
+from backend.model.author import authors
+from backend.model.genre import genres
+from sqlalchemy.ext.associationproxy import association_proxy
 
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+class Book(db.Model):
+    isbn = db.Column(db.String, primary_key=True)
+    title = db.Column(db.String, nullable=False)
 
+    publisher = db.Column(db.String)
+    publication_date = db.Column(db.Integer)
 
-class Book(Base):
-    __tablename__ = "books"
+    language = db.Column(db.String)
+    cover = db.Column(db.String)
+    summary = db.Column(db.String)
 
-    isbn = Column(String, primary_key=True)
-    title = Column(String)
+    genres = db.relationship(
+        "Genre",
+        secondary=genres,
+        lazy="subquery",
+        backref=db.backref("books", lazy=True),
+    )
 
-    publisher = Column(String)
-    publicationdate = Column(Integer)
+    authors = db.relationship(
+        "Author",
+        secondary=authors,
+        lazy="subquery",
+        backref=db.backref("books", lazy=True),
+    )
 
-    language = Column(String)
-    cover = Column(String)
-    summary = Column(String)
+    collections = association_proxy("in_collections", "collection")
 
-    # TODO: Category
     # TODO: Reviews
 
-    def __init__(
-        self, isbn, title, publisher, publicationDate, language, cover, summary
-    ):
-        self.isbn = isbn
-        self.title = title
-        self.publisher = publisher
-        self.publicationdate = publicationDate
-        self.language = language
-        self.cover = cover
-        self.summary = summary
-
     def __repr__(self):
-        return "<Book(title='%s', author='%s', publisher='%s')>" % (
-            self.title,
-            self.author,
-            self.publisher,
-        )
-
-    def setISBN(self, isbn):
-        self.isbn = isbn
-
-    def setTitle(self, title):
-        self.title = title
-
-    def setAuthor(self, author):
-        self.author = author
+        return f"<Book(title='{self.title}, authors='{self.author}', publisher='{self.publisher}')>"
