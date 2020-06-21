@@ -1,2 +1,3 @@
-FLASK_APP=backend
-FLASK_ENV=development
+export FLASK_APP="backend"
+export FLASK_ENV="development"
+export INITIAL_DATA="books.json"

@@ -11,4 +11,4 @@ class Genre(db.Model):
     name = db.Column(db.String, primary_key=True)
 
     def __repr__(self):
-        return f"<Genre(name='{self.name})>"
+        return f"<Genre(name='{self.name}')>"

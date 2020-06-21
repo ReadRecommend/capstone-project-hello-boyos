@@ -2,9 +2,10 @@ from backend import db
 
 authors = db.Table(
     "authors",
-    db.Column("book_id", db.String, db.ForeignKey("book.isbn"), primary_key=True),
     db.Column("author_id", db.String, db.ForeignKey("author.name"), primary_key=True),
+    db.Column("book_id", db.String, db.ForeignKey("book.isbn"), primary_key=True),
 )
+from backend import db
 
 
 class Author(db.Model):

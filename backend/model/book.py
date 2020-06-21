@@ -15,6 +15,9 @@ class Book(db.Model):
     cover = db.Column(db.String)
     summary = db.Column(db.String)
 
+    ave_rating = db.Column(db.Float, default=0.0)
+    n_ratings = db.Column(db.Integer, default=0)
+
     genres = db.relationship(
         "Genre",
         secondary=genres,

@@ -1,5 +1,4 @@
 from backend import db
-from werkzeug.security import generate_password_hash
 from backend.model.followers import followers
 
 
@@ -17,16 +16,8 @@ class User(db.Model):
         secondary=followers,
         primaryjoin=(id == followers.c.follower_id),
         secondaryjoin=(id == followers.c.user_id),
-        backref="follows",
+        backref="followers",
     )
 
     def __repr__(self):
         return f"<User(name='{self.username}', email='{self.email}')>"
-
-    @property
-    def password(self):
-        return self.password
-
-    @password.setter
-    def password(self, password):
-        self.password = generate_password_hash(password)
