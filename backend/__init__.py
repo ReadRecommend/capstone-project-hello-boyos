@@ -1,7 +1,12 @@
 from flask import Flask
-from flask_app.config import Config
+from flask_sqlalchemy import SQLAlchemy
+from backend.config import Config
+from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-from flask_app import routes
+db = SQLAlchemy(db)
+ma = Marshmallow(app)
+
+from backend import routes

@@ -15,6 +15,10 @@ flask-restful = "^0.3.8"
 requests = "^2.24.0"
 beautifulsoup4 = "^4.9.1"
 tqdm = "^4.46.1"
+python-dotenv = "^0.13.0"
+Flask-SQLAlchemy = "^2.4.3"
+flask-marshmallow = "^0.13.0"
+marshmallow-sqlalchemy = "^0.23.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
