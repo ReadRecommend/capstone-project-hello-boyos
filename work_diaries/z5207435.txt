@@ -24,3 +24,6 @@ Meeting with team on Wednesday
     Assigned to set up the database
 Set up the database and created a simple schema, and dummy data
 Create a script to turn a json file of books into sql statements that can be inserted into the database
+Meeting on Saturday
+    Discussed and planned the schema and layout of the database
+Edited script to turn a json file of books into sql statements to work with all the new attributes and tables in our database
