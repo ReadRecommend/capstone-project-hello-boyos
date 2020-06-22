@@ -133,3 +133,7 @@ books.json
 
 # OS
 .DS_store
+
+# NodeJS
+/node_modules
+frontend/node_modules
