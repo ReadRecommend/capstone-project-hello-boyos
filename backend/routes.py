@@ -1,4 +1,5 @@
 from flask import abort, jsonify, request
+from flask_cors import CORS, cross_origin
 from werkzeug.security import generate_password_hash
 
 from backend import app, db, ma
@@ -6,6 +7,7 @@ from backend.model.schema import *
 
 
 @app.route("/")
+@cross_origin()
 def home():
     return "Hello"
 

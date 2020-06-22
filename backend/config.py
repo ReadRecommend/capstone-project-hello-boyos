@@ -12,3 +12,4 @@ class Config:
         os.environ.get("DATABASE_URL") or "postgresql://postgres:test123@localhost/test"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CORS_HEADERS = "Content-Type"

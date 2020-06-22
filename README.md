@@ -27,3 +27,16 @@ At this point all setup is complete, and the Flask API can be activated by runni
 ```
 flask run
 ```
+
+## Frontend Setup
+Ensure you have NodeJs downloaded. Then navigate to the frontend folder and run
+```
+npm install
+```
+
+Next, run
+```
+npm start
+```
+
+At this point the website should pop up in your browser.
