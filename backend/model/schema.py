@@ -4,7 +4,7 @@ from backend.model.book import Book
 from backend.model.collection import Collection
 from backend.model.genre import Genre
 from backend.model.review import Review
-from backend.model.user import User
+from backend.model.reader import Reader
 
 
 class AuthorSchema(ma.SQLAlchemyAutoSchema):
@@ -27,14 +27,14 @@ book_schema = BookSchema()
 books_schema = BookSchema(many=True)
 
 
-class UserSchema(ma.SQLAlchemyAutoSchema):
+class ReaderSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        model = User
+        model = Reader
         include_fk = True
 
 
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
+reader_schema = ReaderSchema()
+readers_schema = ReaderSchema(many=True)
 
 
 class GenreSchema(ma.SQLAlchemyAutoSchema):

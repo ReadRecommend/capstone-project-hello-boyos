@@ -10,5 +10,17 @@ the graphics so they are better displayed on the A4 page of the report. We have 
 their part of the proposal done by Monday so that we can finalise it before we begin our first sprint.
 
 WEEK 03
-Monday: I have finalised the storyboards and added them to the proposal document. I have subdivided the storyboards based on
+I have finalised the storyboards and added them to the proposal document. I have subdivided the storyboards based on
 similar user stories to make them easier to read.
+
+We had a group meeting during our regular tutorial time where we divided
+tasks between group members in order to set up the project. My job is to work with Joshy to create the foundations for the
+React app.
+
+I spent the last 2 days of the week working on learning the fundementals of React and what other packages we will need to
+install.
+
+WEEK 04
+I have begun the week continuing to learn React. I am currently looking into what other group members have pushed to git
+with regards to the data base and flask to begin trying to integrate a basic React app with it all so that we can begin
+working on user stories.

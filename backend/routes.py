@@ -60,37 +60,37 @@ def add_book():
 
 
 @app.route("/user", methods=["POST"])
-def add_user():
-    user_data = request.json
-    if User.query.filter(
-        (User.email == user_data.get("email"))
-        | (User.username == user_data.get("username"))
+def add_reader():
+    reader_data = request.json
+    if Reader.query.filter(
+        (Reader.email == reader_data.get("email"))
+        | (Reader.username == reader_data.get("username"))
     ).first():
-        return abort(403, "The username or email already exists")
+        return abort(403, "The readername or email already exists")
 
-    new_user = User(
-        username=user_data["username"],
-        email=user_data["email"],
-        password=generate_password_hash(user_data["password"]),
+    new_reader = Reader(
+        username=reader_data["username"],
+        email=reader_data["email"],
+        password=generate_password_hash(reader_data["password"]),
     )
 
     main_collection = Collection(name="main")
-    new_user.collections.append(main_collection)
-    db.session.add(new_user)
+    new_reader.collections.append(main_collection)
+    db.session.add(new_reader)
     db.session.commit()
-    return user_schema.dump(new_user)
+    return reader_schema.dump(new_reader)
 
 
 @app.route("/user/<username>")
-def get_user(username):
-    users = User.query.filter_by(username=username).first()
-    return jsonify(user_schema.dump(users))
+def get_reader(username):
+    readers = Reader.query.filter_by(username=username).first()
+    return jsonify(reader_schema.dump(readers))
 
 
 @app.route("/user")
-def get_users():
-    users = User.query.all()
-    return jsonify(users_schema.dump(users))
+def get_readers():
+    readers = Reader.query.all()
+    return jsonify(readers_schema.dump(readers))
 
 
 @app.route("/genre")
