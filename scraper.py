@@ -82,7 +82,17 @@ def strip_book(url):
         date_string = (
             book_details.split("Published")[1].split("by")[0].strip().split(" ")[-1]
         )
-        book["publication_year"] = date_string
+        if date_string.isdigit():
+            book["publication_year"] = date_string
+        else:
+            date_string = (
+                book_details.split("Published")[1]
+                .strip()
+                .split("\n")[0]
+                .strip()
+                .split(" ")[-1]
+            )
+            book["publication_year"] = date_string
     else:
         book["publication_year"] = None
 
