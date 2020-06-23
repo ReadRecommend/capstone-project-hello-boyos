@@ -9,10 +9,8 @@ from multiprocessing import Pool
 
 def strip_book(url):
     """Given the url to a Goodreads book, will return a dictionary of that books key information
-
     Args:
         url (str): The url to the Goodreads book
-
     Returns:
         dict: dictionary of key book information including title, authors, description,
          genres, isbn, language, average rating, and number of reviews
@@ -82,7 +80,17 @@ def strip_book(url):
         date_string = (
             book_details.split("Published")[1].split("by")[0].strip().split(" ")[-1]
         )
-        book["publication_year"] = date_string
+        if date_string.isdigit():
+            book["publication_year"] = date_string
+        else:
+            date_string = (
+                book_details.split("Published")[1]
+                .strip()
+                .split("\n")[0]
+                .strip()
+                .split(" ")[-1]
+            )
+            book["publication_year"] = date_string
     else:
         book["publication_year"] = None
 
