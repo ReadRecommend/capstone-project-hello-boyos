@@ -45,9 +45,13 @@ Ensure you have NodeJs downloaded. Then navigate to the frontend folder and run
 npm install
 ```
 
-Make sure the backend is already running, by following the above steps. Next, run
+Make sure the backend is already running, by following the above steps. 
+Next, in the frontend folder run
 ```
 npm start
 ```
 
 At this point the website should pop up in your browser.
+
+## Cleaning up
+When you have finished, make sure you shut down the backend, frontend, and postgresql server
