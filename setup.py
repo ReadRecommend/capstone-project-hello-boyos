@@ -5,12 +5,12 @@ import uuid
 import psycopg2
 from dotenv import load_dotenv
 
+load_dotenv()
+
 from backend import db
 from backend.model.author import Author
 from backend.model.book import Book
 from backend.model.genre import Genre
-
-load_dotenv()
 
 
 def json_to_db(path):
