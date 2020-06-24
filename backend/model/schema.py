@@ -10,7 +10,7 @@ from backend.model.reader import Reader
 class AuthorSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Author
-        include_fk = True
+        include_relationships = True
 
 
 author_schema = AuthorSchema()
@@ -20,7 +20,7 @@ authors_schema = AuthorSchema(many=True)
 class BookSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Book
-        include_fk = True
+        include_relationships = True
 
 
 book_schema = BookSchema()
@@ -30,7 +30,7 @@ books_schema = BookSchema(many=True)
 class ReaderSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Reader
-        include_fk = True
+        include_relationships = True
 
 
 reader_schema = ReaderSchema()
@@ -40,7 +40,7 @@ readers_schema = ReaderSchema(many=True)
 class GenreSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Genre
-        include_fk = True
+        include_relationships = True
 
 
 genre_schema = GenreSchema()
