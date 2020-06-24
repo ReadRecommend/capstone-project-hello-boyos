@@ -20,6 +20,7 @@ Flask-SQLAlchemy = "^2.4.3"
 flask-marshmallow = "^0.13.0"
 marshmallow-sqlalchemy = "^0.23.1"
 flask_cors = "^3.0.8"
+eralchemy = "^1.2.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
