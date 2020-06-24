@@ -5,6 +5,8 @@ import uuid
 import psycopg2
 from dotenv import load_dotenv
 
+load_dotenv()
+
 from backend import db
 from backend.model.author import Author
 from backend.model.book import Book
