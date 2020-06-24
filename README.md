@@ -52,3 +52,6 @@ npm start
 ```
 
 At this point the website should pop up in your browser.
+
+## Cleaning up
+When you have finished, make sure you shut down the backend, frontend, and postgresql server
