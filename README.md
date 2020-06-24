@@ -13,6 +13,17 @@ Once you are in an appropriate virtual environment, ensure you have books locall
 ```
 python scraper.py
 ```
+## Backend Setup
+Ensure you have Postgres downloaded.
+Start your postgres server in a seperate terminal.
+Ensure you have a user and password created, as well as a database. Reflect these details in your .env file as for example:
+```
+export POSTGRES_USER="postgres"
+export POSTGRES_PORT="5432"
+export POSTGRES_PASSWORD="test123"
+export POSTGRES_DATABASE="test"
+export DATABASE_URL="postgresql://postgres:test123@localhost/test"
+```
 
 Next, run
 
