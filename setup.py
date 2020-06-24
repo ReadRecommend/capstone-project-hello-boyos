@@ -1,17 +1,20 @@
 import json
+import os
 import uuid
 
 import psycopg2
+from dotenv import load_dotenv
 
 from backend import db
 from backend.model.author import Author
 from backend.model.book import Book
 from backend.model.genre import Genre
 
+load_dotenv()
+
 
 def json_to_db(path):
     """Read all books in JSON file and commit to flask-sqlalchemy db
-
     Args:
         path (str): The absolute path to the books JSON file
     """
@@ -53,9 +56,16 @@ def json_to_db(path):
     f.close()
 
 
+# Get postgres info from env, or use defaults
+user = os.getenv("POSTGRES_USER") or "postgres"
+password = os.getenv("POSTGRES_PASSWORD") or "test123"
+host = os.getenv("POSTGRES_HOST") or "localhost"
+port = os.getenv("POSTGRES_PORT") or "5432"
+database = os.getenv("POSTGRES_DATABASE") or "test"
+
 # Connect to database
 conn = psycopg2.connect(
-    user="postgres", password="test123", host="localhost", port="5432", database="test"
+    user=user, password=password, host=host, port=port, database=database,
 )
 
 # Print state of connection after opening
