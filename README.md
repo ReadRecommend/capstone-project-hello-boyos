@@ -45,7 +45,8 @@ Ensure you have NodeJs downloaded. Then navigate to the frontend folder and run
 npm install
 ```
 
-Make sure the backend is already running, by following the above steps. Next, run
+Make sure the backend is already running, by following the above steps. 
+Next, in the frontend folder run
 ```
 npm start
 ```
