@@ -1,8 +1,8 @@
 from flask import abort, jsonify, request
-from flask_cors import CORS, cross_origin
+from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash
 
-from backend import app, db, ma
+from backend import app, db
 from backend.model.schema import *
 
 
@@ -20,7 +20,7 @@ def get_books():
 
 @app.route("/book/<isbn>")
 def get_book(isbn):
-    book = Book.query.filter_by(isbn=isbn).first()
+    book = Book.query.filter_by(isbn=isbn).first_or_404()
     return book_schema.dump(book)
 
 
@@ -30,25 +30,21 @@ def add_book():
     try:
         book = Book(**book_data)
 
-        if (genres := request.json.get("genres", None)) :
+        if genres := request.json.get("genres", None):
             for genre_data in genres:
-                if (
-                    existing_genre := Genre.query.filter_by(
-                        name=genre_data.get("name")
-                    ).first()
-                ) :
+                if existing_genre := Genre.query.filter_by(
+                    name=genre_data.get("name")
+                ).first():
                     book.genres.append(existing_genre)
                 else:
                     new_genre = Genre(**genre_data)
                     book.genres.append(new_genre)
 
-        if (authors := request.json.get("authors", None)) :
+        if authors := request.json.get("authors", None):
             for author_data in authors:
-                if (
-                    existing_author := Author.query.filter_by(
-                        name=author_data.get("name")
-                    ).first()
-                ) :
+                if existing_author := Author.query.filter_by(
+                    name=author_data.get("name")
+                ).first():
                     book.authors.append(existing_author)
                 else:
                     new_author = Author(**author_data)
@@ -57,8 +53,8 @@ def add_book():
         db.session.add(book)
         db.session.commit()
         return book_schema.dump(book)
-    except Exception as e:
-        return abort(400, e)
+    except Exception as error:
+        return abort(400, error)
 
 
 @app.route("/user", methods=["POST"])
@@ -85,7 +81,7 @@ def add_reader():
 
 @app.route("/user/<username>")
 def get_reader(username):
-    readers = Reader.query.filter_by(username=username).first()
+    readers = Reader.query.filter_by(username=username).first_or_404()
     return jsonify(reader_schema.dump(readers))
 
 
