@@ -1,4 +1,5 @@
 from backend import db
+from backend.model.collection_membership import CollectionMembership
 from sqlalchemy.ext.associationproxy import association_proxy
 
 
@@ -7,12 +8,10 @@ class Collection(db.Model):
     name = db.Column(db.String, nullable=False)
     reader_id = db.Column(db.Integer, db.ForeignKey("reader.id"), nullable=False)
 
-    books = db.relationship("in_collection", back_populates="books")
-    books = association_proxy("in_collection", "book")
+    book_memberships = db.relationship(
+        "CollectionMembership", back_populates="collection"
+    )
+    books = association_proxy("book_memberships", "book")
 
     def __repr__(self):
-        return "<Collection(name='%s', owner='%s', dateAdded='%s')>" % (
-            self.name,
-            self.owner,
-            self.dateadded,
-        )
+        return f"<Collection(name='{self.name}', owner='{self.reader}', books='{self.books}')>"

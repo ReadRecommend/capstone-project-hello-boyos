@@ -1,6 +1,7 @@
 from backend import db
 from backend.model.author import authors
 from backend.model.genre import genres
+from backend.model.collection_membership import CollectionMembership
 from sqlalchemy.ext.associationproxy import association_proxy
 
 
@@ -32,9 +33,11 @@ class Book(db.Model):
         backref=db.backref("books", lazy=True),
     )
 
-    collections = association_proxy("in_collection", "collection")
-
+    collection_memberships = db.relationship(
+        "CollectionMembership", back_populates="book"
+    )
+    collections = association_proxy("collection_memberships", "collection")
     # TODO: Reviews
 
     def __repr__(self):
-        return f"<Book(title='{self.title}, authors='{self.author}', publisher='{self.publisher}')>"
+        return f"<Book(title='{self.title}, authors='{self.authors}', publisher='{self.publisher}')>"
