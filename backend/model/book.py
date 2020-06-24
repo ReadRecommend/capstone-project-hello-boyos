@@ -32,7 +32,7 @@ class Book(db.Model):
         backref=db.backref("books", lazy=True),
     )
 
-    collections = association_proxy("in_collections", "collection")
+    collections = association_proxy("in_collection", "collection")
 
     # TODO: Reviews
 

@@ -7,8 +7,8 @@ class Collection(db.Model):
     name = db.Column(db.String, nullable=False)
     reader_id = db.Column(db.Integer, db.ForeignKey("reader.id"), nullable=False)
 
-    books = db.relationship("in_collections", back_populates="books")
-    books = association_proxy("in_collections", "book")
+    books = db.relationship("in_collection", back_populates="books")
+    books = association_proxy("in_collection", "book")
 
     def __repr__(self):
         return "<Collection(name='%s', owner='%s', dateAdded='%s')>" % (
