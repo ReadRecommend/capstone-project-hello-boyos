@@ -37,6 +37,7 @@ def json_to_db(path):
             cover=book_data.get("image_url"),
             n_ratings=book_data.get("n_reviews"),
             ave_rating=book_data.get("rating"),
+            language=book_data.get("language"),
         )
 
         for genre_name in set(book_data.get("genres", [])):
