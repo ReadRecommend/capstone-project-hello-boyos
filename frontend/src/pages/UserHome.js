@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Modal } from 'react-bootstrap';
 import Collection from '../components/Collection';
 import CollectionList from '../components/CollectionList/CollectionList'
 
@@ -17,7 +18,8 @@ class UserHome extends Component {
                     name: "Test Collection 2"
                 }
             ],
-            currentCollection: []
+            currentCollection: [],
+            modalShow: false
         };
     }
 
@@ -46,10 +48,29 @@ class UserHome extends Component {
             })
     }
 
+    handleModal() {
+        this.setState({ modalShow: !this.state.modalShow })
+    }
+
     render() {
+
         return (
             <div className="UserHome">
+                {/* Modal for creating a new collection */}
+                <Modal show={this.state.modalShow}>
+                    <Modal.Header>
+                        <Modal.Title>Create New Collection</Modal.Title>
+                        <button onClick={() => { this.handleModal() }}>x</button>
+                    </Modal.Header>
+                    <Modal.Body>Create stuff here</Modal.Body>
+                    <Modal.Footer>
+                    </Modal.Footer>
+                </Modal>
                 <h1>ReadRecommend</h1>
+                <h2>
+                    Collections
+                    <button onClick={() => { this.handleModal() }}>+</button>
+                </h2>
                 <div style={collectionListStyle}>
                     <CollectionList collectionList={this.state.collectionList} />
                 </div>
