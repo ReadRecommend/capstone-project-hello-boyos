@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import CollectionItem from './CollectionItem';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import CollectionItem from "./CollectionItem";
+import PropTypes from "prop-types";
 
 class Collection extends Component {
     render() {
