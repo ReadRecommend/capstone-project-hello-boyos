@@ -120,18 +120,6 @@ version = "0.4.3"
 
 [[package]]
 category = "main"
-description = "Simple entity relation (ER) diagrams generation"
-name = "eralchemy"
-optional = false
-python-versions = "*"
-version = "1.2.10"
-
-[package.dependencies]
-SQLAlchemy = "*"
-pygraphviz = "*"
-
-[[package]]
-category = "main"
 description = "A simple framework for building complex web applications."
 name = "flask"
 optional = false
@@ -367,14 +355,6 @@ version = "1.8.2"
 
 [[package]]
 category = "main"
-description = "Python interface to Graphviz"
-name = "pygraphviz"
-optional = false
-python-versions = "*"
-version = "1.5"
-
-[[package]]
-category = "main"
 description = "python code static checker"
 name = "pylint"
 optional = false
@@ -590,7 +570,11 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
+<<<<<<< Updated upstream
 content-hash = "aad56d445b648aef48fac4456215a1778837d2b45f9cd2edceb18dba150f8b9c"
+=======
+content-hash = "e431ea180fb6b38a5e3a5ff2dc764c026f4855f23a2e95b3c425c285ad111294"
+>>>>>>> Stashed changes
 python-versions = "^3.8"
 
 [metadata.files]
@@ -638,10 +622,6 @@ click = [
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
-]
-eralchemy = [
-    {file = "ERAlchemy-1.2.10-py2.py3-none-any.whl", hash = "sha256:4daa1faba6c1f01c421f6fcc288681d973b8e4fdc781ac6557659878bcb957f3"},
-    {file = "ERAlchemy-1.2.10.tar.gz", hash = "sha256:be992624878278195c3240b90523acb35d97453f1a350c44b4311d4333940f0d"},
 ]
 flask = [
     {file = "Flask-1.1.2-py2.py3-none-any.whl", hash = "sha256:8a4fdd8936eba2512e9c85df320a37e694c93945b33ef33c89946a340a238557"},
@@ -783,9 +763,6 @@ psycopg2 = [
 py = [
     {file = "py-1.8.2-py2.py3-none-any.whl", hash = "sha256:a673fa23d7000440cc885c17dbd34fafcb7d7a6e230b29f6766400de36a33c44"},
     {file = "py-1.8.2.tar.gz", hash = "sha256:f3b3a4c36512a4c4f024041ab51866f11761cc169670204b235f6b20523d4e6b"},
-]
-pygraphviz = [
-    {file = "pygraphviz-1.5.zip", hash = "sha256:50a829a305dc5a0fd1f9590748b19fece756093b581ac91e00c2c27c651d319d"},
 ]
 pylint = [
     {file = "pylint-2.5.3-py3-none-any.whl", hash = "sha256:d0ece7d223fe422088b0e8f13fa0a1e8eb745ebffcb8ed53d3e95394b6101a1c"},

@@ -24,8 +24,8 @@ class CollectionItem extends Component {
     }
 }
 
-CollectionItem.propTypes = {
-    book: PropTypes.object.isRequired
-}
+// CollectionItem.propTypes = {
+//     book: PropTypes.object.isRequired
+// }
 
 export default CollectionItem;
