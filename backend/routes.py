@@ -101,3 +101,44 @@ def get_genres():
 def get_authors():
     authors = Author.query.all()
     return jsonify(authors_schema.dump(authors))
+
+
+@app.route("/followers/<username>")
+def get_followers(username):
+    reader = Reader.query.filter_by(username=username).first()
+    followers = reader.followers
+    return jsonify(readers_schema.dump(followers))
+
+
+@app.route("/following/<username>")
+def get_following(username):
+    reader = Reader.query.filter_by(username=username).first()
+    followings = reader.follows
+    return jsonify(readers_schema.dump(followings))
+
+
+@app.route("/follow", methods=["POST", "DELETE"])
+def follow():
+    follower_username = request.json.get("follower")
+    reader_username = request.json.get("user")
+    if not (follower_username and reader_username):
+        return abort(
+            400,
+            r"Request should be of the form {follower: <username>, user: <username>}",
+        )
+    reader = Reader.query.filter_by(username=reader_username).first()
+    follower = Reader.query.filter_by(username=follower_username).first()
+
+    # Add the follower relationship if it does not exist
+    if request.method == "POST" and follower not in reader.followers:
+        reader.followers.append(follower)
+        db.session.add(reader)
+        db.session.commit()
+
+    # Remove the follower relationship if it exists
+    elif request.method == "DELETE" and follower in reader.followers:
+        reader.followers.remove(follower)
+        db.session.add(reader)
+        db.session.commit()
+
+    return jsonify(readers_schema.dump(follower.follows))

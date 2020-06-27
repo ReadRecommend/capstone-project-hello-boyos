@@ -137,3 +137,6 @@ books.json
 # NodeJS
 /node_modules
 frontend/node_modules
+
+#Pylint
+.pylintrc
