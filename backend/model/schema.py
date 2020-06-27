@@ -51,8 +51,8 @@ class ReaderSchema(ma.SQLAlchemyAutoSchema):
         include_relationships = True
 
     collections = ma.List(ma.Nested(CollectionSchema, only=["id", "name"]))
-    followers = ma.List(ma.Nested(SimpleReader), only=["id", "username"])
-    follows = ma.List(ma.Nested(SimpleReader), only=["id", "username"])
+    followers = ma.List(ma.Nested(SimpleReader))
+    follows = ma.List(ma.Nested(SimpleReader))
 
 
 reader_schema = ReaderSchema()
