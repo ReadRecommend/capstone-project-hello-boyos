@@ -11,7 +11,9 @@ class Collection(db.Model):
     book_memberships = db.relationship(
         "CollectionMembership", back_populates="collection"
     )
-    books = association_proxy("book_memberships", "book")
+    books = association_proxy(
+        "book_memberships", "book", creator=lambda book: CollectionMembership(book=book)
+    )
 
     def __repr__(self):
         return f"<Collection(name='{self.name}', owner='{self.reader}', books='{self.books}')>"
