@@ -13,12 +13,12 @@ class CollectionListItem extends Component {
     }
 
     render() {
-        const { name } = this.props.collection;
+        const { id, name } = this.props.collection;
         return (
             <div style={this.getStyle()}>
                 <p>
                     {name}
-                    <button>X</button>
+                    <button onClick={this.props.delCollection.bind(this, id)}>X</button>
                 </p>
             </div>
         )
@@ -26,7 +26,8 @@ class CollectionListItem extends Component {
 }
 
 CollectionListItem.propTypes = {
-    collection: PropTypes.object.isRequired
+    collection: PropTypes.object.isRequired,
+    delCollection: PropTypes.func.isRequired
 }
 
 export default CollectionListItem;

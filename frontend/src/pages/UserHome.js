@@ -8,20 +8,11 @@ class UserHome extends Component {
         super(props);
 
         this.state = {
-            collectionList: [
-                {
-                    id: 1,
-                    name: "Test Collection 1"
-                },
-                {
-                    id: 2,
-                    name: "Test Collection 2"
-                }
-            ],
+            collectionList: [],
             currentCollection: [],
             modalShow: false
         };
-    }
+    };
 
     componentDidMount() {
         // TODO Check response code and error handle. Also not hardcode url
@@ -44,18 +35,36 @@ class UserHome extends Component {
 
                 let collections = json.collections;
                 console.log(collections);
+                this.setState({ collectionList: collections });
 
-            })
-    }
+            });
+    };
 
     handleModal() {
         this.setState({ modalShow: !this.state.modalShow })
-    }
+    };
+
+    delCollection = (id) => {
+        this.setState({
+            collectionList: [...this.state.collectionList.filter(collection => collection.id !== id)]
+        });
+    };
+
+    addCollection = (name) => {
+        let newCollection = {
+            id: 2,
+            name: name
+        };
+        this.setState({
+            collectionList: [...this.state.collectionList, newCollection]
+        });
+    };
 
     render() {
 
         return (
             <div className="UserHome">
+
                 {/* Modal for creating a new collection */}
                 <Modal show={this.state.modalShow}>
                     <Modal.Header>
@@ -64,18 +73,23 @@ class UserHome extends Component {
                     </Modal.Header>
                     <Modal.Body>Create stuff here</Modal.Body>
                     <Modal.Footer>
+                        <button onClick={(name) => { this.addCollection("test") }}>x</button>
                     </Modal.Footer>
                 </Modal>
+
                 <h1>ReadRecommend</h1>
                 <h2>
                     Collections
                     <button onClick={() => { this.handleModal() }}>+</button>
                 </h2>
                 <div style={collectionListStyle}>
-                    <CollectionList collectionList={this.state.collectionList} />
+                    <CollectionList
+                        collectionList={this.state.collectionList}
+                        delCollection={this.delCollection}
+                    />
                 </div>
                 <Collection currentCollection={this.state.currentCollection} />
-            </div>
+            </div >
         );
     }
 }

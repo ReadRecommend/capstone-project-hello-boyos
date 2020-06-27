@@ -5,13 +5,14 @@ import CollectionListItem from "./CollectionListItem"
 class CollectionList extends Component {
     render() {
         return this.props.collectionList.map((collection) => (
-            <CollectionListItem key={collection.id} collection={collection} />
+            <CollectionListItem key={collection.id} collection={collection} delCollection={this.props.delCollection} />
         ));
     }
 }
 
 CollectionList.propTypes = {
-    collectionList: PropTypes.array.isRequired
+    collectionList: PropTypes.array.isRequired,
+    delCollection: PropTypes.func.isRequired
 }
 
 export default CollectionList;
