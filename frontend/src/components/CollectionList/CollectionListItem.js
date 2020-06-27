@@ -17,8 +17,8 @@ class CollectionListItem extends Component {
         return (
             <div style={this.getStyle()}>
                 <p>
-                    {name}
-                    <button onClick={this.props.delCollection.bind(this, id)}>X</button>
+                    <a onClick={this.props.selectCollection.bind(this, id)} >{name}</a>
+                    <button style={buttonStyle} onClick={this.props.delCollection.bind(this, id)}>X</button>
                 </p>
             </div>
         )
@@ -27,7 +27,12 @@ class CollectionListItem extends Component {
 
 CollectionListItem.propTypes = {
     collection: PropTypes.object.isRequired,
-    delCollection: PropTypes.func.isRequired
+    delCollection: PropTypes.func.isRequired,
+    selectCollection: PropTypes.func.isRequired
+}
+
+const buttonStyle = {
+    padding: '5px'
 }
 
 export default CollectionListItem;
