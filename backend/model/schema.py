@@ -27,10 +27,32 @@ book_schema = BookSchema()
 books_schema = BookSchema(many=True)
 
 
+class CollectionSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Collection
+        include_relationships = True
+
+
+collection_schema = CollectionSchema()
+collections_schema = CollectionSchema(many=True)
+
+
+class SimpleReader(ma.SQLAlchemySchema):
+    class Meta:
+        model = Reader
+
+    id = ma.auto_field()
+    username = ma.auto_field()
+
+
 class ReaderSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Reader
         include_relationships = True
+
+    collections = ma.List(ma.Nested(CollectionSchema, only=["id", "name"]))
+    followers = ma.List(ma.Nested(SimpleReader), only=["id", "username"])
+    follows = ma.List(ma.Nested(SimpleReader), only=["id", "username"])
 
 
 reader_schema = ReaderSchema()
