@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+/*
+The CollectionItem class deals with displaying the books contained within a collection.
+*/
 class CollectionItem extends Component {
     // Can move this to a class in css later
     getStyle = () => {
@@ -12,17 +15,19 @@ class CollectionItem extends Component {
         }
     }
 
+    /* 
+    Remove button checks for the validity of a book before rendering the button that allows the user
+    to remove the book from a collection.
+    */
     removeButton = () => {
         const { book } = this.props;
         if (this !== null && typeof this !== 'undefined') {
             return <button onClick={this.props.removeBook.bind(book, book.isbn)} style={removeButton}>x</button>
-        } else {
-            console.log("Book is Undefined")
         }
     }
 
     render() {
-        const { title, summary, cover, isbn } = this.props.book;
+        const { title, summary, cover } = this.props.book;
         return (
             <div style={this.getStyle()}>
                 <h1>{title + " "}{this.removeButton()}</h1>

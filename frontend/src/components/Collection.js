@@ -2,31 +2,25 @@ import React, { Component } from "react";
 import CollectionItem from "./CollectionItem";
 import PropTypes from "prop-types";
 
+/*
+The collection contains collection-items, which themselves contain books to be
+displayed.
+This class deals with displaying those collection items.
+*/
 class Collection extends Component {
 
-    isValid = () => {
+    displayCollection = () => {
         const { currentCollection } = this.props;
         if (currentCollection !== null && typeof currentCollection.books !== 'undefined') {
             return currentCollection.books.map((book) => (<CollectionItem key={book.isbn} book={book} removeBook={this.props.removeBook} />))
-        } else {
-            return (
-                <div>
-                    <p>
-                        No Collection Selected.
-                    </p>
-                </div>
-            )
         }
     }
 
     render() {
         return (
             <div>
-                <h2>{this.id}</h2>
-                {console.log("Name is: " + this.props.currentCollection.name)}
-                {this.isValid()}
+                {this.displayCollection()}
             </div>
-
         );
     }
 }

@@ -60,16 +60,11 @@ class UserHome extends Component {
         });
     };
 
-    displayCurrent = (currentCollection, key) => {
-        if (!("books" in currentCollection)) {
-            return;
-        } else {
-            return (
-                <Collection key={key} currentCollection={currentCollection} />
-            )
-        }
-    };
-
+    /*
+    Remove book makes a call to the API to remove a book from the current collection
+    upon the user clicking the remove book button. The new collection without the book
+    is returned and set as the current collection.
+    */
     removeBook = (isbn) => {
         fetch('http://localhost:5000/modify_collection', {
             method: 'DELETE',
@@ -83,26 +78,21 @@ class UserHome extends Component {
         })
             .then(res => { return res.json() })
             .then(json => {
-                console.log("Refresh Collection")
                 this.setState({ currentCollection: json });
             })
-        console.log("REMOVE THIS DAMN BOOK: " + isbn)
     }
 
+    /*
+    The selectCollection function takes the id of a collection and 
+    changes the state of the page and refreshes it so that the 
+    selected collection can then be displayed.
+    */
     selectCollection = (id) => {
-        console.log(id)
-        console.log("The URL is: " + `http://localhost:5000/collection/${id}`)
         fetch(`http://localhost:5000/collection/${id}`)
             .then(res => { return res.json() })
             .then(json => {
-                console.log("New Current Collection is: " + json)
                 this.setState({ currentCollection: json });
             })
-        console.log("Current Collection ID is:" + this.state.currentCollection.id)
-        console.log("Current Name is:" + this.state.currentCollection.name)
-        console.log("Current Collection books is:" + this.state.currentCollection.books)
-        console.log("Current reader is:" + this.state.currentCollection.reader)
-        console.log("Current is:" + Object.keys(this.state.currentCollection))
     };
 
     render() {

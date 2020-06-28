@@ -16,8 +16,11 @@ class CollectionListItem extends Component {
         const { id, name } = this.props.collection;
         return (
             <div style={this.getStyle()}>
-                <p>
-                    <a onClick={this.props.selectCollection.bind(this, id)} >{name + " "}</a>
+                <p >
+                    {/* When one clicks the name of the collection, it is selected as the current collection. */}
+                    <a onClick={this.props.selectCollection.bind(this, id)}>{name + " "}</a>
+
+                    {/* When the button is pressed, this collection will be removed from the collection list. */}
                     <button style={buttonStyle} onClick={this.props.delCollection.bind(this, id)}>X</button>
                 </p>
             </div>
