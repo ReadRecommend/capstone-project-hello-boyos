@@ -40,16 +40,19 @@ class UserHome extends Component {
             });
     };
 
+    // Function that makes the modal show/not show
     handleModal() {
         this.setState({ modalShow: !this.state.modalShow })
     };
 
+    // Function that deletes a collection in a user's collection list
     delCollection = (id) => {
         this.setState({
             collectionList: [...this.state.collectionList.filter(collection => collection.id !== id)]
         });
     };
 
+    // Function that adds a collection to a user's collection list
     addCollection = (name) => {
         let newCollection = {
             id: 2,
