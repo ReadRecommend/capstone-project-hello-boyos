@@ -13,12 +13,12 @@ class CollectionListItem extends Component {
     }
 
     render() {
-        const { id, name } = this.props.collection;
+        const { name } = this.props.collection;
         return (
             <div style={this.getStyle()}>
                 <p>
                     {name}
-                    <button onClick={this.props.delCollection.bind(this, id)}>X</button>
+                    <button onClick={this.props.delCollection.bind(this, name)}>X</button>
                 </p>
             </div>
         )

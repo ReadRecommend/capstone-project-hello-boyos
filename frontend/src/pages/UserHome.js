@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal } from 'react-bootstrap';
 import Collection from '../components/Collection';
 import CollectionList from '../components/CollectionList/CollectionList'
+import AddCollection from '../components/CollectionList/AddCollection';
 
 class UserHome extends Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class UserHome extends Component {
             });
 
         // Fetch the information about the logged in user
-        fetch('http://localhost:5000/user/John')
+        fetch('http://localhost:5000/user/JaneDoe')
             .then(res => {
                 return res.json()
             }).then(json => {
@@ -46,21 +47,70 @@ class UserHome extends Component {
     };
 
     // Function that deletes a collection in a user's collection list
-    delCollection = (id) => {
-        this.setState({
-            collectionList: [...this.state.collectionList.filter(collection => collection.id !== id)]
-        });
+    delCollection = (name) => {
+
+        const data = { reader_id: 2, name: name };
+        console.log(data);
+
+        // We will let the backend do the checking for us
+        fetch('http://localhost:5000/collection', {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+
+                if (!res.ok) {
+                    // Do proper error checking somehow
+                    throw new Error();
+                }
+
+                return res.json();
+            })
+            .then(json => {
+                console.log(json)
+                this.setState({ collectionList: json.collections });
+            })
+            .catch((error) => {
+                alert(error);
+            });
+
     };
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
-        let newCollection = {
-            id: 2,
-            name: name
-        };
-        this.setState({
-            collectionList: [...this.state.collectionList, newCollection]
-        });
+
+        const data = { reader_id: 2, name: name };
+        console.log(data);
+
+        // We will let the backend do the checking for us
+        fetch('http://localhost:5000/collection', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+
+                if (!res.ok) {
+                    // Do proper error checking somehow
+                    throw new Error();
+                }
+
+                return res.json();
+            })
+            .then(json => {
+                console.log(json)
+                this.setState({ collectionList: json.collections });
+            })
+            .catch((error) => {
+                alert(error);
+            });
+
+
     };
 
     render() {
@@ -69,14 +119,15 @@ class UserHome extends Component {
             <div className="UserHome">
 
                 {/* Modal for creating a new collection */}
-                <Modal show={this.state.modalShow}>
+                <Modal show={this.state.modalShow} onHide={() => this.handleModal()}>
                     <Modal.Header>
                         <Modal.Title>Create New Collection</Modal.Title>
                         <button onClick={() => { this.handleModal() }}>x</button>
                     </Modal.Header>
-                    <Modal.Body>Create stuff here</Modal.Body>
+                    <Modal.Body>
+                        <AddCollection addCollection={this.addCollection} />
+                    </Modal.Body>
                     <Modal.Footer>
-                        <button onClick={(name) => { this.addCollection("test") }}>x</button>
                     </Modal.Footer>
                 </Modal>
 
