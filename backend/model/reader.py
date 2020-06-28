@@ -1,5 +1,6 @@
 from backend import db
 from backend.model.followers import followers
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Reader(db.Model):

@@ -125,10 +125,28 @@ def follow():
         db.session.add(reader)
         db.session.commit()
 
-    # Remove the follower relationship if it exists
-    elif request.method == "DELETE" and follower in reader.followers:
-        reader.followers.remove(follower)
-        db.session.add(reader)
-        db.session.commit()
 
-    return jsonify(readers_schema.dump(follower.follows))
+@app.route("/collection")
+def add_collection():
+    collections = Collection.query.all()
+    return jsonify(collections_schema.dump(collections))
+
+
+# Get the books in a collection
+@app.route("/collection/<collectionID>")
+def get_collection(collectionID):
+
+    collection = Collection.query.filter_by(id=collectionID).first_or_404()
+    return jsonify(collection_schema.dump(collection))
+
+
+# Gets User's collections
+@app.route("/user/<username>/collections")
+def get_reader_collections(username):
+
+    ReaderID = Reader.query.filter(Reader.username == username).first().id
+
+    ReaderCollection = Collection.query.filter(Collection.reader_id == ReaderID).all()
+    print(ReaderCollection)
+
+    return jsonify(collections_schema.dump(ReaderCollection))
