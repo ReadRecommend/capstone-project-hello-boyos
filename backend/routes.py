@@ -9,7 +9,12 @@ from backend.model.schema import *
 @app.route("/")
 @cross_origin()
 def home():
-    return "Hello"
+    return "ReadReccomend"
+
+
+# =======================
+# * BOOK ROUTES
+# =======================
 
 
 @app.route("/book")
@@ -22,6 +27,11 @@ def get_books():
 def get_book(isbn):
     book = Book.query.filter_by(isbn=isbn).first_or_404()
     return book_schema.dump(book)
+
+
+# =======================
+# * USER ROUTES
+# =======================
 
 
 @app.route("/user", methods=["POST"])
@@ -73,18 +83,6 @@ def get_readers():
     return jsonify(readers_schema.dump(readers))
 
 
-@app.route("/genre")
-def get_genres():
-    genres = Genre.query.all()
-    return jsonify(genres_schema.dump(genres))
-
-
-@app.route("/author")
-def get_authors():
-    authors = Author.query.all()
-    return jsonify(authors_schema.dump(authors))
-
-
 @app.route("/followers/<username>")
 def get_followers(username):
     reader = Reader.query.filter_by(username=username).first()
@@ -126,6 +124,11 @@ def follow():
         db.session.commit()
 
 
+# =======================
+# * Collection Routes
+# =======================
+
+
 @app.route("/collection")
 def add_collection():
     collections = Collection.query.all()
@@ -150,3 +153,20 @@ def get_reader_collections(username):
     print(ReaderCollection)
 
     return jsonify(collections_schema.dump(ReaderCollection))
+
+
+# =======================
+# * MISC ROUTES
+# =======================
+
+
+@app.route("/genre")
+def get_genres():
+    genres = Genre.query.all()
+    return jsonify(genres_schema.dump(genres))
+
+
+@app.route("/author")
+def get_authors():
+    authors = Author.query.all()
+    return jsonify(authors_schema.dump(authors))
