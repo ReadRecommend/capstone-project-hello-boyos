@@ -152,14 +152,14 @@ def add_collection():
 
     # Check proper fields exist
     if not (reader_id and collection_name):
-        return abort(
-            400,
+        return (
             r"Request should be of the form {reader_id: <user_id>, name: <collection_name>}",
+            400,
         )
 
     # Ensure we are not trying to delete or create main
     if collection_name == "main":
-        return abort(403, r"Cannot create or delete a collection called main")
+        return (r"Cannot create or delete a collection called main", 403)
 
     reader = Reader.query.filter_by(id=reader_id).first()
     collection = Collection.query.filter_by(
@@ -168,15 +168,13 @@ def add_collection():
 
     # Check reader exists
     if not reader:
-        return abort(400, r"Reader is not in the database")
+        return (r"Reader is not in the database", 403)
 
     # If we are making a new collection
     if request.method == "POST":
         # Ensure there isn't an already existing collection
         if collection:
-            return abort(
-                403, "A collection with this name already exists for this user"
-            )
+            return (r"A collection with this name already exists for this user", 403)
 
         # Create a new collection
         new_collection = Collection(name=collection_name, reader_id=reader_id)
@@ -186,9 +184,7 @@ def add_collection():
     elif request.method == "DELETE":
         # Ensure there is an already existing collection
         if not collection:
-            return abort(
-                403, "A collection with this name does not exist for this user"
-            )
+            return (r"A collection with this name does not exist for this user", 403)
 
         # Remove the collection
         db.session.delete(collection)
