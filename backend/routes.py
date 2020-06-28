@@ -147,3 +147,31 @@ def follow():
 def get_collection(collection_ID):
     collection = Collection.query.filter_by(id=collection_ID).first_or_404()
     return jsonify(collection_schema.dump(collection))
+
+@app.route("/modify_collection", methods=["POST","DELETE"])
+def modify_collection():
+    print(request.json)
+    collection_id = request.json.get("collection_id")
+    book_id = request.json.get("book_id")
+    if not (collection_id and book_id):
+        return abort(
+            400,
+            r"Request should be of the form {collection_id: <id>, book_id: <id>}",
+        )
+    collection = Collection.query.filter_by(id=collection_id).first()
+    book = Book.query.filter_by(isbn=book_id).first()
+
+    # Add the chosen book to the collection, if it's not already there.
+    if request.method == "POST" and book not in collection.books:
+        collection.books.append(book)
+        db.session.add(collection)
+        db.session.commit()
+    
+    # Remove the book from the collection if it is in it. 
+    elif request.method == "DELETE" and book in collection.books:
+        collection.books.remove(book)
+        db.session.add(collection)
+        db.session.commit()
+
+    return jsonify(collection_schema.dump(collection))
+

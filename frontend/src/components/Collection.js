@@ -7,7 +7,7 @@ class Collection extends Component {
     isValid = () => {
         const { currentCollection } = this.props;
         if (currentCollection !== null && typeof currentCollection.books !== 'undefined') {
-            return currentCollection.books.map((book) => (<CollectionItem key={book.isbn} book={book} />))
+            return currentCollection.books.map((book) => (<CollectionItem key={book.isbn} book={book} removeBook={this.props.removeBook} />))
         } else {
             return (
                 <div>
@@ -32,7 +32,8 @@ class Collection extends Component {
 }
 
 Collection.propTypes = {
-    currentCollection: PropTypes.object.isRequired
+    currentCollection: PropTypes.object.isRequired,
+    removeBook: PropTypes.func.isRequired
 }
 
 export default Collection;

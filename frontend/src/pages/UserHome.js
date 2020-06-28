@@ -70,6 +70,25 @@ class UserHome extends Component {
         }
     };
 
+    removeBook = (isbn) => {
+        fetch('http://localhost:5000/modify_collection', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                book_id: isbn,
+                collection_id: this.state.currentCollection.id
+            })
+        })
+            .then(res => { return res.json() })
+            .then(json => {
+                console.log("Refresh Collection")
+                this.setState({ currentCollection: json });
+            })
+        console.log("REMOVE THIS DAMN BOOK: " + isbn)
+    }
+
     selectCollection = (id) => {
         console.log(id)
         console.log("The URL is: " + `http://localhost:5000/collection/${id}`)
@@ -116,7 +135,7 @@ class UserHome extends Component {
                     />
                 </div>
                 <h2>
-                    <Collection key={this.state.currentCollection.id} currentCollection={this.state.currentCollection} />
+                    <Collection key={this.state.currentCollection.id} currentCollection={this.state.currentCollection} removeBook={this.removeBook} />
                 </h2>
 
             </div >

@@ -12,11 +12,20 @@ class CollectionItem extends Component {
         }
     }
 
+    removeButton = () => {
+        const { book } = this.props;
+        if (this !== null && typeof this !== 'undefined') {
+            return <button onClick={this.props.removeBook.bind(book, book.isbn)} style={removeButton}>x</button>
+        } else {
+            console.log("Book is Undefined")
+        }
+    }
+
     render() {
-        const { title, summary, cover } = this.props.book;
+        const { title, summary, cover, isbn } = this.props.book;
         return (
             <div style={this.getStyle()}>
-                <h1>{title}</h1>
+                <h1>{title + " "}{this.removeButton()}</h1>
                 <img src={cover} alt={title} />
                 <p>{summary}</p>
             </div>
@@ -24,8 +33,14 @@ class CollectionItem extends Component {
     }
 }
 
+const removeButton = {
+    background: "red",
+    textAlign: "right"
+}
+
 CollectionItem.propTypes = {
-    book: PropTypes.object.isRequired
+    book: PropTypes.object.isRequired,
+    removeBook: PropTypes.func.isRequired
 }
 
 export default CollectionItem;

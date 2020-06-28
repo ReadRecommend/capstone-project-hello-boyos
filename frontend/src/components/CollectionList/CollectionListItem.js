@@ -17,15 +17,14 @@ class CollectionListItem extends Component {
         return (
             <div style={this.getStyle()}>
                 <p>
-                    {}
-                    <a onClick={this.props.selectCollection.bind(this, id)} >{name}</a>
+                    <a onClick={this.props.selectCollection.bind(this, id)} >{name + " "}</a>
                     <button style={buttonStyle} onClick={this.props.delCollection.bind(this, id)}>X</button>
                 </p>
             </div>
         )
     }
 }
-// onClick={() => { console.log("pickle CLIIIICK"); this.props.selectCollection.bind(this, id) }}
+
 CollectionListItem.propTypes = {
     collection: PropTypes.object.isRequired,
     delCollection: PropTypes.func.isRequired,
