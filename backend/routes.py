@@ -24,39 +24,6 @@ def get_book(isbn):
     return book_schema.dump(book)
 
 
-@app.route("/book", methods=["POST"])
-def add_book():
-    book_data = request.json.get("book")
-    try:
-        book = Book(**book_data)
-
-        if genres := request.json.get("genres", None):
-            for genre_data in genres:
-                if existing_genre := Genre.query.filter_by(
-                    name=genre_data.get("name")
-                ).first():
-                    book.genres.append(existing_genre)
-                else:
-                    new_genre = Genre(**genre_data)
-                    book.genres.append(new_genre)
-
-        if authors := request.json.get("authors", None):
-            for author_data in authors:
-                if existing_author := Author.query.filter_by(
-                    name=author_data.get("name")
-                ).first():
-                    book.authors.append(existing_author)
-                else:
-                    new_author = Author(**author_data)
-                    book.authors.append(new_author)
-
-        db.session.add(book)
-        db.session.commit()
-        return book_schema.dump(book)
-    except Exception as error:
-        return abort(400, error)
-
-
 @app.route("/user", methods=["POST"])
 def add_reader():
     reader_data = request.json
