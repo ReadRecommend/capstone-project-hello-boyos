@@ -2,6 +2,7 @@ from flask import abort, jsonify, request
 from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash
 
+
 from backend import app, db
 from backend.model.schema import *
 
@@ -103,42 +104,55 @@ def get_authors():
     return jsonify(authors_schema.dump(authors))
 
 
-@app.route("/followers/<username>")
-def get_followers(username):
-    reader = Reader.query.filter_by(username=username).first()
-    followers = reader.followers
-    return jsonify(readers_schema.dump(followers))
+@app.route("/collection")
+def add_collection():
+    collections = Collection.query.all()
+    return jsonify(collections_schema.dump(collections))
 
 
-@app.route("/following/<username>")
-def get_following(username):
-    reader = Reader.query.filter_by(username=username).first()
-    followings = reader.follows
-    return jsonify(readers_schema.dump(followings))
+# Get the books in a collection
+@app.route("/collection/<collectionID>")
+def get_collection(collectionID):
+
+    collection = Collection.query.filter_by(id=collectionID).first_or_404()
+    return jsonify(collection_schema.dump(collection))
 
 
-@app.route("/follow", methods=["POST", "DELETE"])
-def follow():
-    follower_username = request.json.get("follower")
-    reader_username = request.json.get("user")
-    if not (follower_username and reader_username):
-        return abort(
-            400,
-            r"Request should be of the form {follower: <username>, user: <username>}",
-        )
-    reader = Reader.query.filter_by(username=reader_username).first()
-    follower = Reader.query.filter_by(username=follower_username).first()
+# Gets User's collections
+@app.route("/user/<username>/collections")
+def get_reader_collections(username):
 
-    # Add the follower relationship if it does not exist
-    if request.method == "POST" and follower not in reader.followers:
-        reader.followers.append(follower)
-        db.session.add(reader)
-        db.session.commit()
+    ReaderID = Reader.query.filter(Reader.username == username).first().id
 
-    # Remove the follower relationship if it exists
-    elif request.method == "DELETE" and follower in reader.followers:
-        reader.followers.remove(follower)
-        db.session.add(reader)
-        db.session.commit()
+    ReaderCollection = Collection.query.filter(Collection.reader_id == ReaderID).all()
+    print(ReaderCollection)
 
-    return jsonify(readers_schema.dump(follower.follows))
+    return jsonify(collections_schema.dump(ReaderCollection))
+
+
+# Basic Login
+@app.route("/login", methods=["POST"])
+def login():
+
+    reader_data = request.json
+
+    account = Reader.query.filter(Reader.email == reader_data.get("email")).first()
+
+    if account:
+        # Reader exists
+        if account.check_password_hash(hash, reader_data.password):
+            # Password is correct
+            # Add user to authenticated table
+
+            print("Does nothing atm")
+
+    # return them to landing page
+    print("Does nothing atm")
+
+
+# Basic Logout
+@app.route("/logout", methods=["POST"])
+def logout():
+    # Remove User from Authenticated Users
+    # return them to a landing page
+    print("Does nothing atm")
