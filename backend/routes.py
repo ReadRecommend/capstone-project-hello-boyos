@@ -146,4 +146,4 @@ def follow():
 @app.route("/collection/<collection_ID>")
 def get_collection(collection_ID):
     collection = Collection.query.filter_by(id=collection_ID).first_or_404()
-    return jsonify(collection_schema.dump(collections))
+    return jsonify(collection_schema.dump(collection))

@@ -9,26 +9,26 @@ class UserHome extends Component {
 
         this.state = {
             collectionList: [],
-            currentCollection: {},
+            currentCollection: {
+                books: []
+            },
             modalShow: false
         };
     };
 
     componentDidMount() {
         // TODO Check response code and error handle. Also not hardcode url
-        fetch('http://localhost:5000/book')
+        fetch('http://localhost:5000/collection/2')
             .then(res => {
                 return res.json()
             }).then(json => {
-
-                let books = json.slice(0, 10);
-                console.log(books);
-                this.setState({ currentCollection: books });
+                console.log("Console Log, Json books: " + json.books);
+                this.setState({ currentCollection: json });
 
             });
 
         // Fetch the information about the logged in user
-        fetch('http://localhost:5000/user/John')
+        fetch('http://localhost:5000/user/JaneDoe')
             .then(res => {
                 return res.json()
             }).then(json => {
@@ -72,10 +72,18 @@ class UserHome extends Component {
 
     selectCollection = (id) => {
         console.log(id)
-        this.setState({
-            currentCollection: this.state.collectionList.find(collection => collection.id === id)
-        });
-        console.log("Current Collection is:" + this.state.currentCollection.books)
+        console.log("The URL is: " + `http://localhost:5000/collection/${id}`)
+        fetch(`http://localhost:5000/collection/${id}`)
+            .then(res => { return res.json() })
+            .then(json => {
+                console.log("New Current Collection is: " + json)
+                this.setState({ currentCollection: json });
+            })
+        console.log("Current Collection ID is:" + this.state.currentCollection.id)
+        console.log("Current Name is:" + this.state.currentCollection.name)
+        console.log("Current Collection books is:" + this.state.currentCollection.books)
+        console.log("Current reader is:" + this.state.currentCollection.reader)
+        console.log("Current is:" + Object.keys(this.state.currentCollection))
     };
 
     render() {
@@ -108,7 +116,7 @@ class UserHome extends Component {
                     />
                 </div>
                 <h2>
-                    <displayCurrent key={this.state.currentCollection.id} currentCollection={this.state.currentCollection} />
+                    <Collection key={this.state.currentCollection.id} currentCollection={this.state.currentCollection} />
                 </h2>
 
             </div >
