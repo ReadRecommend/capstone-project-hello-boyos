@@ -18,7 +18,7 @@ class CollectionListItem extends Component {
             <div style={this.getStyle()}>
                 <p>
                     {name}
-                    {name !== "main" &&
+                    {name !== "Main" &&
                         <button onClick={this.props.delCollection.bind(this, name)}>X</button>
                     }
                 </p>
