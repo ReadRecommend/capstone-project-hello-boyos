@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Modal } from 'react-bootstrap';
-import CollectionList from "./CollectionList/CollectionList";
 
 /*
 The CollectionItem class deals with displaying the books contained within a collection.
@@ -18,7 +17,7 @@ class CollectionItem extends Component {
         const { isbn } = this.props.book;
         console.log("User Collections 2: " + this.props.userCollections)
         return this.props.userCollections.map((collection) => (
-            <div>
+            <div key={collection.id}>
                 <button onClick={this.props.addToCollection.bind(this, isbn, collection.id)}>{collection.name}</button>
             </div>
         ));
@@ -59,7 +58,7 @@ class CollectionItem extends Component {
     }
 
     render() {
-        const { title, summary, cover, isbn } = this.props.book;
+        const { title, summary, cover } = this.props.book;
         return (
             <div style={this.getStyle()}>
 
