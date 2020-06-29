@@ -13,15 +13,17 @@ class CollectionListItem extends Component {
     }
 
     render() {
-        const { id, name } = this.props.collection;
+        const { name, id } = this.props.collection;
         return (
             <div style={this.getStyle()}>
-                <p >
+                <p>
                     {/* When one clicks the name of the collection, it is selected as the current collection. */}
                     <button style={linkButton} onClick={this.props.selectCollection.bind(this, id)}>{name}</button>
                     {" "}
                     {/* When the button is pressed, this collection will be removed from the collection list. */}
-                    <button style={buttonStyle} onClick={this.props.delCollection.bind(this, id)}>X</button>
+                    {name !== "Main" &&
+                        <button onClick={this.props.delCollection.bind(this, name)}>X</button>
+                    }
                 </p>
             </div>
         )

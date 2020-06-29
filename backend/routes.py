@@ -1,4 +1,4 @@
-from flask import abort, jsonify, request
+from flask import abort, jsonify, request, Response
 from flask_cors import cross_origin
 from werkzeug.security import generate_password_hash
 
@@ -143,20 +143,21 @@ def follow():
 
     return jsonify(readers_schema.dump(follower.follows))
 
+
 @app.route("/collection/<collection_ID>")
 def get_collection(collection_ID):
     collection = Collection.query.filter_by(id=collection_ID).first_or_404()
     return jsonify(collection_schema.dump(collection))
 
-@app.route("/modify_collection", methods=["POST","DELETE"])
+
+@app.route("/modify_collection", methods=["POST", "DELETE"])
 def modify_collection():
     print(request.json)
     collection_id = request.json.get("collection_id")
     book_id = request.json.get("book_id")
     if not (collection_id and book_id):
         return abort(
-            400,
-            r"Request should be of the form {collection_id: <id>, book_id: <id>}",
+            400, r"Request should be of the form {collection_id: <id>, book_id: <id>}",
         )
     collection = Collection.query.filter_by(id=collection_id).first()
     book = Book.query.filter_by(isbn=book_id).first()
@@ -166,8 +167,8 @@ def modify_collection():
         collection.books.append(book)
         db.session.add(collection)
         db.session.commit()
-    
-    # Remove the book from the collection if it is in it. 
+
+    # Remove the book from the collection if it is in it.
     elif request.method == "DELETE" and book in collection.books:
         collection.books.remove(book)
         db.session.add(collection)
@@ -175,3 +176,55 @@ def modify_collection():
 
     return jsonify(collection_schema.dump(collection))
 
+
+@app.route("/collection", methods=["POST", "DELETE"])
+def add_collection():
+    collection_data = request.json
+    reader_id = collection_data.get("reader_id")
+    collection_name = collection_data.get("name")
+
+    # Check proper fields exist
+    if not (reader_id and collection_name):
+        return Response(
+            r"Request should be of the form {reader_id: <user_id>, name: <collection_name>}",
+            status=400,
+        )
+
+    # Ensure we are not trying to delete or create main
+    if collection_name == "Main":
+        return Response(r"Cannot create or delete a collection called Main", status=403)
+
+    reader = Reader.query.filter_by(id=reader_id).first()
+    collection = Collection.query.filter_by(
+        reader_id=reader_id, name=collection_name
+    ).first()
+
+    # Check reader exists
+    if not reader:
+        return Response(r"Reader is not in the database", status=403)
+
+    # If we are making a new collection
+    if request.method == "POST":
+        # Ensure there isn't an already existing collection
+        if collection:
+            return Response(
+                r"A collection with this name already exists for this user", status=403
+            )
+
+        # Create a new collection
+        new_collection = Collection(name=collection_name, reader_id=reader_id)
+        db.session.add(new_collection)
+        db.session.commit()
+
+    elif request.method == "DELETE":
+        # Ensure there is an already existing collection
+        if not collection:
+            return Response(
+                r"A collection with this name does not exist for this user", status=403
+            )
+
+        # Remove the collection
+        db.session.delete(collection)
+        db.session.commit()
+
+    return reader_schema.dump(reader)
