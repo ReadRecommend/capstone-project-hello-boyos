@@ -12,7 +12,15 @@ class Collection extends Component {
     displayCollection = () => {
         const { currentCollection } = this.props;
         if (currentCollection !== null && typeof currentCollection.books !== 'undefined') {
-            return currentCollection.books.map((book) => (<CollectionItem key={book.isbn} book={book} removeBook={this.props.removeBook} />))
+            return currentCollection.books.map((book) => (
+                <CollectionItem
+                    key={book.isbn}
+                    book={book}
+                    removeBook={this.props.removeBook}
+                    addToCollection={this.props.addToCollection}
+                    userCollections={this.props.userCollections}
+                />
+            ))
         }
     }
 
@@ -27,7 +35,9 @@ class Collection extends Component {
 
 Collection.propTypes = {
     currentCollection: PropTypes.object.isRequired,
-    removeBook: PropTypes.func.isRequired
+    removeBook: PropTypes.func.isRequired,
+    addToCollection: PropTypes.func.isRequired,
+    userCollections: PropTypes.array.isRequired
 }
 
 export default Collection;

@@ -1,10 +1,29 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Modal } from 'react-bootstrap';
+import CollectionList from "./CollectionList/CollectionList";
 
 /*
 The CollectionItem class deals with displaying the books contained within a collection.
 */
 class CollectionItem extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            modalShow: false
+        };
+    };
+
+    displayCollections = () => {
+        const { isbn } = this.props.book;
+        console.log("User Collections 2: " + this.props.userCollections)
+        return this.props.userCollections.map((collection) => (
+            <div>
+                <button onClick={this.props.addToCollection.bind(this, isbn, collection.id)}>{collection.name}</button>
+            </div>
+        ));
+    }
+
     // Can move this to a class in css later
     getStyle = () => {
         return {
@@ -12,6 +31,19 @@ class CollectionItem extends Component {
             textAlign: "center",
             padding: "10px",
             borderBottom: "1px #ccc dotted"
+        }
+    }
+
+    handleModal = () => {
+        if (this !== null && typeof this !== 'undefined') {
+            this.setState({ modalShow: !this.state.modalShow })
+        }
+    };
+
+    addButton = () => {
+        console.log("User Collections 1: " + this.props.userCollections)
+        if (this.props.book !== null && typeof this.props.book !== 'undefined') {
+            return <button onClick={this.handleModal} style={addButton}>+</button>
         }
     }
 
@@ -27,10 +59,23 @@ class CollectionItem extends Component {
     }
 
     render() {
-        const { title, summary, cover } = this.props.book;
+        const { title, summary, cover, isbn } = this.props.book;
         return (
             <div style={this.getStyle()}>
-                <h1>{title + " "}{this.removeButton()}</h1>
+
+                <Modal show={this.state.modalShow}>
+                    <Modal.Header>
+                        <Modal.Title>Add to a Collection</Modal.Title>
+                        <button onClick={() => { this.handleModal() }}>x</button>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.displayCollections()}
+                    </Modal.Body>
+                    <Modal.Footer>
+                    </Modal.Footer>
+                </Modal>
+
+                <h1>{this.addButton()}{title + " "}{this.removeButton()}</h1>
                 <img src={cover} alt={title} />
                 <p>{summary}</p>
             </div>
@@ -43,9 +88,16 @@ const removeButton = {
     textAlign: "right"
 }
 
+const addButton = {
+    background: "green",
+    textAlign: "left"
+}
+
 CollectionItem.propTypes = {
     book: PropTypes.object.isRequired,
-    removeBook: PropTypes.func.isRequired
+    removeBook: PropTypes.func.isRequired,
+    addToCollection: PropTypes.func.isRequired,
+    userCollections: PropTypes.array.isRequired
 }
 
 export default CollectionItem;

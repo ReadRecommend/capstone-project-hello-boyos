@@ -93,7 +93,25 @@ class UserHome extends Component {
             .then(json => {
                 this.setState({ currentCollection: json });
             })
-    };
+    }
+
+    addToCollection = (isbn, id) => {
+        console.log("ISBN and Col id are: " + isbn + " and " + id)
+        fetch('http://localhost:5000/modify_collection', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                book_id: isbn,
+                collection_id: id
+            })
+        })
+            .then(res => { return res.json() })
+            .then(json => {
+                this.setState({ currentCollection: json });
+            })
+    }
 
     render() {
 
@@ -125,7 +143,13 @@ class UserHome extends Component {
                     />
                 </div>
                 <h2>
-                    <Collection key={this.state.currentCollection.id} currentCollection={this.state.currentCollection} removeBook={this.removeBook} />
+                    <Collection
+                        key={this.state.currentCollection.id}
+                        currentCollection={this.state.currentCollection}
+                        removeBook={this.removeBook}
+                        userCollections={this.state.collectionList}
+                        addToCollection={this.addToCollection}
+                    />
                 </h2>
 
             </div >
