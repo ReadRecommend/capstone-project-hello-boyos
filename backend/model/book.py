@@ -36,7 +36,11 @@ class Book(db.Model):
     collection_memberships = db.relationship(
         "CollectionMembership", back_populates="book"
     )
-    collections = association_proxy("collection_memberships", "collection")
+    collections = association_proxy(
+        "collection_memberships",
+        "collection",
+        creator=lambda collection: CollectionMembership(collection=collection),
+    )
     # TODO: Reviews
 
     def __repr__(self):

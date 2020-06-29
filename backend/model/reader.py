@@ -1,5 +1,6 @@
 from backend import db
 from backend.model.followers import followers
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Reader(db.Model):
@@ -21,3 +22,20 @@ class Reader(db.Model):
 
     def __repr__(self):
         return f"<Reader(name='{self.username}', email='{self.email}')>"
+
+    @property
+    def identity(self):
+        return self.id
+
+    @property
+    def rolenames(self):
+        # We have no roles to implement so always return empty list
+        return []
+
+    @classmethod
+    def lookup(cls, username):
+        return cls.query.filter_by(username=username).one_or_none()
+
+    @classmethod
+    def identify(cls, idx):
+        return cls.query.get(idx)
