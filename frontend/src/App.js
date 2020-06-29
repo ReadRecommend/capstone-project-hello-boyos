@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import Collection from './components/Collection'
-import SignIn from './components/pages/SignIn'
-import SignUp from './components/pages/SignUp'
+import SignIn from './pages/Login'
+import SignUp from './pages/CreateAccount'
 
 import './App.css';
 
@@ -33,8 +33,8 @@ class App extends Component {
         return (
             <Router>
                <div className="App">
-                    <Route exact path="/" component={SignIn} />
-                    <Route path="/signUp" component={SignUp} />
+                    <Route exact path="/login" component={SignIn} />
+                    <Route path="/createAccount" component={SignUp} />
                     {/*<h1>ReadRecommend</h1>*/}
                     {/*<Collection currentCollection={this.state.currentCollection} />*/}
                 </div>
