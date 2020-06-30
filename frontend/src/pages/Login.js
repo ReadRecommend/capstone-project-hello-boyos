@@ -12,7 +12,7 @@ class Login extends Component {
 			password: '',
 			access_token: '',
 			errorShow: false,
-			errorMessage: ""
+			errorMessage: ''
 		};
 	}
 
@@ -48,7 +48,6 @@ class Login extends Component {
 				if (!res.ok) {
 					return res.text().then(text => { throw Error(text) });
 				}
-
 				return res.json()
 			}).then(json => {
 				this.props.handleUser(data.username, json.access_token);
