@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
+import { Alert } from 'react-bootstrap';
 
 import './Login.css'
 
 class CreateAccount extends Component {
 	constructor(props) {
 		super(props)
-		this.state = { username: '', email: '', password: '', password_confirm: ''};
+		this.state = {
+			username: '',
+			email: '',
+			password: '',
+			errorShow: false,
+			errorMessage: ''
+		};
 	}
 
 	updateUsername = (event) => {
@@ -25,8 +32,18 @@ class CreateAccount extends Component {
 		this.setState({ password_confirm: event.target.value });
 	}
 
+	// Function that makes the error not show
+	handleError() {
+		this.setState({ errorShow: false, errorMessage: "" })
+	};
+
 	handleSubmit = (event) => {
 		event.preventDefault();
+		if (!this.state.username || !this.state.email || !this.state.password) {
+			this.setState({ errorShow: true, errorMessage: "Please fill in the required fields" });
+			return;
+		}
+
 		const data = { username: this.state.username, email: this.state.email, password: this.state.password }
 		fetch('http://localhost:5000/createaccount', {
 			method: 'POST',
@@ -35,6 +52,9 @@ class CreateAccount extends Component {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
 		}).then(res => {
+			if (!res.ok) {
+				return res.text().then(text => { throw Error(text) });
+			}
 			return res.json()
 		}).then(json => {
 			//this.props.handleUser(data.username, json.access_token);
@@ -44,6 +64,12 @@ class CreateAccount extends Component {
 	render() {
 		return (
 			<div className="CreateAccount">
+
+				{/* Alert for general problems */}
+				<Alert show={this.state.errorShow} onClose={() => this.handleError()} variant="danger" dismissible>
+					{this.state.errorMessage}
+				</Alert>
+
 				<h1>Create Account</h1>
 				<p>This is the page for creating an account.</p>
 				<form method="POST" onSubmit={this.handleSubmit}>
@@ -68,13 +94,14 @@ class CreateAccount extends Component {
 						value={this.state.password}
 						onChange={this.updatePassword}
 					/>
+					{/* For confirming password (add later)
 					<input
 						type="password"
 						name="password-confim"
 						placeholder="Confirm Password"
 						value={this.state.password_confirm}
 						onChange={this.updatePasswordConfirm}
-					/>
+					/>*/}
 					<input
 						type="submit"
 						value="Create Account"
