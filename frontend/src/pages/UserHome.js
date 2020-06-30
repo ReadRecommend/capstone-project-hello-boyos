@@ -157,49 +157,6 @@ class UserHome extends Component {
       });
   };
 
-  fetchBooks = () => {
-    return fetch("http://localhost:5000/book")
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        let books = json.slice(0, 10);
-        console.log(books);
-        return books;
-      });
-    //   .then((books) => {
-    //     let booksItems = books.map((book) => (
-    //       <Dropdown.Item key={book.isbn}>{book.name}</Dropdown.Item>
-    //     ));
-    //     console.log("Typeof: " + typeof booksItems);
-    //     return booksItems;
-    //   });
-  };
-
-  bookDropdown = () => {
-    // let books = this.fetchBooks().then((books) => {
-    //   console.log("YEEE HAW =============== " + typeof books);
-    //   console.log(books);
-    //   return books;
-    // });
-    return (
-      <Dropdown style={dropDownStyle}>
-        <Dropdown.Toggle variant="success" id="dropdown-basic">
-          The Library
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          {this.fetchBooks().then((books) => (
-            <DropDownList
-              books={books}
-              addToCollection={this.addToCollection}
-            />
-          ))}
-          )}
-        </Dropdown.Menu>
-      </Dropdown>
-    );
-  };
-
   /*
     The selectCollection function takes the id of a collection and 
     changes the state of the page and refreshes it so that the 
