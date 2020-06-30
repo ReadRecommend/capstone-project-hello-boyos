@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Alert, Dropdown } from "react-bootstrap";
+import { Modal, Alert, Dropdown, Button } from "react-bootstrap";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
@@ -13,10 +13,12 @@ class UserHome extends Component {
             collectionList: [],
             currentCollection: {},
             modalShow: false,
+            libraryModalShow: false,
             errorGeneralShow: false,
             errorGeneralMessage: "",
             errorAddCollectionShow: false,
             errorAddCollectionMessage: "",
+            libraryBook: {},
         };
     }
 
@@ -30,7 +32,11 @@ class UserHome extends Component {
             .then((json) => {
                 let collections = json.collections;
                 console.log(collections);
-                this.setState({ collectionList: collections, userId: json.id });
+                this.setState({
+                    collectionList: collections,
+                    userId: json.id,
+                });
+                this.selectCollection(collections[0]["id"]);
             });
 
         fetch("http://localhost:5000/book")
@@ -48,6 +54,13 @@ class UserHome extends Component {
     handleModal() {
         this.setState({
             modalShow: !this.state.modalShow,
+            errorAddCollectionShow: false,
+        });
+    }
+
+    handleLibraryModal() {
+        this.setState({
+            libraryModalShow: !this.state.libraryModalShow,
             errorAddCollectionShow: false,
         });
     }
@@ -246,6 +259,40 @@ class UserHome extends Component {
                     </Modal.Footer>
                 </Modal>
 
+                <Modal show={this.state.libraryModalShow}>
+                    <Modal.Header>
+                        <Modal.Title>
+                            Add{" "}
+                            {this.state.libraryBook &&
+                                this.state.libraryBook.title}{" "}
+                            to{" "}
+                            {this.state.currentCollection.name
+                                ? this.state.currentCollection.name
+                                : "<choose a collection>"}
+                        </Modal.Title>
+                        <button
+                            onClick={() => {
+                                this.handleLibraryModal();
+                            }}
+                        >
+                            x
+                        </button>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Button
+                            onClick={() => {
+                                this.addToCollection(
+                                    this.state.libraryBook.isbn,
+                                    this.state.currentCollection.id
+                                );
+                                this.handleLibraryModal();
+                            }}
+                        >
+                            Add!
+                        </Button>
+                    </Modal.Body>
+                    <Modal.Footer></Modal.Footer>
+                </Modal>
                 <h4>
                     Collections
                     <button
@@ -261,12 +308,21 @@ class UserHome extends Component {
 
                 <Dropdown>
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Choose a book to add to your collection
+                        Choose a book to add to this collection
                     </Dropdown.Toggle>
                     <Dropdown.Menu style={dropdownStyle}>
                         {this.state.library &&
                             this.state.library.map((book) => (
-                                <Dropdown.Item>{book.title}</Dropdown.Item>
+                                <Dropdown.Item
+                                    onClick={() => {
+                                        this.setState({
+                                            libraryBook: book,
+                                        });
+                                        this.handleLibraryModal();
+                                    }}
+                                >
+                                    {book.title}
+                                </Dropdown.Item>
                             ))}
                     </Dropdown.Menu>
                 </Dropdown>
