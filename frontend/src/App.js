@@ -1,10 +1,4 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-
-//import Collection from './components/Collection'
-import Login from './pages/Login'
-import CreateAccount from './pages/CreateAccount'
-import UserHome from './pages/UserHome'
 import Main from './Main'
 
 import './App.css';
@@ -13,20 +7,21 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {username: 'test297', access_token: ''};
+        this.state = { username: localStorage.getItem('username') || null, accessToken: localStorage.getItem('accessToken') || null };
 
-        this.handleUser = this.handleUser.bind(this)
     }
 
-    handleUser = (username, access_token) => {
-        this.setState({username: username, access_token: access_token});
+    handleUser = (username, accessToken) => {
+        this.setState({ username: username, accessToken: accessToken });
+        localStorage.setItem('username', username);
+        localStorage.setItem('accessToken', accessToken);
         console.log(this.state);
     }
 
     render() {
         return (
             <div className="App" >
-                <Main username={this.state.username} handleUser={this.handleUser} />
+                <Main username={this.state.username} accessToken={this.state.accessToken} handleUser={this.handleUser} />
             </div>
         );
     }

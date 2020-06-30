@@ -1,41 +1,36 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import './Login.css'
 
 class Login extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {username: '', password: '', access_token: ''};
-
-		this.updateUsername = this.updateUsername.bind(this);
-		this.updatePassword = this.updatePassword.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
+		this.state = { username: '', password: '', access_token: '' };
 	}
 
-	updateUsername(event) {
-		this.setState({username: event.target.value});
+	updateUsername = (event) => {
+		this.setState({ username: event.target.value });
 	}
 
-	updatePassword(event) {
-		this.setState({password: event.target.value});
+	updatePassword = (event) => {
+		this.setState({ password: event.target.value });
 	}
 
 
-	handleSubmit(event) {
+	handleSubmit = (event) => {
 		event.preventDefault();
+		const data = { username: this.state.username, password: this.state.password }
 		fetch('http://localhost:5000/login', {
 			method: 'POST',
-			body: JSON.stringify(this.state),
-			headers : {
+			body: JSON.stringify(data),
+			headers: {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
 		}).then(res => {
 			return res.json()
 		}).then(json => {
-			this.setState(json);
-			//console.log(this.props.handleUser)
-			//this.props.handleUser(this.state.username, this.state.access_token);
-			this.props.handleUser.bind(this, this.state.username, this.state.access_token);
+			this.props.handleUser(data.username, json.access_token);
 		});
 	}
 
@@ -68,6 +63,10 @@ class Login extends Component {
 			</div>
 		);
 	}
+}
+
+Login.propTypes = {
+	handleUser: PropTypes.func.isRequired
 }
 
 export default Login;
