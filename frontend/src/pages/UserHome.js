@@ -9,6 +9,7 @@ class UserHome extends Component {
         super(props);
 
         this.state = {
+            userId: null,
             collectionList: [],
             currentCollection: {},
             modalShow: false,
@@ -29,7 +30,7 @@ class UserHome extends Component {
             .then((json) => {
                 let collections = json.collections;
                 console.log(collections);
-                this.setState({ collectionList: collections });
+                this.setState({ collectionList: collections, userId: json.id });
             });
     }
 
@@ -56,7 +57,7 @@ class UserHome extends Component {
 
     // Function that deletes a collection in a user's collection list
     delCollection = (name) => {
-        const data = { reader_id: 2, name: name };
+        const data = { reader_id: this.state.userId, name: name };
         console.log(data);
         console.log("AccessToken:" + this.props.accessToken);
 
@@ -93,7 +94,7 @@ class UserHome extends Component {
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
-        const data = { reader_id: 2, name: name };
+        const data = { reader_id: this.state.userId, name: name };
         console.log(data);
 
         // We will let the backend do the checking for us
