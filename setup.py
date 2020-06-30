@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from backend import db
+from backend import db, guard
 from backend.model.author import Author
 from backend.model.book import Book
 from backend.model.genre import Genre
@@ -93,18 +93,30 @@ db.create_all()
 json_to_db("books.json")
 
 print("Adding dummy non-book data")
-user1 = Reader(username="JohnSmith", email="john.smith@gmail.com", password="hunter2")
-user2 = Reader(username="JaneDoe", email="jane.doe@gmail.com", password="pass123")
-user3 = Reader(username="SteveLee", email="steve.lee@gmail.com", password="stevelee123")
+user1 = Reader(
+    username="JohnSmith",
+    email="john.smith@gmail.com",
+    password=guard.hash_password("hunter2"),
+)
+user2 = Reader(
+    username="JaneDoe",
+    email="jane.doe@gmail.com",
+    password=guard.hash_password("pass123"),
+)
+user3 = Reader(
+    username="SteveLee",
+    email="steve.lee@gmail.com",
+    password=guard.hash_password("stevelee123"),
+)
 
 user1.collections.append(
-    Collection(name="main", books=Book.query.order_by(db.func.random()).limit(5).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
 )
 user2.collections.append(
-    Collection(name="main", books=Book.query.order_by(db.func.random()).limit(2).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(2).all())
 )
 user3.collections.append(
-    Collection(name="main", books=Book.query.order_by(db.func.random()).limit(15).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
 )
 
 user1.follows.append(user2)

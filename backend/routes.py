@@ -1,15 +1,21 @@
 from flask import abort, jsonify, request, Response
 from flask_cors import cross_origin
-from werkzeug.security import generate_password_hash
+import flask_praetorian
 
-from backend import app, db
+from backend import app, db, guard
 from backend.model.schema import *
+from backend.errors import InvalidRequest, AuthenticationError, ResourceExists
 
 
 @app.route("/")
 @cross_origin()
 def home():
-    return "Hello"
+    return "ReadReccomend"
+
+
+# =======================
+# * BOOK ROUTES
+# =======================
 
 
 @app.route("/book")
@@ -24,59 +30,56 @@ def get_book(isbn):
     return book_schema.dump(book)
 
 
-@app.route("/book", methods=["POST"])
-def add_book():
-    book_data = request.json.get("book")
-    try:
-        book = Book(**book_data)
-
-        if genres := request.json.get("genres", None):
-            for genre_data in genres:
-                if existing_genre := Genre.query.filter_by(
-                    name=genre_data.get("name")
-                ).first():
-                    book.genres.append(existing_genre)
-                else:
-                    new_genre = Genre(**genre_data)
-                    book.genres.append(new_genre)
-
-        if authors := request.json.get("authors", None):
-            for author_data in authors:
-                if existing_author := Author.query.filter_by(
-                    name=author_data.get("name")
-                ).first():
-                    book.authors.append(existing_author)
-                else:
-                    new_author = Author(**author_data)
-                    book.authors.append(new_author)
-
-        db.session.add(book)
-        db.session.commit()
-        return book_schema.dump(book)
-    except Exception as error:
-        return abort(400, error)
+# =======================
+# * USER ROUTES
+# =======================
 
 
-@app.route("/user", methods=["POST"])
+@app.route("/createaccount", methods=["POST"])
 def add_reader():
     reader_data = request.json
+    username = reader_data.get("username")
+    email = reader_data.get("email")
+    password = reader_data.get("password")
+
+    # Ensure request is valid format
+    if not (username and email and password):
+        raise InvalidRequest(
+            "Request should be of the form {{username: 'username', 'password', email: 'email'}}"
+        )
+
+    # Check if a user with this email/username already exists.
     if Reader.query.filter(
-        (Reader.email == reader_data.get("email"))
-        | (Reader.username == reader_data.get("username"))
+        (Reader.email == email) | (Reader.username == username)
     ).first():
-        return abort(403, "The readername or email already exists")
+        raise ResourceExists("The username or email already exists")
 
     new_reader = Reader(
-        username=reader_data["username"],
-        email=reader_data["email"],
-        password=generate_password_hash(reader_data["password"]),
+        username=username, email=email, password=guard.hash_password(password),
     )
 
-    main_collection = Collection(name="main")
+    # Add the new user's Main collection
+    main_collection = Collection(name="Main")
     new_reader.collections.append(main_collection)
+
     db.session.add(new_reader)
     db.session.commit()
+
     return reader_schema.dump(new_reader)
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.json.get("username")
+    password = request.json.get("password")
+
+    if not (username and password):
+        raise InvalidRequest(
+            "Request should be of the form {{username: 'username', password: 'password'}}",
+        )
+
+    reader = guard.authenticate(username, password)
+    return jsonify({"access_token": guard.encode_jwt_token(reader)}), 200
 
 
 @app.route("/user/<username>")
@@ -89,18 +92,6 @@ def get_reader(username):
 def get_readers():
     readers = Reader.query.all()
     return jsonify(readers_schema.dump(readers))
-
-
-@app.route("/genre")
-def get_genres():
-    genres = Genre.query.all()
-    return jsonify(genres_schema.dump(genres))
-
-
-@app.route("/author")
-def get_authors():
-    authors = Author.query.all()
-    return jsonify(authors_schema.dump(authors))
 
 
 @app.route("/followers/<username>")
@@ -118,13 +109,20 @@ def get_following(username):
 
 
 @app.route("/follow", methods=["POST", "DELETE"])
+@flask_praetorian.auth_required
 def follow():
     follower_username = request.json.get("follower")
     reader_username = request.json.get("user")
+
+    # Only the follower can request to follow
+    if follower_username != flask_praetorian.current_user().username:
+        raise AuthenticationError(
+            "You do not have the correct authorisation to access this resource"
+        )
+
     if not (follower_username and reader_username):
-        return abort(
-            400,
-            r"Request should be of the form {follower: <username>, user: <username>}",
+        raise InvalidRequest(
+            r"Request should be of the form {{follower: 'username', user: 'username'}}",
         )
     reader = Reader.query.filter_by(username=reader_username).first()
     follower = Reader.query.filter_by(username=follower_username).first()
@@ -135,46 +133,12 @@ def follow():
         db.session.add(reader)
         db.session.commit()
 
-    # Remove the follower relationship if it exists
-    elif request.method == "DELETE" and follower in reader.followers:
-        reader.followers.remove(follower)
-        db.session.add(reader)
-        db.session.commit()
-
     return jsonify(readers_schema.dump(follower.follows))
 
 
-@app.route("/collection/<collection_ID>")
-def get_collection(collection_ID):
-    collection = Collection.query.filter_by(id=collection_ID).first_or_404()
-    return jsonify(collection_schema.dump(collection))
-
-
-@app.route("/modify_collection", methods=["POST", "DELETE"])
-def modify_collection():
-    print(request.json)
-    collection_id = request.json.get("collection_id")
-    book_id = request.json.get("book_id")
-    if not (collection_id and book_id):
-        return abort(
-            400, r"Request should be of the form {collection_id: <id>, book_id: <id>}",
-        )
-    collection = Collection.query.filter_by(id=collection_id).first()
-    book = Book.query.filter_by(isbn=book_id).first()
-
-    # Add the chosen book to the collection, if it's not already there.
-    if request.method == "POST" and book not in collection.books:
-        collection.books.append(book)
-        db.session.add(collection)
-        db.session.commit()
-
-    # Remove the book from the collection if it is in it.
-    elif request.method == "DELETE" and book in collection.books:
-        collection.books.remove(book)
-        db.session.add(collection)
-        db.session.commit()
-
-    return jsonify(collection_schema.dump(collection))
+# =======================
+# * Collection Routes
+# =======================
 
 
 @app.route("/collection", methods=["POST", "DELETE"])
@@ -228,3 +192,66 @@ def add_collection():
         db.session.commit()
 
     return reader_schema.dump(reader)
+
+
+# Get the books in a collection
+@app.route("/collection/<collectionID>")
+def get_collection(collectionID):
+
+    collection = Collection.query.filter_by(id=collectionID).first_or_404()
+    return jsonify(collection_schema.dump(collection))
+
+
+@app.route("/modify_collection", methods=["POST", "DELETE"])
+def modify_collection():
+    print(request.json)
+    collection_id = request.json.get("collection_id")
+    book_id = request.json.get("book_id")
+    if not (collection_id and book_id):
+        return abort(
+            400, r"Request should be of the form {collection_id: <id>, book_id: <id>}",
+        )
+    collection = Collection.query.filter_by(id=collection_id).first()
+    book = Book.query.filter_by(isbn=book_id).first()
+
+    # Add the chosen book to the collection, if it's not already there.
+    if request.method == "POST" and book not in collection.books:
+        collection.books.append(book)
+        db.session.add(collection)
+        db.session.commit()
+
+    # Remove the book from the collection if it is in it.
+    elif request.method == "DELETE" and book in collection.books:
+        collection.books.remove(book)
+        db.session.add(collection)
+        db.session.commit()
+
+    return jsonify(collection_schema.dump(collection))
+
+
+# Gets User's collections
+@app.route("/user/<username>/collections")
+def get_reader_collections(username):
+
+    ReaderID = Reader.query.filter(Reader.username == username).first().id
+
+    ReaderCollection = Collection.query.filter(Collection.reader_id == ReaderID).all()
+
+    return jsonify(collections_schema.dump(ReaderCollection))
+
+
+# =======================
+# * MISC ROUTES
+# =======================
+
+
+@app.route("/genre")
+def get_genres():
+    genres = Genre.query.all()
+    return jsonify(genres_schema.dump(genres))
+
+
+@app.route("/author")
+def get_authors():
+    authors = Author.query.all()
+    return jsonify(authors_schema.dump(authors))

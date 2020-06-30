@@ -183,7 +183,7 @@ class UserHome extends Component {
 
         return (
             <div className="UserHome">
-
+                <h1>Welcome {this.props.username} </h1>
                 {/* Alert for general problems */}
                 <Alert show={this.state.errorGeneralShow} onClose={() => this.handleGeneralError()} variant="danger" dismissible>
                     {this.state.errorGeneralMessage}
@@ -239,7 +239,6 @@ const collectionListStyle = {
     border: "3px #ccc solid",
     width: "500px"
 }
-
 
 
 export default UserHome;
