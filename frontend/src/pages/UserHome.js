@@ -303,4 +303,9 @@ const collectionListStyle = {
     width: "500px",
 };
 
+const dropDownStyle = {
+    height: "70px",
+    overflowY: "scroll",
+};
+
 export default UserHome;
