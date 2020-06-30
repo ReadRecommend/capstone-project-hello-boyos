@@ -38,22 +38,33 @@ def get_book(isbn):
 @app.route("/createaccount", methods=["POST"])
 def add_reader():
     reader_data = request.json
+    username = reader_data.get("username")
+    email = reader_data.get("email")
+    password = reader_data.get("password")
+
+    # Ensure request is valid format
+    if not (username and email and password):
+        raise InvalidRequest(
+            "Request should be of the form {{username: 'username', 'password', email: 'email'}}"
+        )
+
+    # Check if a user with this email/username already exists.
     if Reader.query.filter(
-        (Reader.email == reader_data.get("email"))
-        | (Reader.username == reader_data.get("username"))
+        (Reader.email == email) | (Reader.username == username)
     ).first():
         raise ResourceExists("The username or email already exists")
 
     new_reader = Reader(
-        username=reader_data["username"],
-        email=reader_data["email"],
-        password=guard.hash_password(reader_data["password"]),
+        username="username", email="email", password=guard.hash_password("password"),
     )
 
+    # Add the new user's Main collection
     main_collection = Collection(name="Main")
     new_reader.collections.append(main_collection)
+
     db.session.add(new_reader)
     db.session.commit()
+
     return reader_schema.dump(new_reader)
 
 
