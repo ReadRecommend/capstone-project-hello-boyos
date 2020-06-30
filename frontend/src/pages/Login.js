@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Alert } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 
 import './Login.css'
@@ -6,7 +7,13 @@ import './Login.css'
 class Login extends Component {
 	constructor(props) {
 		super(props)
-		this.state = { username: '', password: '', access_token: '' };
+		this.state = {
+			username: '',
+			password: '',
+			access_token: '',
+			errorShow: false,
+			errorMessage: ""
+		};
 	}
 
 	updateUsername = (event) => {
@@ -17,6 +24,10 @@ class Login extends Component {
 		this.setState({ password: event.target.value });
 	}
 
+	// Function that makes the error not show
+	handleError() {
+		this.setState({ errorShow: false, errorMessage: "" })
+	};
 
 	handleSubmit = (event) => {
 		event.preventDefault();
@@ -27,16 +38,34 @@ class Login extends Component {
 			headers: {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
-		}).then(res => {
-			return res.json()
-		}).then(json => {
-			this.props.handleUser(data.username, json.access_token);
-		});
+		})
+			.then(res => {
+
+				if (!res.ok) {
+					return res.text().then(text => { throw Error(text) });
+				}
+
+				return res.json()
+			}).then(json => {
+				this.props.handleUser(data.username, json.access_token);
+				// Change route to home
+				return this.props.history.push("/");
+			})
+			.catch((error) => {
+				console.log(error.message)
+				this.setState({ errorShow: true, errorMessage: error.message });
+			});
 	}
 
 	render() {
 		return (
 			<div className="Login">
+
+				{/* Alert for general problems */}
+				<Alert show={this.state.errorShow} onClose={() => this.handleError()} variant="danger" dismissible>
+					{this.state.errorMessage}
+				</Alert>
+
 				<h1>Login</h1>
 				<p>This is the page for logging in.</p>
 				<form method="POST" onSubmit={this.handleSubmit}>
