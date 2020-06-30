@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Alert, Navbar, Nav, Button } from "react-bootstrap";
+import { Modal, Alert, Dropdown } from "react-bootstrap";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
@@ -31,6 +31,16 @@ class UserHome extends Component {
                 let collections = json.collections;
                 console.log(collections);
                 this.setState({ collectionList: collections, userId: json.id });
+            });
+
+        fetch("http://localhost:5000/book")
+            .then((res) => {
+                return res.json();
+            })
+            .then((books) => {
+                this.setState({
+                    library: books,
+                });
             });
     }
 
@@ -246,6 +256,22 @@ class UserHome extends Component {
                         +
                     </button>
                 </h4>
+
+                <br></br>
+
+                <Dropdown>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        Choose a book to add to your collection
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu style={dropdownStyle}>
+                        {this.state.library &&
+                            this.state.library.map((book) => (
+                                <Dropdown.Item>{book.title}</Dropdown.Item>
+                            ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                <br></br>
                 <div style={collectionListStyle}>
                     <CollectionList
                         collectionList={this.state.collectionList}
@@ -266,6 +292,11 @@ class UserHome extends Component {
         );
     }
 }
+
+const dropdownStyle = {
+    maxHeight: "256px",
+    overflowY: "scroll",
+};
 
 const collectionListStyle = {
     border: "3px #ccc solid",
