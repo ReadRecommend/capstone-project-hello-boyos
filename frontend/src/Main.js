@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import UserHome from './pages/UserHome';
 import Login from './pages/Login';
+import CreateAccount from './pages/CreateAccount';
 
 class Main extends Component {
     render() {
@@ -11,6 +12,7 @@ class Main extends Component {
             <Switch> {/* The Switch decides which component to show based on the current URL.*/}
                 < Route exact path='/' component={() => <UserHome username={this.props.username} accessToken={this.props.accessToken} />} />
                 < Route exact path='/login' component={() => <Login handleUser={this.props.handleUser} />} />
+                < Route exact path='/createAccount' component={CreateAccount} />
                 {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}
             </Switch >
