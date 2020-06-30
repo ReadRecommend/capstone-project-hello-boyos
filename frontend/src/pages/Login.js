@@ -31,6 +31,11 @@ class Login extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
+		if (!this.state.username || !this.state.password) {
+			this.setState({ errorShow: true, errorMessage: "Please fill in the required fields" });
+			return;
+		}
+
 		const data = { username: this.state.username, password: this.state.password }
 		fetch('http://localhost:5000/login', {
 			method: 'POST',
@@ -75,6 +80,7 @@ class Login extends Component {
 						placeholder="Username"
 						value={this.state.username}
 						onChange={this.updateUsername}
+						required
 					/>
 					<input
 						type="password"
@@ -82,6 +88,7 @@ class Login extends Component {
 						placeholder="Password"
 						value={this.state.password}
 						onChange={this.updatePassword}
+						required
 					/>
 					<input
 						type="submit"
