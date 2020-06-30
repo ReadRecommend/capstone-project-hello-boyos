@@ -5,7 +5,7 @@ import './Login.css'
 class CreateAccount extends Component {
 	constructor(props) {
 		super(props)
-		this.state = { username: '', email: '', password: '', password_confirm: ''};
+		this.state = { username: '', email: '', password: '', password_confirm: '' };
 	}
 
 	updateUsername = (event) => {
@@ -37,7 +37,8 @@ class CreateAccount extends Component {
 		}).then(res => {
 			return res.json()
 		}).then(json => {
-			//this.props.handleUser(data.username, json.access_token);
+			// Change route to login
+			return this.props.history.push("/login");
 		});
 	}
 
