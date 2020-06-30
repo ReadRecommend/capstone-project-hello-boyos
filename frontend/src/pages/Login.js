@@ -5,14 +5,19 @@ import './Login.css'
 class Login extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {username: ''};
+		this.state = {username: '', password: '', access_token: ''};
 
 		this.updateUsername = this.updateUsername.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this)
+		this.updatePassword = this.updatePassword.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
 	updateUsername(event) {
 		this.setState({username: event.target.value});
+	}
+
+	updatePassword(event) {
+		this.setState({password: event.target.value});
 	}
 
 
@@ -24,6 +29,11 @@ class Login extends Component {
 			headers : {
 				'Content-type': 'application/json; charset=UTF-8'
 			}
+		}).then(res => {
+			return res.json()
+		}).then(json => {
+			this.setState(json);
+			this.props.handleUser(this.state.username, this.state.access_token);
 		});
 	}
 
@@ -44,6 +54,8 @@ class Login extends Component {
 						type="password"
 						name="password"
 						placeholder="Password"
+						value={this.state.password}
+						onChange={this.updatePassword}
 					/>
 					<input
 						type="submit"

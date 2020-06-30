@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import Collection from "../components/Collection";
+//import Collection from "../components/Collection";
 
 class UserHome extends Component {
-    constructor(props) {
+    /*constructor(props) {
         super(props);
 
+        
         this.state = {
             currentCollection: []
         };
-    }
+        
+    }*/
 
+    /*
     componentDidMount() {
         fetch('http://localhost:5000/book')
             .then(res => {
@@ -22,12 +25,13 @@ class UserHome extends Component {
 
             });
     }
+    */
 
     render() {
         return (
             <div className="UserHome">
-                <h1>ReadRecommend</h1>
-                <Collection currentCollection={this.state.currentCollection} />
+                <h1>Welcome {this.props.username} </h1>
+                {/*<Collection currentCollection={this.state.currentCollection} />*/}
             </div>
         );
     }
