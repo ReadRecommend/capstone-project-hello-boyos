@@ -1,16 +1,16 @@
-from flask import abort, jsonify, request, Response
-from flask_cors import cross_origin
 import flask_praetorian
+from flask import Response, abort, jsonify, request
+from flask_cors import cross_origin
 
 from backend import app, db, guard
+from backend.errors import AuthenticationError, InvalidRequest, ResourceExists
 from backend.model.schema import *
-from backend.errors import InvalidRequest, AuthenticationError, ResourceExists
 
 
 @app.route("/")
 @cross_origin()
 def home():
-    return "ReadReccomend"
+    return "ReadRecommend"
 
 
 # =======================
@@ -142,6 +142,7 @@ def follow():
 
 
 @app.route("/collection", methods=["POST", "DELETE"])
+@flask_praetorian.auth_required
 def add_collection():
     collection_data = request.json
     reader_id = collection_data.get("reader_id")
@@ -203,6 +204,7 @@ def get_collection(collectionID):
 
 
 @app.route("/modify_collection", methods=["POST", "DELETE"])
+@flask_praetorian.auth_required
 def modify_collection():
     print(request.json)
     collection_id = request.json.get("collection_id")
@@ -229,11 +231,11 @@ def modify_collection():
     return jsonify(collection_schema.dump(collection))
 
 
-# Gets User's collections
+# TODO delete this, handled by /user/username
 @app.route("/user/<username>/collections")
 def get_reader_collections(username):
 
-    ReaderID = Reader.query.filter(Reader.username == username).first().id
+    reader = Reader.query.filter(Reader.username == username).first().id
 
     ReaderCollection = Collection.query.filter(Collection.reader_id == ReaderID).all()
 

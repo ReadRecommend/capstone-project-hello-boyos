@@ -58,12 +58,14 @@ class UserHome extends Component {
     delCollection = (name) => {
         const data = { reader_id: 2, name: name };
         console.log(data);
+        console.log("AccessToken:" + this.props.accessToken);
 
         // We will let the backend do the checking for us
         fetch("http://localhost:5000/collection", {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + this.props.accessToken,
             },
             body: JSON.stringify(data),
         })
@@ -99,6 +101,7 @@ class UserHome extends Component {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + this.props.accessToken,
             },
             body: JSON.stringify(data),
         })
@@ -135,6 +138,7 @@ class UserHome extends Component {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + this.props.accessToken,
             },
             body: JSON.stringify({
                 book_id: isbn,
@@ -170,6 +174,7 @@ class UserHome extends Component {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: "Bearer " + this.props.accessToken,
             },
             body: JSON.stringify({
                 book_id: isbn,
