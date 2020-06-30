@@ -14,7 +14,7 @@ class Main extends Component {
                 < Route exact path='/' render={(props) => <UserHome {...props} username={this.props.username} accessToken={this.props.accessToken} />} />
                 < Route exact path='/login' render={(props) => <Login {...props} handleUser={this.props.handleUser} />} />
                 < Route exact path='/createAccount' component={CreateAccount} />
-                < Route exact path='/logout' render={(props) => <Logout {...props} username={this.props.username} accessToken={this.props.accessToken} />} />
+                < Route exact path='/logout' render={(props) => <Logout {...props} username={this.props.username} accessToken={this.props.accessToken} handleLogout={this.props.handleLogout} />} />
                 {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}
             </Switch >
@@ -23,7 +23,8 @@ class Main extends Component {
 }
 
 Main.propTypes = {
-    handleUser: PropTypes.func.isRequired
+    handleUser: PropTypes.func.isRequired,
+    handleLogout: PropTypes.func.isRequired
 }
 
 export default Main;

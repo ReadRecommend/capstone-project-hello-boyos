@@ -13,6 +13,7 @@ class Logout extends Component {
     componentDidMount() {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('username');
+        this.props.handleLogout();
         this.props.history.push('/');
     }
 
@@ -24,7 +25,7 @@ class Logout extends Component {
 }
 
 Logout.propTypes = {
-    login: PropTypes.func.isRequired
+    handleLogout: PropTypes.func.isRequired
 }
 
 export default Logout;
