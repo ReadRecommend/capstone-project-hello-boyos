@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Modal, Alert } from 'react-bootstrap';
+import { trackPromise } from 'react-promise-tracker';
 import Collection from '../components/Collection';
-import CollectionList from '../components/CollectionList/CollectionList'
+import CollectionList from '../components/CollectionList/CollectionList';
 import AddCollection from '../components/CollectionList/AddCollection';
-
 class UserHome extends Component {
     constructor(props) {
         super(props);
@@ -21,14 +21,7 @@ class UserHome extends Component {
 
     componentDidMount() {
         // TODO Check response code and error handle. Also not hardcode url
-        fetch('http://localhost:5000/collection/2')
-            .then(res => {
-                return res.json()
-            }).then(json => {
-                console.log("Console Log, Json books: " + json.books);
-                this.setState({ currentCollection: json });
-
-            });
+        this.selectCollection(2);
 
         // Fetch the information about the logged in user
         fetch('http://localhost:5000/user/JaneDoe')
@@ -132,20 +125,23 @@ class UserHome extends Component {
     is returned and set as the current collection.
     */
     removeBook = (isbn) => {
-        fetch('http://localhost:5000/modify_collection', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                book_id: isbn,
-                collection_id: this.state.currentCollection.id
+        this.setState({ currentCollection: [] });
+        trackPromise(
+            fetch('http://localhost:5000/modify_collection', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    book_id: isbn,
+                    collection_id: this.state.currentCollection.id
+                })
             })
-        })
-            .then(res => { return res.json() })
-            .then(json => {
-                this.setState({ currentCollection: json });
-            })
+                .then(res => { return res.json() })
+                .then(json => {
+                    this.setState({ currentCollection: json });
+                })
+            , "collection-view");
     }
 
     /*
@@ -154,11 +150,14 @@ class UserHome extends Component {
     selected collection can then be displayed.
     */
     selectCollection = (id) => {
-        fetch(`http://localhost:5000/collection/${id}`)
-            .then(res => { return res.json() })
-            .then(json => {
-                this.setState({ currentCollection: json });
-            })
+        this.setState({ currentCollection: [] });
+        trackPromise(
+            fetch(`http://localhost:5000/collection/${id}`)
+                .then(res => { return res.json() })
+                .then(json => {
+                    this.setState({ currentCollection: json });
+                })
+            , "collection-view");
     }
 
     addToCollection = (isbn, id) => {

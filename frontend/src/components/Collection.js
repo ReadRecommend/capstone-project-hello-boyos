@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import CollectionItem from "./CollectionItem";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import CollectionItem from './CollectionItem';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 /*
 The collection contains collection-items, which themselves contain books to be
@@ -26,11 +27,16 @@ class Collection extends Component {
 
     render() {
         return (
-            <div>
+            <div style={collectionStyle}>
+                <LoadingSpinner area="collection-view" />
                 {this.displayCollection()}
-            </div>
+            </div >
         );
     }
+}
+
+const collectionStyle = {
+    textAlign: "center"
 }
 
 Collection.propTypes = {
