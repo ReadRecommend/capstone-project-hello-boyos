@@ -9,8 +9,8 @@ class Main extends Component {
     render() {
         return (
             <Switch> {/* The Switch decides which component to show based on the current URL.*/}
-                < Route exact path='/' component={() => <UserHome username={this.props.username} accessToken={this.props.accessToken} />} />
-                < Route exact path='/login' component={() => <Login handleUser={this.props.handleUser} />} />
+                < Route exact path='/' render={(props) => <UserHome {...props} username={this.props.username} accessToken={this.props.accessToken} />} />
+                < Route exact path='/login' render={(props) => <Login {...props} handleUser={this.props.handleUser} />} />
                 {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}
             </Switch >
