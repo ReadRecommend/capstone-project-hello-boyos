@@ -48,6 +48,9 @@ def add_reader():
 
 @app.route("/login", methods=["POST"])
 def login():
+    print(request.json.get("username"))
+    return "test"
+    '''
     username = request.json.get("username")
     password = request.json.get("password")
 
@@ -59,6 +62,7 @@ def login():
 
     reader = guard.authenticate(username, password)
     return jsonify({"access_token": guard.encode_jwt_token(reader)}), 200
+    '''
 
 
 @app.route("/user/<username>")
