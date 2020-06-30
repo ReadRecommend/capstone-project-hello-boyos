@@ -1,18 +1,19 @@
 import React, { Component } from "react";
-import { Modal, Alert } from "react-bootstrap";
+import { Modal, Alert, Navbar, Nav, Button } from "react-bootstrap";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
 import DropDownItem from "../components/DropDownItem";
 import DropDownList from "../components/DropDownList";
 import { Dropdown, DropdownButton, MenuItem } from "react-bootstrap";
-import DropdownItem from "react-bootstrap/DropdownItem";
+import DropdownItem2 from "react-bootstrap/DropdownItem";
 
 class UserHome extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      userId: null,
       collectionList: [],
       currentCollection: {},
       modalShow: false,
@@ -25,24 +26,15 @@ class UserHome extends Component {
 
   componentDidMount() {
     // TODO Check response code and error handle. Also not hardcode url
-    fetch("http://localhost:5000/collection/2")
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        console.log("Console Log, Json books: " + json.books);
-        this.setState({ currentCollection: json });
-      });
-
     // Fetch the information about the logged in user
-    fetch("http://localhost:5000/user/JaneDoe")
+    fetch(`http://localhost:5000/user/${this.props.username}`)
       .then((res) => {
         return res.json();
       })
       .then((json) => {
         let collections = json.collections;
         console.log(collections);
-        this.setState({ collectionList: collections });
+        this.setState({ collectionList: collections, userId: json.id });
       });
   }
 
@@ -69,14 +61,16 @@ class UserHome extends Component {
 
   // Function that deletes a collection in a user's collection list
   delCollection = (name) => {
-    const data = { reader_id: 2, name: name };
+    const data = { reader_id: this.state.userId, name: name };
     console.log(data);
+    console.log("AccessToken:" + this.props.accessToken);
 
     // We will let the backend do the checking for us
     fetch("http://localhost:5000/collection", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + this.props.accessToken,
       },
       body: JSON.stringify(data),
     })
@@ -104,7 +98,7 @@ class UserHome extends Component {
 
   // Function that adds a collection to a user's collection list
   addCollection = (name) => {
-    const data = { reader_id: 2, name: name };
+    const data = { reader_id: this.state.userId, name: name };
     console.log(data);
 
     // We will let the backend do the checking for us
@@ -112,6 +106,7 @@ class UserHome extends Component {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: "Bearer " + this.props.accessToken,
       },
       body: JSON.stringify(data),
     })
