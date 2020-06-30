@@ -45,7 +45,6 @@ class Login extends Component {
 			}
 		})
 			.then(res => {
-
 				if (!res.ok) {
 					return res.text().then(text => { throw Error(text) });
 				}

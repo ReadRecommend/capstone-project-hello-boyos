@@ -55,7 +55,7 @@ def add_reader():
         raise ResourceExists("The username or email already exists")
 
     new_reader = Reader(
-        username="username", email="email", password=guard.hash_password("password"),
+        username=username, email=email, password=guard.hash_password(password),
     )
 
     # Add the new user's Main collection

@@ -10,6 +10,7 @@ class CreateAccount extends Component {
 
 	updateUsername = (event) => {
 		this.setState({ username: event.target.value });
+		console.log(this.state.username)
 	}
 
 	updateEmail = (event) => {
@@ -26,7 +27,7 @@ class CreateAccount extends Component {
 
 	handleSubmit = (event) => {
 		event.preventDefault();
-		const data = { username: this.state.username, email: this.state.email, password: this.state.password, }
+		const data = { username: this.state.username, email: this.state.email, password: this.state.password }
 		fetch('http://localhost:5000/createaccount', {
 			method: 'POST',
 			body: JSON.stringify(data),
