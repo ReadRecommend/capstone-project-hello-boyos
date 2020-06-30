@@ -11,7 +11,7 @@ class Main extends Component {
     render() {
         return (
             <Switch> {/* The Switch decides which component to show based on the current URL.*/}
-                < PrivateRoute exact path='/' auth={this.props.accessToken} component={UserHome} />
+                < PrivateRoute exact path='/' auth={this.props.accessToken} component={UserHome} username={this.props.username} />
                 < Route exact path='/login' render={(props) => <Login {...props} handleUser={this.props.handleUser} />} />
                 < Route exact path='/createAccount' render={(props) => <CreateAccount {...props} />} />
 

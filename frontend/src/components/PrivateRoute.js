@@ -3,12 +3,12 @@ import { Route, Redirect } from 'react-router-dom';
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
-function PrivateRoute({ component: Component, auth, ...rest }) {
+function PrivateRoute({ component: Component, auth, username, ...rest }) {
     return (
         <Route
             {...rest}
             render={(props) => auth !== null
-                ? <Component {...props} />
+                ? <Component {...props} username={username} />
                 : <Redirect to={{ pathname: '/login', state: { from: props.location } }} />}
         />
     )

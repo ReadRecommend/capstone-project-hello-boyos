@@ -21,17 +21,8 @@ class UserHome extends Component {
 
     componentDidMount() {
         // TODO Check response code and error handle. Also not hardcode url
-        fetch('http://localhost:5000/collection/2')
-            .then(res => {
-                return res.json()
-            }).then(json => {
-                console.log("Console Log, Json books: " + json.books);
-                this.setState({ currentCollection: json });
-
-            });
-
         // Fetch the information about the logged in user
-        fetch('http://localhost:5000/user/JaneDoe')
+        fetch(`http://localhost:5000/user/${this.props.username}`)
             .then(res => {
                 return res.json()
             }).then(json => {
