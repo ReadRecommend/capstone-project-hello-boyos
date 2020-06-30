@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute';
 import UserHome from './pages/UserHome';
 import Login from './pages/Login';
 import CreateAccount from './pages/CreateAccount';
+import Logout from './pages/Logout';
 
 class Main extends Component {
     render() {
@@ -14,7 +15,7 @@ class Main extends Component {
                 < PrivateRoute exact path='/' auth={this.props.accessToken} component={UserHome} username={this.props.username} />
                 < Route exact path='/login' render={(props) => <Login {...props} handleUser={this.props.handleUser} />} />
                 < Route exact path='/createAccount' render={(props) => <CreateAccount {...props} />} />
-
+                < Route exact path='/logout' render={(props) => <Logout {...props} username={this.props.username} accessToken={this.props.accessToken} handleLogout={this.props.handleLogout} />} />
                 {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}
             </Switch >
@@ -23,7 +24,8 @@ class Main extends Component {
 }
 
 Main.propTypes = {
-    handleUser: PropTypes.func.isRequired
+    handleUser: PropTypes.func.isRequired,
+    handleLogout: PropTypes.func.isRequired
 }
 
 export default Main;

@@ -18,10 +18,14 @@ class App extends Component {
         console.log(this.state);
     }
 
+    handleLogout = () => {
+        this.setState({ username: null, accessToken: null });
+    }
+
     render() {
         return (
             <div className="App" >
-                <Main username={this.state.username} accessToken={this.state.accessToken} handleUser={this.handleUser} />
+                <Main username={this.state.username} accessToken={this.state.accessToken} handleUser={this.handleUser} handleLogout={this.handleLogout} />
             </div>
         );
     }
