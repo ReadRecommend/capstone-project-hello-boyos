@@ -236,7 +236,6 @@ class UserHome extends Component {
         </Modal>
 
         <h1>ReadRecommend</h1>
-        <div>Dropdown{this.bookDropdown()}</div>
         <h2>
           Collections
           <button
