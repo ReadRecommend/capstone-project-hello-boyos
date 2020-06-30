@@ -59,12 +59,12 @@ def add_reader():
 
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.json.get("username")
-    password = request.json.get("password")
+    username = request.form.get("username")
+    password = request.form.get("password")
 
     if not (username and password):
         raise InvalidRequest(
-            r"Request should be of the form {username: <username>, password: <password>}",
+            "Request should be of the form {{username: 'username', password: 'password'}}",
         )
 
     reader = guard.authenticate(username, password)
@@ -111,7 +111,7 @@ def follow():
 
     if not (follower_username and reader_username):
         raise InvalidRequest(
-            r"Request should be of the form {follower: <username>, user: <username>}",
+            r"Request should be of the form {{follower: 'username', user: 'username'}}",
         )
     reader = Reader.query.filter_by(username=reader_username).first()
     follower = Reader.query.filter_by(username=follower_username).first()
