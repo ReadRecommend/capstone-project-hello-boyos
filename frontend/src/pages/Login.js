@@ -33,7 +33,9 @@ class Login extends Component {
 			return res.json()
 		}).then(json => {
 			this.setState(json);
-			this.props.handleUser(this.state.username, this.state.access_token);
+			//console.log(this.props.handleUser)
+			//this.props.handleUser(this.state.username, this.state.access_token);
+			this.props.handleUser.bind(this, this.state.username, this.state.access_token);
 		});
 	}
 
