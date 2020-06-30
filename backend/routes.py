@@ -1,9 +1,10 @@
-from flask import abort, jsonify, request
+from flask import jsonify, request
 from flask_cors import cross_origin
 import flask_praetorian
 
 from backend import app, db, guard
 from backend.model.schema import *
+from backend.errors import InvalidRequest, AuthenticationError, ResourceExists
 
 
 @app.route("/")
@@ -41,7 +42,7 @@ def add_reader():
         (Reader.email == reader_data.get("email"))
         | (Reader.username == reader_data.get("username"))
     ).first():
-        return abort(403, "The username or email already exists")
+        raise ResourceExists("The username or email already exists")
 
     new_reader = Reader(
         username=reader_data["username"],
@@ -62,8 +63,7 @@ def login():
     password = request.json.get("password")
 
     if not (username and password):
-        return abort(
-            400,
+        raise InvalidRequest(
             r"Request should be of the form {username: <username>, password: <password>}",
         )
 
@@ -105,13 +105,12 @@ def follow():
 
     # Only the follower can request to follow
     if follower_username != flask_praetorian.current_user().username:
-        return abort(
-            401, "You do not have the correct authorisation to access this resource"
+        raise AuthenticationError(
+            "You do not have the correct authorisation to access this resource"
         )
 
     if not (follower_username and reader_username):
-        return abort(
-            400,
+        raise InvalidRequest(
             r"Request should be of the form {follower: <username>, user: <username>}",
         )
     reader = Reader.query.filter_by(username=reader_username).first()
@@ -150,7 +149,6 @@ def get_reader_collections(username):
     ReaderID = Reader.query.filter(Reader.username == username).first().id
 
     ReaderCollection = Collection.query.filter(Collection.reader_id == ReaderID).all()
-    print(ReaderCollection)
 
     return jsonify(collections_schema.dump(ReaderCollection))
 
