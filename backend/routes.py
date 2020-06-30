@@ -35,7 +35,7 @@ def get_book(isbn):
 # =======================
 
 
-@app.route("/user", methods=["POST"])
+@app.route("/createaccount", methods=["POST"])
 def add_reader():
     reader_data = request.json
     if Reader.query.filter(
