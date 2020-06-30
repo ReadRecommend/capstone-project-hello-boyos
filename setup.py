@@ -98,13 +98,13 @@ user2 = Reader(username="JaneDoe", email="jane.doe@gmail.com", password="pass123
 user3 = Reader(username="SteveLee", email="steve.lee@gmail.com", password="stevelee123")
 
 user1.collections.append(
-    Collection(name="main", books=Book.query.order_by(db.func.random()).limit(5).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
 )
 user2.collections.append(
-    Collection(name="main", books=Book.query.order_by(db.func.random()).limit(2).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(2).all())
 )
 user3.collections.append(
-    Collection(name="main", books=Book.query.order_by(db.func.random()).limit(15).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
 )
 
 user1.follows.append(user2)
