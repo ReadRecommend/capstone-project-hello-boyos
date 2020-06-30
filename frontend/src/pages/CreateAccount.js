@@ -6,6 +6,7 @@ import './Login.css'
 class CreateAccount extends Component {
 	constructor(props) {
 		super(props)
+		
 		this.state = {
 			username: '',
 			email: '',
@@ -57,7 +58,8 @@ class CreateAccount extends Component {
 			}
 			return res.json()
 		}).then(json => {
-			//this.props.handleUser(data.username, json.access_token);
+			// Change route to login
+			return this.props.history.push("/login");
 		});
 	}
 
