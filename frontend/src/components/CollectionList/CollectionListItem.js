@@ -36,10 +36,6 @@ CollectionListItem.propTypes = {
     selectCollection: PropTypes.func.isRequired
 }
 
-const buttonStyle = {
-    padding: '5px'
-}
-
 const linkButton = {
     backgroundcolor: 'transparent',
     border: 'none',

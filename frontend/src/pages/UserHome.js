@@ -10,7 +10,7 @@ class UserHome extends Component {
 
         this.state = {
             collectionList: [],
-            currentCollection: [],
+            currentCollection: {},
             modalShow: false,
             errorGeneralShow: false,
             errorGeneralMessage: "",
