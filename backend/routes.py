@@ -70,8 +70,8 @@ def add_reader():
 
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.form.get("username")
-    password = request.form.get("password")
+    username = request.json.get("username")
+    password = request.json.get("password")
 
     if not (username and password):
         raise InvalidRequest(
