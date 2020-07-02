@@ -10,7 +10,10 @@ const PrivateRoute = ({ component: Component, roles, ...rest }) => (
             return <Component {...props} />
         }
 
-        getUser()
+        fetch("http://localhost:5000/verify", {
+            method: "GET",
+            credentials: "include"
+        }) 
             .then((res) => {
 
                 // An error occurred
@@ -49,12 +52,5 @@ const PrivateRoute = ({ component: Component, roles, ...rest }) => (
         */
     }} />
 )
-
-function getUser() {
-    return fetch("http://localhost:5000/auth", {
-        method: "GET",
-        credentials: "include"
-    }) 
-}
 
 export default PrivateRoute;
