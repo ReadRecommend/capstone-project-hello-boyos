@@ -14,3 +14,5 @@ class Config:
     CORS_HEADERS = "Content-Type"
     JWT_ACCESS_LIFESPAN = os.getenv("JWT_ACCESS_LIFESPAN") or {"minutes": 15}
     JWT_REFRESH_LIFESPAN = os.getenv("JWT_REFRESH_LIFESPAN") or {"days": 7}
+    JWT_COOKIE_NAME = os.getenv("JWT_COOKIE_NAME") or "accessToken"
+    JWT_PLACES = os.getenv("JWT_COOKIE_NAME") or ["cookie", "header"]

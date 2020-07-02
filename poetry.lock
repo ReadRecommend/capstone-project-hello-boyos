@@ -217,20 +217,24 @@ tests = ["flask-sqlalchemy", "pytest", "mock", "marshmallow-sqlalchemy (>=0.13.0
 
 [[package]]
 category = "main"
-description = "Strong, Simple, and Precise security for Flask APIs (using jwt)"
+description = ""
 name = "flask-praetorian"
 optional = false
-python-versions = ">=3.5,<4.0"
+python-versions = "^3.5"
 version = "1.0.0"
 
 [package.dependencies]
-flask = ">=1.0,<2.0"
-flask-buzz = ">=0.1.7,<0.2.0"
-flask-mail = ">=0.9.1,<0.10.0"
-passlib = ">=1.7,<2.0"
-pendulum = ">=2.0,<3.0"
-pyjwt = ">=1.7,<2.0"
+flask = "^1.0"
+flask-buzz = "^0.1.7"
+flask-mail = "^0.9.1"
+passlib = "^1.7"
+pendulum = "^2.0"
+pyjwt = "^1.7"
 
+[package.source]
+reference = "d6dd5de6922e963fb83201daedca81a0686ed43d"
+type = "git"
+url = "https://github.com/dusktreader/flask-praetorian"
 [[package]]
 category = "main"
 description = "Simple framework for creating REST APIs"
@@ -497,6 +501,20 @@ optional = false
 python-versions = "*"
 version = "0.6"
 
+[package.dependencies]
+pylint-plugin-utils = ">=0.2.1"
+
+[[package]]
+category = "main"
+description = "Utilities and helpers for writing Pylint plugins"
+name = "pylint-plugin-utils"
+optional = false
+python-versions = "*"
+version = "0.6"
+
+[package.dependencies]
+pylint = ">=1.7"
+
 [[package]]
 category = "dev"
 description = "Python parsing module"
@@ -696,7 +714,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "6a372b7c9a69177745a514db09083e7bac133e1e878221f6a959bdc96a81bb43"
+content-hash = "33ece4e7e9d81838bed69431a56a1e6feca1d729f9d047ad6fbb6e0aeb7f3d10"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -771,10 +789,7 @@ flask-marshmallow = [
     {file = "flask-marshmallow-0.13.0.tar.gz", hash = "sha256:aefc1f1d96256c430a409f08241bab75ffe97e5d14ac5d1f000764e39bf4873a"},
     {file = "flask_marshmallow-0.13.0-py2.py3-none-any.whl", hash = "sha256:1da1e6454a56a3e15107b987121729f152325bdef23f3df2f9b52bbd074af38e"},
 ]
-flask-praetorian = [
-    {file = "flask-praetorian-1.0.0.tar.gz", hash = "sha256:107086455f57935432700dab2611aecdaf3825421196cf6c8e812700e43b37a3"},
-    {file = "flask_praetorian-1.0.0-py3-none-any.whl", hash = "sha256:292ff803eca223fa0e72571d95c3c93b61798b395c9c9755af7943364a04fc31"},
-]
+flask-praetorian = []
 flask-restful = [
     {file = "Flask-RESTful-0.3.8.tar.gz", hash = "sha256:5ea9a5991abf2cb69b4aac19793faac6c032300505b325687d7c305ffaa76915"},
     {file = "Flask_RESTful-0.3.8-py2.py3-none-any.whl", hash = "sha256:d891118b951921f1cec80cabb4db98ea6058a35e6404788f9e70d5b243813ec2"},
@@ -946,6 +961,10 @@ pylint = [
 ]
 pylint-flask = [
     {file = "pylint-flask-0.6.tar.gz", hash = "sha256:f4d97de2216bf7bfce07c9c08b166e978fe9f2725de2a50a9845a97de7e31517"},
+]
+pylint-plugin-utils = [
+    {file = "pylint-plugin-utils-0.6.tar.gz", hash = "sha256:57625dcca20140f43731311cd8fd879318bf45a8b0fd17020717a8781714a25a"},
+    {file = "pylint_plugin_utils-0.6-py3-none-any.whl", hash = "sha256:2f30510e1c46edf268d3a195b2849bd98a1b9433229bb2ba63b8d776e1fc4d0a"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},

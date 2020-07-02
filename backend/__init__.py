@@ -10,7 +10,7 @@ from backend.config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
-cors = CORS(app)
+cors = CORS(app, supports_credentials=True)
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
