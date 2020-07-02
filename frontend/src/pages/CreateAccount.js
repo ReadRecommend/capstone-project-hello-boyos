@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 
 import "./Login.css";
 
@@ -93,7 +93,7 @@ class CreateAccount extends Component {
                 </Alert>
 
                 <h1>Create Account</h1>
-                <p>This is the page for creating an account.</p>
+                <br></br>
                 <form method="POST" onSubmit={this.handleSubmit}>
                     <input
                         type="text"
@@ -130,6 +130,9 @@ class CreateAccount extends Component {
                         className="btn"
                     />
                 </form>
+                <Button variant="primary" href="/login">
+                    Login
+                </Button>
             </div>
         );
     }

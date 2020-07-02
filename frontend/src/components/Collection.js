@@ -1,17 +1,43 @@
-import React, { Component } from 'react';
-import CollectionItem from './CollectionItem';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import CollectionItem from "./CollectionItem";
+import PropTypes from "prop-types";
 
+/*
+The collection contains collection-items, which themselves contain books to be
+displayed.
+This class deals with displaying those collection items.
+*/
 class Collection extends Component {
+
+    displayCollection = () => {
+        const { currentCollection } = this.props;
+        if (currentCollection !== null && typeof currentCollection.books !== 'undefined') {
+            return currentCollection.books.map((book) => (
+                <CollectionItem
+                    key={book.isbn}
+                    book={book}
+                    removeBook={this.props.removeBook}
+                    addToCollection={this.props.addToCollection}
+                    userCollections={this.props.userCollections}
+                />
+            ))
+        }
+    }
+
     render() {
-        return this.props.currentCollection.map((book) => (
-            <CollectionItem key={book.isbn} book={book} />
-        ));
+        return (
+            <div>
+                {this.displayCollection()}
+            </div>
+        );
     }
 }
 
 Collection.propTypes = {
-    currentCollection: PropTypes.array.isRequired
+    currentCollection: PropTypes.object.isRequired,
+    removeBook: PropTypes.func.isRequired,
+    addToCollection: PropTypes.func.isRequired,
+    userCollections: PropTypes.array.isRequired
 }
 
 export default Collection;
