@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import {Cookies} from 'react-cookie';
-import PropTypes from 'prop-types';
+import { Cookies } from 'react-cookie';
 
 class Logout extends Component {
     componentDidMount() {
@@ -16,8 +15,5 @@ class Logout extends Component {
     }
 }
 
-Logout.propTypes = {
-    handleLogout: PropTypes.func.isRequired
-}
 
 export default Logout;

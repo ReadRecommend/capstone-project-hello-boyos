@@ -34,7 +34,7 @@ class Main extends Component {
                         exact
                         path="/"
                         component={UserHome}
-                        roles={[]}
+                        roles={["user"]}
                     />
                     <PrivateRoute
                         exact
@@ -48,7 +48,7 @@ class Main extends Component {
                         component={CreateAccount}
                         roles={["everyone"]}
                     />
-                    <Route
+                    <PrivateRoute
                         exact
                         path="/logout"
                         component={Logout}
