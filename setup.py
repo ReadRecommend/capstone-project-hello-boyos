@@ -97,16 +97,19 @@ user1 = Reader(
     username="JohnSmith",
     email="john.smith@gmail.com",
     password=guard.hash_password("hunter2"),
+    roles="user",
 )
 user2 = Reader(
     username="JaneDoe",
     email="jane.doe@gmail.com",
     password=guard.hash_password("pass123"),
+    roles="user",
 )
 user3 = Reader(
     username="SteveLee",
     email="steve.lee@gmail.com",
     password=guard.hash_password("stevelee123"),
+    roles="user,admin",
 )
 
 user1.collections.append(
