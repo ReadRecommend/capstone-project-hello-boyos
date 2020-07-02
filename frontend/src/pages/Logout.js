@@ -1,19 +1,11 @@
 import React, { Component } from 'react';
+import {Cookies} from 'react-cookie';
 import PropTypes from 'prop-types';
 
 class Logout extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            username: '',
-            access_token: ''
-        };
-    }
-
     componentDidMount() {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('username');
-        this.props.handleLogout();
+        let cookie = new Cookies();
+        cookie.remove("accessToken");
         this.props.history.push('/');
     }
 

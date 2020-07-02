@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import { Alert, Button } from "react-bootstrap";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import { Alert, Button } from 'react-bootstrap';
+import {Cookies} from 'react-cookie';
+import PropTypes from 'prop-types';
 
 import "./Login.css";
 
@@ -59,7 +60,8 @@ class Login extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.props.handleUser(data.username, json.access_token);
+                let cookie = new Cookies();
+                cookie.set("accessToken", json.access_token, {path: "/"});
                 // Change route to home
                 return this.props.history.push("/");
             })
@@ -113,9 +115,5 @@ class Login extends Component {
         );
     }
 }
-
-Login.propTypes = {
-    handleUser: PropTypes.func.isRequired,
-};
 
 export default Login;

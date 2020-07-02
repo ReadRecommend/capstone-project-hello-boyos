@@ -17,14 +17,14 @@ class Main extends Component {
                     <Navbar.Brand href="/">ReadRecommend</Navbar.Brand>
                     <Nav className="mr-auto"></Nav>
                     <Nav>
-                        <Button
+                        {/*<Button
                             variant="outline-info"
                             href={this.props.accessToken ? "/logout" : "/login"}
                         >
                             {this.props.accessToken
                                 ? "Logout"
                                 : "Login / Signup"}
-                        </Button>
+                            </Button>*/}
                     </Nav>
                 </Navbar>
                 <Switch>
@@ -33,36 +33,26 @@ class Main extends Component {
                     <PrivateRoute
                         exact
                         path="/"
-                        auth={this.props.accessToken}
                         component={UserHome}
-                        username={this.props.username}
+                        roles={[]}
                     />
-                    <Route
+                    <PrivateRoute
                         exact
                         path="/login"
-                        render={(props) => (
-                            <Login
-                                {...props}
-                                handleUser={this.props.handleUser}
-                            />
-                        )}
+                        component={Login}
+                        roles={["everyone"]}
                     />
-                    <Route
+                    <PrivateRoute
                         exact
                         path="/createAccount"
-                        render={(props) => <CreateAccount {...props} />}
+                        component={CreateAccount}
+                        roles={["everyone"]}
                     />
                     <Route
                         exact
                         path="/logout"
-                        render={(props) => (
-                            <Logout
-                                {...props}
-                                username={this.props.username}
-                                accessToken={this.props.accessToken}
-                                handleLogout={this.props.handleLogout}
-                            />
-                        )}
+                        component={Logout}
+                        roles={["everyone"]}
                     />
                     {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}
@@ -71,10 +61,5 @@ class Main extends Component {
         );
     }
 }
-
-Main.propTypes = {
-    handleUser: PropTypes.func.isRequired,
-    handleLogout: PropTypes.func.isRequired,
-};
 
 export default Main;
