@@ -31,6 +31,7 @@ class CollectionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Collection
         include_relationships = True
+
     books = ma.Nested(BookSchema, many=True)
 
 
@@ -50,10 +51,12 @@ class ReaderSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Reader
         include_relationships = True
+        exclude = ("password",)
 
     collections = ma.Nested(CollectionSchema, many=True, only=["id", "name"])
     followers = ma.Nested(SimpleReader, many=True)
     follows = ma.Nested(SimpleReader, many=True)
+    roles = ma.Function(lambda user: user.roles.split(","))
 
 
 reader_schema = ReaderSchema()

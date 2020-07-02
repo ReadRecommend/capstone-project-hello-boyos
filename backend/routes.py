@@ -55,7 +55,10 @@ def add_reader():
         raise ResourceExists("The username or email already exists")
 
     new_reader = Reader(
-        username=username, email=email, password=guard.hash_password(password),
+        username=username,
+        email=email,
+        password=guard.hash_password(password),
+        roles="user",
     )
 
     # Add the new user's Main collection
@@ -134,6 +137,13 @@ def follow():
         db.session.commit()
 
     return jsonify(readers_schema.dump(follower.follows))
+
+
+@app.route("/verify")
+@flask_praetorian.auth_required
+def verify():
+    user = flask_praetorian.current_user()
+    return jsonify(reader_schema.dump(user))
 
 
 # =======================
