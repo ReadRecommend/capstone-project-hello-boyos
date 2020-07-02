@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, Button } from 'react-bootstrap';
 import { Cookies } from 'react-cookie';
-import PropTypes from 'prop-types';
 
 import "./Login.css";
 
@@ -64,7 +63,7 @@ class Login extends Component {
                 let cookie = new Cookies();
                 cookie.set("accessToken", json.access_token, { path: "/" });
                 // Change route to home
-                return this.props.history.push("/");
+                return this.props.history.push("/home");
             })
             .catch((error) => {
                 console.log(error.message);

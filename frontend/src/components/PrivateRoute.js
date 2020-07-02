@@ -1,15 +1,27 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import React, { Component } from "react";
+import { Route, Redirect } from "react-router-dom";
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
-const PrivateRoute = ({ component: Component, roles, ...rest }) => (
-    <Route {...rest} render={props => {
+class PrivateRoute extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: true,
+            haveAccess: false,
+            brokenCookie: false,
+            userInfo: {}
+        };
+    }
 
-        if (roles.includes("everyone")) {
-            return <Component {...props} />
+    componentDidMount() {
+        // If everyone can access this page, no need to check authorisation
+        if (!this.props.roles.includes("everyone")) {
+            this.authorisation(this.props.roles);
         }
+    }
 
+    authorisation = (roles) => {
         fetch("http://localhost:5000/verify", {
             method: "GET",
             credentials: "include"
@@ -24,7 +36,7 @@ const PrivateRoute = ({ component: Component, roles, ...rest }) => (
                 }
 
                 // We are a valid user
-                return res.json
+                return res.json()
 
             })
             .then((json) => {
@@ -34,50 +46,66 @@ const PrivateRoute = ({ component: Component, roles, ...rest }) => (
                 // Check if our role has access to this page
                 let allowedAccess = false;
                 for (const role of user.roles) {
-                    if (this.props.roles.indexOf(role) !== -1) {
+                    if (roles.indexOf(role) !== -1) {
                         allowedAccess = true;
                     }
                 }
 
                 if (allowedAccess === false) {
                     // Not authorised
-                    return <Redirect to={{ pathname: '/login' }} />
+                    this.setState({ loading: false, haveAccess: false, userInfo: user });
                 } else {
                     // Authorised
-                    return <Component {...props} />
+                    this.setState({ loading: false, haveAccess: true, userInfo: user });
                 }
+
+                console.log(this.state.userInfo)
 
             })
             .catch((error) => {
-                // Something wrong with the cookie, logout
-                return <Redirect to={{ pathname: '/logout' }} />
+                console.log(error.message)
+                // Something wrong with the cookie/it's missing, logout
+                this.setState({ loading: false, haveAccess: false, brokenCookie: true });
             });
-
-        /*if (!currentUser) {
-            // not logged in so redirect to login page with the return url
-            return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-        }
-        // check if route is restricted by role
-        if (roles && roles.indexOf(currentUser.role) === -1) {
-            // role not authorised so redirect to home page
-            return <Redirect to={{ pathname: '/'}} />
-        }
-        // authorised so return component
-        return <Component {...props} />
-        */
-    }} />
-)
-
-const fakeAuth = {
-    isAuthenticated: false,
-    authenticate(cb) {
-        fakeAuth.isAuthenticated = true;
-        setTimeout(cb, 100); // fake async
-    },
-    signout(cb) {
-        fakeAuth.isAuthenticated = false;
-        setTimeout(cb, 100);
     }
-};
+
+    render() {
+        const { component: Component, ...rest } = this.props;
+        if (this.props.roles.includes("everyone")) {
+            /* Everyone is allowed on this page so don't do any authentication */
+            return (
+                <Route {...rest} render={props => (
+                    <div>
+                        <Component {...props} />
+                    </div>
+                )}
+                />
+            )
+        }
+        else if (this.state.loading) {
+            // While we are loading the user info, display loading 
+            return <h1>LOADING</h1>;
+        } else if (this.state.brokenCookie) {
+            // Cookie is broken/missing, so logout
+            return <Redirect to="/logout" />
+        }
+        else if (!this.state.haveAccess) {
+            // If we don't have access redirect to 404 page 
+            return <Redirect to="/403" />
+        } else {
+            return (
+                <Route {...rest} render={props => (
+                    <div>
+                        {/* Otherwise we load the page normally*/}
+                        <Component {...props} initialUserInfo={this.state.userInfo} />
+                    </div>
+                )}
+                />
+            )
+        }
+    }
+
+}
+
 
 export default PrivateRoute;

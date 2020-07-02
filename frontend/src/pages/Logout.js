@@ -5,7 +5,7 @@ class Logout extends Component {
     componentDidMount() {
         let cookie = new Cookies();
         cookie.remove("accessToken");
-        this.props.history.push('/');
+        this.props.history.push('/login');
     }
 
     render() {

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Alert, Dropdown, Button } from "react-bootstrap";
+import PropTypes from 'prop-types';
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
@@ -9,8 +10,8 @@ class UserHome extends Component {
         super(props);
 
         this.state = {
-            userId: null,
-            collectionList: [],
+            userInfo: this.props.initialUserInfo,
+            collectionList: this.props.initialUserInfo.collections,
             currentCollection: {},
             modalShow: false,
             libraryModalShow: false,
@@ -23,22 +24,10 @@ class UserHome extends Component {
     }
 
     componentDidMount() {
-        // TODO Check response code and error handle. Also not hardcode url
-        // Fetch the information about the logged in user
-        fetch(`http://localhost:5000/user/${this.props.username}`)
-            .then((res) => {
-                return res.json();
-            })
-            .then((json) => {
-                let collections = json.collections;
-                console.log(collections);
-                this.setState({
-                    collectionList: collections,
-                    userId: json.id,
-                });
-                this.selectCollection(collections[0]["id"]);
-            });
+        // Select the initial collection
+        this.selectCollection(this.state.collectionList[0]["id"]);
 
+        // Get all the books in the database
         fetch("http://localhost:5000/book")
             .then((res) => {
                 return res.json();
@@ -80,7 +69,7 @@ class UserHome extends Component {
 
     // Function that deletes a collection in a user's collection list
     delCollection = (name) => {
-        const data = { reader_id: this.state.userId, name: name };
+        const data = { reader_id: this.state.userInfo.id, name: name };
         console.log(data);
         console.log("AccessToken:" + this.props.accessToken);
 
@@ -104,7 +93,7 @@ class UserHome extends Component {
             })
             .then((json) => {
                 console.log(json);
-                this.setState({ collectionList: json.collections });
+                this.setState({ userInfo: json, collectionList: json.collections });
             })
             .catch((error) => {
                 console.log(error.message);
@@ -117,7 +106,7 @@ class UserHome extends Component {
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
-        const data = { reader_id: this.state.userId, name: name };
+        const data = { reader_id: this.state.userInfo.id, name: name };
         console.log(data);
 
         // We will let the backend do the checking for us
@@ -140,7 +129,7 @@ class UserHome extends Component {
             })
             .then((json) => {
                 console.log(json);
-                this.setState({ collectionList: json.collections });
+                this.setState({ userInfo: json, collectionList: json.collections });
                 this.handleModal();
             })
             .catch((error) => {
@@ -216,7 +205,7 @@ class UserHome extends Component {
     render() {
         return (
             <div className="UserHome">
-                <h3>Welcome {this.props.username} </h3>
+                <h3>Welcome {this.state.userInfo.username} </h3>
                 {/* Alert for general problems */}
                 <Alert
                     show={this.state.errorGeneralShow}
@@ -314,6 +303,7 @@ class UserHome extends Component {
                         {this.state.library &&
                             this.state.library.map((book) => (
                                 <Dropdown.Item
+                                    key={book.isbn}
                                     onClick={() => {
                                         this.setState({
                                             libraryBook: book,
@@ -349,6 +339,10 @@ class UserHome extends Component {
     }
 }
 
+UserHome.propTypes = {
+    initialUserInfo: PropTypes.object.isRequired
+}
+
 const dropdownStyle = {
     maxHeight: "256px",
     overflowY: "scroll",
@@ -357,11 +351,6 @@ const dropdownStyle = {
 const collectionListStyle = {
     border: "3px #ccc solid",
     width: "500px",
-};
-
-const dropDownStyle = {
-    height: "70px",
-    overflowY: "scroll",
 };
 
 export default UserHome;
