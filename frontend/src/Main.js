@@ -43,7 +43,6 @@ class Main extends Component {
                         component={Login}
                         roles={["everyone"]}
                         key="login"
-                        handleLogin={this.props.handleLogin}
                     />
                     <PrivateRoute
                         exact
@@ -58,7 +57,6 @@ class Main extends Component {
                         component={Logout}
                         roles={["everyone"]}
                         key="logout"
-                        handleLogout={this.props.handleLogout}
                     />
                     <Route exact path='/404' key="404">
                         <h1>404 Page not found</h1>
