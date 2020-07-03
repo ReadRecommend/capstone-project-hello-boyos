@@ -74,7 +74,7 @@ class Login extends Component {
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = error.message.message || error.message;
+                const errorMessage = error.message;
                 this.setState({ errorShow: true, errorMessage: errorMessage });
             });
     };

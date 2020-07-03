@@ -77,10 +77,10 @@ class UserHome extends Component {
         fetch("http://localhost:5000/collection", {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json",
-                credentials: "include"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(data),
+            credentials: "include"
         })
             .then((res) => {
                 if (!res.ok) {
@@ -114,9 +114,9 @@ class UserHome extends Component {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                credentials: "include"
             },
             body: JSON.stringify(data),
+            credentials: "include"
         })
             .then((res) => {
                 if (!res.ok) {
@@ -151,12 +151,12 @@ class UserHome extends Component {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                credentials: "include"
             },
             body: JSON.stringify({
                 book_id: isbn,
                 collection_id: this.state.currentCollection.id,
             }),
+            credentials: "include"
         })
             .then((res) => {
                 return res.json();
@@ -187,12 +187,12 @@ class UserHome extends Component {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                credentials: "include"
             },
             body: JSON.stringify({
                 book_id: isbn,
                 collection_id: id,
             }),
+            credentials: "include"
         })
             .then((res) => {
                 return res.json();
