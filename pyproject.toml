@@ -21,8 +21,8 @@ flask-marshmallow = "^0.13.0"
 marshmallow-sqlalchemy = "^0.23.1"
 flask_cors = "^3.0.8"
 pylint-flask = "^0.6"
-flask-praetorian = { git = "https://github.com/dusktreader/flask-praetorian" }
 flask-buzz = "^0.1.15"
+flask-praetorian = {git = "https://github.com/dusktreader/flask-praetorian"}
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

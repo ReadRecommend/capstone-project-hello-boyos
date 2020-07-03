@@ -169,6 +169,11 @@ def add_collection():
     if collection_name == "Main":
         return Response(r"Cannot create or delete a collection called Main", status=403)
 
+    if reader_id != flask_praetorian.current_user().id:
+        raise AuthenticationError(
+            "You can only add/delete your own collections"
+        )
+
     reader = Reader.query.filter_by(id=reader_id).first()
     collection = Collection.query.filter_by(
         reader_id=reader_id, name=collection_name
@@ -212,7 +217,7 @@ def get_collection(collectionID):
     collection = Collection.query.filter_by(id=collectionID).first_or_404()
     return jsonify(collection_schema.dump(collection))
 
-
+# TODO ensure only the user who owns the collection can modify it
 @app.route("/modify_collection", methods=["POST", "DELETE"])
 @flask_praetorian.auth_required
 def modify_collection():

@@ -42,6 +42,7 @@ class PrivateRoute extends Component {
             .then((json) => {
 
                 const user = json;
+                localStorage.setItem("loggedIn", "true");
 
                 // Check if our role has access to this page
                 let allowedAccess = false;

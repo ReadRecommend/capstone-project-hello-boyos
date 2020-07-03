@@ -78,7 +78,7 @@ class UserHome extends Component {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + this.props.accessToken,
+                credentials: "include"
             },
             body: JSON.stringify(data),
         })
@@ -114,7 +114,7 @@ class UserHome extends Component {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + this.props.accessToken,
+                credentials: "include"
             },
             body: JSON.stringify(data),
         })
@@ -151,7 +151,7 @@ class UserHome extends Component {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + this.props.accessToken,
+                credentials: "include"
             },
             body: JSON.stringify({
                 book_id: isbn,
@@ -187,7 +187,7 @@ class UserHome extends Component {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Bearer " + this.props.accessToken,
+                credentials: "include"
             },
             body: JSON.stringify({
                 book_id: isbn,

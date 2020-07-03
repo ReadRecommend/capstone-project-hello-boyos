@@ -59,15 +59,23 @@ class Login extends Component {
                 return res.json();
             })
             .then((json) => {
+
                 // Put our access token in the cookie
                 let cookie = new Cookies();
                 cookie.set("accessToken", json.access_token, { path: "/" });
+
+                // Set logged in to true in localstorage
+                // NOTE this is purely for the nav bar, so a user can change it and it will confuse
+                // the nav bar, but that is it
+                localStorage.setItem("loggedIn", "true");
+
                 // Change route to home
                 return this.props.history.push("/home");
             })
             .catch((error) => {
-                console.log(error.message);
-                this.setState({ errorShow: true, errorMessage: error.message });
+                // An error occurred
+                const errorMessage = error.message.message || error.message;
+                this.setState({ errorShow: true, errorMessage: errorMessage });
             });
     };
 

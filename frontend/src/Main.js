@@ -4,38 +4,31 @@ import { Switch, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import Admin from "./pages/Admin";
 import UserHome from "./pages/UserHome";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
-import { Navbar, Nav, Button } from "react-bootstrap";
 
 class Main extends Component {
     render() {
         return (
             <div>
-                <Navbar bg="dark" variant="dark">
-                    <Navbar.Brand href="/">ReadRecommend</Navbar.Brand>
-                    <Nav className="mr-auto"></Nav>
-                    <Nav>
-                        {/*<Button
-                            variant="outline-info"
-                            href={this.props.accessToken ? "/logout" : "/login"}
-                        >
-                            {this.props.accessToken
-                                ? "Logout"
-                                : "Login / Signup"}
-                            </Button>*/}
-                    </Nav>
-                </Navbar>
                 <Switch>
                     {" "}
                     {/* The Switch decides which component to show based on the current URL.*/}
                     <PrivateRoute
                         exact
+                        path="/"
+                        component={Home}
+                        roles={["user", "admin"]}
+                        key="home"
+                    />
+                    <PrivateRoute
+                        exact
                         path="/home"
                         component={UserHome}
                         roles={["user"]}
-                        key="home"
+                        key="userHome"
                     />
                     <PrivateRoute
                         exact
@@ -50,6 +43,7 @@ class Main extends Component {
                         component={Login}
                         roles={["everyone"]}
                         key="login"
+                        handleLogin={this.props.handleLogin}
                     />
                     <PrivateRoute
                         exact
@@ -64,6 +58,7 @@ class Main extends Component {
                         component={Logout}
                         roles={["everyone"]}
                         key="logout"
+                        handleLogout={this.props.handleLogout}
                     />
                     <Route exact path='/404' key="404">
                         <h1>404 Page not found</h1>
