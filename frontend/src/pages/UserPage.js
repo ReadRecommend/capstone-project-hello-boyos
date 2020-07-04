@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import getUserById from '../fetchFunctions';
+import { getUserById } from '../fetchFunctions';
 import CollectionList from '../components/CollectionList/CollectionList';
 import Collection from '../components/Collection';
 

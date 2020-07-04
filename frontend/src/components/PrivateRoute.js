@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 
+import { verifyUser } from '../fetchFunctions';
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 class PrivateRoute extends Component {
@@ -22,10 +23,7 @@ class PrivateRoute extends Component {
     }
 
     authorisation = (roles) => {
-        fetch("http://localhost:5000/verify", {
-            method: "GET",
-            credentials: "include"
-        })
+        verifyUser()
             .then((res) => {
 
                 // An error occurred
