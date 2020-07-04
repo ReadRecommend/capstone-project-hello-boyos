@@ -70,7 +70,7 @@ class Login extends Component {
                 localStorage.setItem("loggedIn", "true");
 
                 // Change route to home
-                return this.props.history.push("/home");
+                return this.props.history.push("/");
             })
             .catch((error) => {
                 // An error occurred
