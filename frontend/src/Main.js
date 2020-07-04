@@ -58,11 +58,8 @@ class Main extends Component {
                         roles={["everyone"]}
                         key="logout"
                     />
-                    <Route exact path='/404' key="404">
+                    <Route exact path='*' key="404">
                         <h1>404 Page not found</h1>
-                    </Route>
-                    <Route exact path='/403' key="403">
-                        <h1>403 Access Forbidden</h1>
                     </Route>
                     {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}

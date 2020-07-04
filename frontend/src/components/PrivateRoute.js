@@ -81,18 +81,18 @@ class PrivateRoute extends Component {
                     </div>
                 )}
                 />
-            )
+            );
         }
         else if (this.state.loading) {
             // While we are loading the user info, display loading 
             return <h1>LOADING</h1>;
         } else if (this.state.brokenCookie) {
             // Cookie is broken/missing, so logout
-            return <Redirect to="/logout" />
+            return <Redirect to="/logout" />;
         }
         else if (!this.state.haveAccess) {
-            // If we don't have access redirect to 404 page 
-            return <Redirect to="/403" />
+            // If we don't have access display 403
+            return (<h1>403 Forbidden</h1>);
         } else {
             return (
                 <Route {...rest} render={props => (
@@ -102,7 +102,7 @@ class PrivateRoute extends Component {
                     </div>
                 )}
                 />
-            )
+            );
         }
     }
 
