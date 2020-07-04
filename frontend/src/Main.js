@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
+import UserPage from "./pages/UserPage";
 
 class Main extends Component {
     render() {
@@ -43,7 +44,6 @@ class Main extends Component {
                         component={Login}
                         roles={["everyone"]}
                         key="login"
-                        handleLogin={this.props.handleLogin}
                     />
                     <PrivateRoute
                         exact
@@ -58,13 +58,16 @@ class Main extends Component {
                         component={Logout}
                         roles={["everyone"]}
                         key="logout"
-                        handleLogout={this.props.handleLogout}
                     />
-                    <Route exact path='/404' key="404">
+                    <PrivateRoute
+                        exact
+                        path="/user/:userId"
+                        component={UserPage}
+                        roles={["user"]}
+                        key="user"
+                    />
+                    <Route exact path='*' key="404">
                         <h1>404 Page not found</h1>
-                    </Route>
-                    <Route exact path='/403' key="403">
-                        <h1>403 Access Forbidden</h1>
                     </Route>
                     {/* Example route:
             <Route exact path='/signup' component={Signup}></Route> */}
