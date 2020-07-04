@@ -35,9 +35,6 @@ class Collection extends Component {
 
 Collection.propTypes = {
     currentCollection: PropTypes.object.isRequired,
-    removeBook: PropTypes.func.isRequired,
-    addToCollection: PropTypes.func.isRequired,
-    userCollections: PropTypes.array.isRequired
 }
 
 export default Collection;

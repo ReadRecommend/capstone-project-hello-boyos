@@ -91,6 +91,18 @@ def get_reader(username):
     return jsonify(reader_schema.dump(readers))
 
 
+@app.route("/user/id/<id>")
+def get_reader_by_id(id):
+
+    try:
+        id = int(id)
+    except:
+        raise InvalidRequest(r"Id should be an int",)
+
+    readers = Reader.query.filter_by(id=id).first_or_404()
+    return jsonify(reader_schema.dump(readers))
+
+
 @app.route("/user")
 def get_readers():
     readers = Reader.query.all()
@@ -170,9 +182,7 @@ def add_collection():
         return Response(r"Cannot create or delete a collection called Main", status=403)
 
     if reader_id != flask_praetorian.current_user().id:
-        raise AuthenticationError(
-            "You can only add/delete your own collections"
-        )
+        raise AuthenticationError("You can only add/delete your own collections")
 
     reader = Reader.query.filter_by(id=reader_id).first()
     collection = Collection.query.filter_by(
@@ -216,6 +226,7 @@ def get_collection(collectionID):
 
     collection = Collection.query.filter_by(id=collectionID).first_or_404()
     return jsonify(collection_schema.dump(collection))
+
 
 # TODO ensure only the user who owns the collection can modify it
 @app.route("/modify_collection", methods=["POST", "DELETE"])

@@ -323,6 +323,7 @@ class UserHome extends Component {
                         collectionList={this.state.collectionList}
                         delCollection={this.delCollection}
                         selectCollection={this.selectCollection}
+                        editable={true}
                     />
                 </div>
                 <h2>
@@ -332,6 +333,7 @@ class UserHome extends Component {
                         removeBook={this.removeBook}
                         userCollections={this.state.collectionList}
                         addToCollection={this.addToCollection}
+                        editable={true}
                     />
                 </h2>
             </div>

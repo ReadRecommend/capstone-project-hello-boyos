@@ -85,7 +85,7 @@ class PrivateRoute extends Component {
         }
         else if (this.state.loading) {
             // While we are loading the user info, display loading 
-            return <h1>LOADING</h1>;
+            return <h1>LOADING...</h1>;
         } else if (this.state.brokenCookie) {
             // Cookie is broken/missing, so logout
             return <Redirect to="/logout" />;

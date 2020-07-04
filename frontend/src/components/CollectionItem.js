@@ -41,7 +41,7 @@ class CollectionItem extends Component {
 
     addButton = () => {
         console.log("User Collections 1: " + this.props.userCollections)
-        if (this.props.book !== null && typeof this.props.book !== 'undefined') {
+        if (this.props.book !== null && typeof this.props.book !== 'undefined' && this.props.editable === true) {
             return <button onClick={this.handleModal} style={addButton}>+</button>
         }
     }
@@ -52,7 +52,7 @@ class CollectionItem extends Component {
     */
     removeButton = () => {
         const { book } = this.props;
-        if (this !== null && typeof this !== 'undefined') {
+        if (this !== null && typeof this !== 'undefined' && this.props.editable === true) {
             return <button onClick={this.props.removeBook.bind(book, book.isbn)} style={removeButton}>x</button>
         }
     }
@@ -62,17 +62,19 @@ class CollectionItem extends Component {
         return (
             <div style={this.getStyle()}>
 
-                <Modal show={this.state.modalShow}>
-                    <Modal.Header>
-                        <Modal.Title>Add to a Collection</Modal.Title>
-                        <button onClick={() => { this.handleModal() }}>x</button>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {this.displayCollections()}
-                    </Modal.Body>
-                    <Modal.Footer>
-                    </Modal.Footer>
-                </Modal>
+                {this.props.editable === true &&
+                    <Modal show={this.state.modalShow}>
+                        <Modal.Header>
+                            <Modal.Title>Add to a Collection</Modal.Title>
+                            <button onClick={() => { this.handleModal() }}>x</button>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {this.displayCollections()}
+                        </Modal.Body>
+                        <Modal.Footer>
+                        </Modal.Footer>
+                    </Modal>
+                }
 
                 <h1>{this.addButton()}{title + " "}{this.removeButton()}</h1>
                 <img src={cover} alt={title} />
@@ -94,8 +96,6 @@ const addButton = {
 
 CollectionItem.propTypes = {
     book: PropTypes.object.isRequired,
-    removeBook: PropTypes.func.isRequired,
-    addToCollection: PropTypes.func.isRequired,
     userCollections: PropTypes.array.isRequired
 }
 
