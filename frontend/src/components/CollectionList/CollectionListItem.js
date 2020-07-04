@@ -21,7 +21,7 @@ class CollectionListItem extends Component {
                     <button style={linkButton} onClick={this.props.selectCollection.bind(this, id)}>{name}</button>
                     {" "}
                     {/* When the button is pressed, this collection will be removed from the collection list. */}
-                    {name !== "Main" &&
+                    {name !== "Main" && this.props.editable &&
                         <button onClick={this.props.delCollection.bind(this, name)}>X</button>
                     }
                 </p>
@@ -32,7 +32,6 @@ class CollectionListItem extends Component {
 
 CollectionListItem.propTypes = {
     collection: PropTypes.object.isRequired,
-    delCollection: PropTypes.func.isRequired,
     selectCollection: PropTypes.func.isRequired
 }
 

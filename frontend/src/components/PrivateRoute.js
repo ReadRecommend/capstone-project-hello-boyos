@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 
+import { verifyUser } from '../fetchFunctions';
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 class PrivateRoute extends Component {
@@ -22,10 +23,7 @@ class PrivateRoute extends Component {
     }
 
     authorisation = (roles) => {
-        fetch("http://localhost:5000/verify", {
-            method: "GET",
-            credentials: "include"
-        })
+        verifyUser()
             .then((res) => {
 
                 // An error occurred
@@ -85,7 +83,7 @@ class PrivateRoute extends Component {
         }
         else if (this.state.loading) {
             // While we are loading the user info, display loading 
-            return <h1>LOADING</h1>;
+            return <h1>LOADING...</h1>;
         } else if (this.state.brokenCookie) {
             // Cookie is broken/missing, so logout
             return <Redirect to="/logout" />;

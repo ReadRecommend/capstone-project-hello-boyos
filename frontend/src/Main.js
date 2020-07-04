@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
+import UserPage from "./pages/UserPage";
 
 class Main extends Component {
     render() {
@@ -57,6 +58,13 @@ class Main extends Component {
                         component={Logout}
                         roles={["everyone"]}
                         key="logout"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/user/:userId"
+                        component={UserPage}
+                        roles={["user"]}
+                        key="user"
                     />
                     <Route exact path='*' key="404">
                         <h1>404 Page not found</h1>
