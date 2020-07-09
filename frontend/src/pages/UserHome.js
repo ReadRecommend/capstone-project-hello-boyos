@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal, Alert, Dropdown, Button } from "react-bootstrap";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
@@ -77,10 +77,10 @@ class UserHome extends Component {
         fetch("http://localhost:5000/collection", {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-            credentials: "include"
+            credentials: "include",
         })
             .then((res) => {
                 if (!res.ok) {
@@ -93,7 +93,10 @@ class UserHome extends Component {
             })
             .then((json) => {
                 console.log(json);
-                this.setState({ userInfo: json, collectionList: json.collections });
+                this.setState({
+                    userInfo: json,
+                    collectionList: json.collections,
+                });
             })
             .catch((error) => {
                 console.log(error.message);
@@ -116,7 +119,7 @@ class UserHome extends Component {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-            credentials: "include"
+            credentials: "include",
         })
             .then((res) => {
                 if (!res.ok) {
@@ -129,7 +132,10 @@ class UserHome extends Component {
             })
             .then((json) => {
                 console.log(json);
-                this.setState({ userInfo: json, collectionList: json.collections });
+                this.setState({
+                    userInfo: json,
+                    collectionList: json.collections,
+                });
                 this.handleModal();
             })
             .catch((error) => {
@@ -156,7 +162,7 @@ class UserHome extends Component {
                 book_id: isbn,
                 collection_id: this.state.currentCollection.id,
             }),
-            credentials: "include"
+            credentials: "include",
         })
             .then((res) => {
                 return res.json();
@@ -192,7 +198,7 @@ class UserHome extends Component {
                 book_id: isbn,
                 collection_id: id,
             }),
-            credentials: "include"
+            credentials: "include",
         })
             .then((res) => {
                 return res.json();
@@ -342,8 +348,8 @@ class UserHome extends Component {
 }
 
 UserHome.propTypes = {
-    initialUserInfo: PropTypes.object.isRequired
-}
+    initialUserInfo: PropTypes.object.isRequired,
+};
 
 const dropdownStyle = {
     maxHeight: "256px",

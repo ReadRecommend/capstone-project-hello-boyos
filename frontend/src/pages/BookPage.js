@@ -20,7 +20,7 @@ class BookPage extends Component {
         super(props);
         this.state = {
             book: {},
-            user: {},
+            user: null,
             collection: {},
         };
     }
@@ -102,7 +102,6 @@ class BookPage extends Component {
                                 <img
                                     width="30%"
                                     height="30%"
-                                    size={0.2}
                                     className="mr-3"
                                     src={book.cover}
                                     alt={book.title}
@@ -118,12 +117,12 @@ class BookPage extends Component {
                                     </h5>
                                     <p>
                                         {console.log("User: " + this.user)}
-                                        {
+                                        {user ? (
                                             <AddBookModal
                                                 book={book}
                                                 user={user}
                                             />
-                                        }
+                                        ) : null}
                                     </p>
                                     <Tabs defaultActiveKey="summary">
                                         <Tab eventKey="summary" title="Summary">
