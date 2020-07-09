@@ -19,6 +19,7 @@ class Collection extends Component {
                     removeBook={this.props.removeBook}
                     addToCollection={this.props.addToCollection}
                     userCollections={this.props.userCollections}
+                    editable={this.props.editable}
                 />
             ))
         }
