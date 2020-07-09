@@ -6,8 +6,11 @@ export function getUserById(userId) {
 
 export function verifyUser() {
     return fetch(`${apiUrl}/verify`, {
-        credentials: "include"
+        credentials: "include",
     });
 }
 
+export function getBook(bookISBN) {
+    return fetch(`${apiUrl}/book/${bookISBN}`);
+}
 

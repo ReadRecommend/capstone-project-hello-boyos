@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
-
+import BookPage from "./pages/BookPage";
 class Main extends Component {
     render() {
         return (
@@ -66,7 +66,14 @@ class Main extends Component {
                         roles={["user"]}
                         key="user"
                     />
-                    <Route exact path='*' key="404">
+                    <Route
+                        exact
+                        path="/book/:bookISBN"
+                        component={BookPage}
+                        roles={["user"]}
+                        key="bookPage"
+                    />
+                    <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>
                     </Route>
                     {/* Example route:
