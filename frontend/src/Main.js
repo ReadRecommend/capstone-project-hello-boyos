@@ -68,6 +68,7 @@ class Main extends Component {
                         roles={["user"]}
                         key="user"
                     />
+                    {/* TODO: Change these to private routes after auth fix */}
                     <Route
                         exact
                         path="/book/:bookID/reviews"
