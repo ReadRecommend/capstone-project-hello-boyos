@@ -69,15 +69,19 @@ class Main extends Component {
                         key="user"
                     />
                     {/* TODO: Change these to private routes after auth fix */}
-                    <Route
+                    <PrivateRoute
                         exact
                         path="/book/:bookID/reviews"
                         component={Reviews}
+                        roles={["everyone"]}
+                        key="reviews"
                     />
-                    <Route
+                    <PrivateRoute
                         exact
                         path="/book/:bookID/addreview"
                         component={AddReview}
+                        roles={["user"]}
+                        key="addreview"
                     />
                     <Route exact path='*' key="404">
                         <h1>404 Page not found</h1>

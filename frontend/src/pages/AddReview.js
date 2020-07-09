@@ -9,8 +9,7 @@ class AddReview extends Component {
 
 
         this.state = {
-            // TODO: Fix this after auth 
-            // reader_id: "",
+            reader_id: this.props.initialUserInfo.id,
             book_id: this.props.match.params.bookID,
 
             review: "",
@@ -21,6 +20,9 @@ class AddReview extends Component {
         };
     }
 
+    componentDidMount() {
+        console.log(this.props)
+    }
 
     updateReview = (event) => {
         this.setState({ review: event.target.value });
@@ -46,8 +48,7 @@ class AddReview extends Component {
         }
 
         const data = {
-            // TODO: Fix this after auth
-            // reader_id: this.state.reader_id,
+            reader_id: this.state.reader_id,
             book_id: this.state.book_id,
             review: this.state.review,
             score: this.state.score,
@@ -73,7 +74,7 @@ class AddReview extends Component {
                 return res.json();
             })
             .then(() => {
-                return this.props.history.push("/book/${book_id}/reviews");
+                return this.props.history.push("/book/" + this.state.book_id + "/reviews");
             })
             .catch((e) => { });
     }

@@ -39,25 +39,18 @@ def get_review(isbn):
 @app.route("/book/<isbn>/addreview", methods=["POST"])
 def add_review(isbn):
     review_data = request.json
-    # TODO: Fix this after auth
-    # reader_id = review_data.get("reader_id")
+    reader_id = review_data.get("reader_id")
     book_id = review_data.get("book_id")
 
     review = review_data.get("review")
     score = review_data.get("score")
-    # TODO: Fix this after auth
-    # if Review.query.filter(
-    #     (Review.reader_id == reader_id) and (Review.book_id == book_id)
-    # ).first():
-    #     raise ResourceExists("User has already reviewed this book")
+    if Review.query.filter(
+        (Review.reader_id == reader_id) and (Review.book_id == book_id)
+    ).first():
+        raise ResourceExists("User has already reviewed this book")
 
     new_review = Review(
-        # TODO: Fix this after auth
-        # reader_id=reader_id,
-        reader_id=5,
-        book_id=book_id,
-        review=review,
-        score=score,
+        reader_id=reader_id, book_id=book_id, review=review, score=score,
     )
 
     db.session.add(new_review)
