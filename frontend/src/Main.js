@@ -9,6 +9,8 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
+import Reviews from "./pages/Reviews";
+import AddReview from "./pages/AddReview";
 
 class Main extends Component {
     render() {
@@ -65,6 +67,16 @@ class Main extends Component {
                         component={UserPage}
                         roles={["user"]}
                         key="user"
+                    />
+                    <Route
+                        exact
+                        path="/book/:bookID/reviews"
+                        component={Reviews}
+                    />
+                    <Route
+                        exact
+                        path="/book/:bookID/addreview"
+                        component={AddReview}
                     />
                     <Route exact path='*' key="404">
                         <h1>404 Page not found</h1>

@@ -1,5 +1,7 @@
 from backend import db
 from datetime import datetime
+from backend.model.reader import Reader
+from sqlalchemy.ext.associationproxy import association_proxy
 
 
 class Review(db.Model):
@@ -10,6 +12,10 @@ class Review(db.Model):
 
     review = db.Column(db.String)
     score = db.Column(db.Integer)
+
+    reader = association_proxy(
+        "reader", "reader", creator=lambda username: Reader(username=username)
+    )
 
     def __repr__(self):
         return f"<Review(reader_id='{self.reader_id}', book_isbn='{self.book_id}', creation_date='{self.creation_date}', score='{self.score}')>"

@@ -71,3 +71,15 @@ class GenreSchema(ma.SQLAlchemyAutoSchema):
 
 genre_schema = GenreSchema()
 genres_schema = GenreSchema(many=True)
+
+
+class ReviewSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Review
+        include_relationships = True
+
+    reader = ma.Nested(ReaderSchema)
+
+
+review_schema = ReviewSchema()
+reviews_schema = ReviewSchema(many=True)
