@@ -290,7 +290,7 @@ class UserHome extends Component {
                 <Container fluid>
                     <h2>Welcome {this.state.userInfo.username} </h2>
                     <Row>
-                        <Col md="auto">
+                        <Col md="2">
                             <p>
                                 <Button
                                     block
