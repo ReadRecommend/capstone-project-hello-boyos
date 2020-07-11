@@ -40,23 +40,22 @@ class Main extends Component {
                     />
                     <PrivateRoute
                         exact
-                        path="/login"
-                        component={Login}
+                        path="/user/:userId"
+                        component={UserPage}
                         roles={["everyone"]}
-                        key="login"
+                        key="user"
                     />
-                    <PrivateRoute
+                    <Route
                         exact
                         path="/createAccount"
                         component={CreateAccount}
-                        roles={["everyone"]}
                         key="createAccount"
                     />
-                    <PrivateRoute
+                    <Route exact path="/login" component={Login} key="login" />
+                    <Route
                         exact
                         path="/logout"
                         component={Logout}
-                        roles={["everyone"]}
                         key="logout"
                     />
                     <PrivateRoute
