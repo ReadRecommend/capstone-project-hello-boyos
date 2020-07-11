@@ -2,17 +2,7 @@ import React, { Component, useState } from "react";
 import { getBook, addToCollection, verifyUser } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import {
-    Container,
-    Row,
-    Col,
-    Media,
-    Tabs,
-    Tab,
-    Modal,
-    Button,
-    Form,
-} from "react-bootstrap";
+import { Container, Row, Col, Media, Tabs, Tab } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 
 class BookPage extends Component {
@@ -96,7 +86,6 @@ class BookPage extends Component {
                         <br></br>
                     </Row>
                     <Row>
-                        {/* <Col></Col> */}
                         <Col className="justify-content-xl-center">
                             <Media>
                                 <img
@@ -171,7 +160,6 @@ class BookPage extends Component {
                                 </Media.Body>
                             </Media>
                         </Col>
-                        {/* <Col></Col> */}
                     </Row>
                     <br></br>
                 </Container>
