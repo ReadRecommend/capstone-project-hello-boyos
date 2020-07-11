@@ -12,6 +12,7 @@ import UserPage from "./pages/UserPage";
 import Reviews from "./pages/Reviews";
 import AddReview from "./pages/AddReview";
 
+import BookPage from "./pages/BookPage";
 class Main extends Component {
     render() {
         return (
@@ -42,23 +43,22 @@ class Main extends Component {
                     />
                     <PrivateRoute
                         exact
-                        path="/login"
-                        component={Login}
+                        path="/user/:userId"
+                        component={UserPage}
                         roles={["everyone"]}
-                        key="login"
+                        key="user"
                     />
-                    <PrivateRoute
+                    <Route
                         exact
                         path="/createAccount"
                         component={CreateAccount}
-                        roles={["everyone"]}
                         key="createAccount"
                     />
-                    <PrivateRoute
+                    <Route exact path="/login" component={Login} key="login" />
+                    <Route
                         exact
                         path="/logout"
                         component={Logout}
-                        roles={["everyone"]}
                         key="logout"
                     />
                     <PrivateRoute
@@ -68,7 +68,15 @@ class Main extends Component {
                         roles={["user"]}
                         key="user"
                     />
-                    {/* TODO: Change these to private routes after auth fix */}
+                    <PrivateRoute
+                        exact
+                        path="/book/:bookISBN"
+                        component={BookPage}
+                        roles={["everyone"]}
+                        key="bookPage"
+                    />
+
+
                     <PrivateRoute
                         exact
                         path="/book/:bookID/reviews"
@@ -83,7 +91,8 @@ class Main extends Component {
                         roles={["user"]}
                         key="addreview"
                     />
-                    <Route exact path='*' key="404">
+
+                    <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>
                     </Route>
                     {/* Example route:
