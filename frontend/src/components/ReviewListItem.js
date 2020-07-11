@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import StarRatings from "react-star-ratings";
 import PropTypes from "prop-types";
 
 class ReviewListItem extends Component {
@@ -17,20 +18,20 @@ class ReviewListItem extends Component {
     render() {
         return (
             <div>
+                <hr></hr>
 
-                <p>
-                    Score: {this.props.score}
-                </p>
-                <p>
-                    Review <br>
-                    </br>
-                    {this.props.review}
-                </p>
-
-
-                <p>
-                    User: {this.props.reader} Time created: {this.props.creation_date}
-                </p>
+                <h6>{this.props.reader} </h6>
+                <small> {this.props.creation_date}</small>
+                <br></br>
+                <StarRatings
+                    rating={this.props.score}
+                    // starRatedColor="gold"
+                    numberOfStars={5}
+                    starDimension="15px"
+                    name="rating"
+                />
+                <br></br>
+                {this.props.review}
                 <br></br>
             </div>
 

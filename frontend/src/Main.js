@@ -10,7 +10,7 @@ import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
 import Reviews from "./pages/Reviews";
-import AddReview from "./pages/AddReview";
+import AddReview from "./components/AddReview";
 
 import BookPage from "./pages/BookPage";
 class Main extends Component {
@@ -74,22 +74,6 @@ class Main extends Component {
                         component={BookPage}
                         roles={["everyone"]}
                         key="bookPage"
-                    />
-
-
-                    <PrivateRoute
-                        exact
-                        path="/book/:bookID/reviews"
-                        component={Reviews}
-                        roles={["everyone"]}
-                        key="reviews"
-                    />
-                    <PrivateRoute
-                        exact
-                        path="/book/:bookID/addreview"
-                        component={AddReview}
-                        roles={["user"]}
-                        key="addreview"
                     />
 
                     <Route exact path="*" key="404">

@@ -4,6 +4,8 @@ import AddBookModal from "../components/AddBookModal";
 
 import { Container, Row, Col, Media, Tabs, Tab } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
+import ReviewList from "../components/ReviewList";
+import AddReview from "../components/AddReview";
 
 class BookPage extends Component {
     constructor(props) {
@@ -110,6 +112,10 @@ class BookPage extends Component {
                                             {book.n_ratings.toLocaleString()}{" "}
                                             reviews
                                         </small>
+
+                                        <br></br>
+                                        <AddReview bookISBN={this.props.match.params.bookISBN} readerID={this.props.initialUserInfo.id} />
+                                        <ReviewList bookISBN={this.props.match.params.bookISBN} />
                                     </Tab>
                                     <Tab
                                         eventKey="info"
@@ -137,6 +143,8 @@ class BookPage extends Component {
                     </Row>
                     <br></br>
                 </Container>
+
+
             </div>
         );
     }

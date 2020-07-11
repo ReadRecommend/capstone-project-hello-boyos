@@ -1,10 +1,32 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { getReview, addToCollection, verifyUser } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem"
 
 class ReviewList extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            reviewList: [],
+        }
+    }
+
+    componentDidMount() {
+
+        getReview(this.props.bookISBN)
+            .then((res) => {
+                return res.json();
+            })
+            .then((json) => {
+                this.setState({ reviewList: json });
+            });
+
+    }
+
     render() {
-        return this.props.reviewList.map((review) => (
+        return this.state.reviewList.map((review) => (
             <ReviewListItem
                 key={review.id}
                 book_id={review.book_id}

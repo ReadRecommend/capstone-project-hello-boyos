@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { Alert, Button } from "react-bootstrap";
 
@@ -9,8 +8,8 @@ class AddReview extends Component {
 
 
         this.state = {
-            reader_id: this.props.initialUserInfo.id,
-            book_id: this.props.match.params.bookID,
+            reader_id: "",
+            book_id: "",
 
             review: "",
             score: "",
@@ -21,7 +20,8 @@ class AddReview extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props)
+        this.setState({ reader_id: this.props.readerID })
+        this.setState({ book_id: this.props.bookISBN })
     }
 
     updateReview = (event) => {
@@ -91,7 +91,7 @@ class AddReview extends Component {
                     {this.state.errorMessage}
                 </Alert>
 
-                <h1>Write Review</h1>
+                <h5>Write Review</h5>
                 <br></br>
 
                 <form method="POST" onSubmit={this.handleSubmit}>
@@ -105,13 +105,16 @@ class AddReview extends Component {
                     <input
                         type="number"
                         name="score"
+                        placeholder="1 - 5"
                         value={this.state.score}
                         onChange={this.updateScore}
+                        min="1"
+                        max="5"
                     />
+                    <br></br>
                     <input
                         type="submit"
                         value="Add Review"
-                        className="btn"
                     />
 
                 </form>
