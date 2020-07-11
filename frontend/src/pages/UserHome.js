@@ -88,8 +88,6 @@ class UserHome extends Component {
     // Function that deletes a collection in a user's collection list
     delCollection = (name) => {
         const data = { reader_id: this.state.userInfo.id, name: name };
-        console.log(data);
-        console.log("AccessToken:" + this.props.accessToken);
 
         // We will let the backend do the checking for us
         fetch("http://localhost:5000/collection", {
@@ -110,7 +108,6 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                console.log(json);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
@@ -128,7 +125,6 @@ class UserHome extends Component {
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
         const data = { reader_id: this.state.userInfo.id, name: name };
-        console.log(data);
 
         // We will let the backend do the checking for us
         fetch("http://localhost:5000/collection", {
@@ -149,7 +145,6 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                console.log(json);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
@@ -206,7 +201,6 @@ class UserHome extends Component {
     };
 
     addToCollection = (isbn, id) => {
-        console.log("ISBN and Col id are: " + isbn + " and " + id);
         fetch("http://localhost:5000/modify_collection", {
             method: "POST",
             headers: {
@@ -311,33 +305,32 @@ class UserHome extends Component {
                                     Create a collection
                                 </Button>
                             </p>
-                            <p>
-                                <Dropdown>
-                                    <Dropdown.Toggle
-                                        variant="success"
-                                        id="dropdown-basic"
-                                        className="btn-block"
-                                    >
-                                        Add a book to the current collection
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu style={dropdownStyle}>
-                                        {this.state.library &&
-                                            this.state.library.map((book) => (
-                                                <Dropdown.Item
-                                                    key={book.isbn}
-                                                    onClick={() => {
-                                                        this.setState({
-                                                            libraryBook: book,
-                                                        });
-                                                        this.handleLibraryModal();
-                                                    }}
-                                                >
-                                                    {book.title}
-                                                </Dropdown.Item>
-                                            ))}
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </p>
+                            <Dropdown>
+                                <Dropdown.Toggle
+                                    variant="success"
+                                    id="dropdown-basic"
+                                    className="btn-block"
+                                >
+                                    Add a book to the current collection
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={dropdownStyle}>
+                                    {this.state.library &&
+                                        this.state.library.map((book) => (
+                                            <Dropdown.Item
+                                                key={book.isbn}
+                                                onClick={() => {
+                                                    this.setState({
+                                                        libraryBook: book,
+                                                    });
+                                                    this.handleLibraryModal();
+                                                }}
+                                            >
+                                                {book.title}
+                                            </Dropdown.Item>
+                                        ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <br></br>
                             <h4>Your Collections</h4>
                             <CollectionList
                                 collectionList={this.state.collectionList}

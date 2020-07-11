@@ -1,4 +1,4 @@
-import React, { Component, alert } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
 
@@ -15,12 +15,11 @@ class FollowList extends Component {
             >
                 <ListGroup variant="flush">
                     {follows.map((user) => (
-                        <ListGroupItem action>
+                        <ListGroupItem action key={user.id}>
                             <a href={`user/${user.id}`}>{user.username}</a>
-                            <Button
-                                variant="danger"
-                                className="float-right"
-                                size="sm"
+                            {/* Use a span rather than button as buttons cannot be nested */}
+                            <span
+                                className="float-right btn-danger btn btn-sm"
                                 onClick={() => {
                                     this.props.handleUnfollow(
                                         follower.username,
@@ -29,7 +28,7 @@ class FollowList extends Component {
                                 }}
                             >
                                 Unfollow
-                            </Button>
+                            </span>
                         </ListGroupItem>
                     ))}
                 </ListGroup>

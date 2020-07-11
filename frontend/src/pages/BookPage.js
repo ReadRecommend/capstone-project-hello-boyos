@@ -1,8 +1,8 @@
-import React, { Component, useState } from "react";
-import { getBook, addToCollection, verifyUser } from "../fetchFunctions";
+import React, { Component } from "react";
+import { getBook } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import { Container, Row, Col, Media, Tabs, Tab } from "react-bootstrap";
+import { Container, Row, Media, Tabs, Tab } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 
 class BookPage extends Component {
@@ -32,16 +32,9 @@ class BookPage extends Component {
                 this.setState({
                     book: json,
                 });
-            })
-            .catch(() => {
-                this.setState({ userPageInfo: null, loading: false });
             });
     }
-    /**
-     * Sort authors first by role (i.e. if they wrote or if they authored/illustrated)
-     * by checking if the author name contains a role in brackets. Then sort alphabetically
-     * @param {array} authors
-     */
+
     sortAuthors = (authors) => {
         return authors.sort(function (a, b) {
             if (a.includes("(") && !b.includes("(")) {
@@ -83,7 +76,6 @@ class BookPage extends Component {
                                     </small>
                                 </h5>
                                 <p>
-                                    {console.log("User: " + this.user)}
                                     {user ? (
                                         <AddBookModal book={book} user={user} />
                                     ) : null}

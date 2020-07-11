@@ -15,7 +15,6 @@ class CollectionItem extends Component {
 
     displayCollections = () => {
         const { isbn } = this.props.book;
-        console.log("User Collections 2: " + this.props.userCollections);
         return (
             <ListGroup variant="flush">
                 {this.props.userCollections.map((collection) => (
@@ -52,7 +51,6 @@ class CollectionItem extends Component {
     };
 
     addButton = () => {
-        console.log("User Collections 1: " + this.props.userCollections);
         if (
             this.props.book !== null &&
             typeof this.props.book !== "undefined" &&

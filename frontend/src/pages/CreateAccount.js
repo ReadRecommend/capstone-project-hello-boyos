@@ -18,7 +18,6 @@ class CreateAccount extends Component {
 
     updateUsername = (event) => {
         this.setState({ username: event.target.value });
-        console.log(this.state.username);
     };
 
     updateEmail = (event) => {

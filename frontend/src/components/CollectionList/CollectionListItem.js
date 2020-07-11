@@ -5,26 +5,26 @@ class CollectionListItem extends Component {
     render() {
         const { name, id } = this.props.collection;
         return (
-            <ListGroupItem
-                action
-                active={this.props.isSelected}
-                onClick={this.props.selectCollection.bind(this, id)}
-                variant="secondary"
-            >
-                {/* When one clicks the collection, it is selected as the current collection. */}
-                {name}
-                {/* When the button is pressed, this collection will be removed from the collection list. */}
-                {name !== "Main" && this.props.editable && (
-                    <Button
-                        variant="danger"
-                        onClick={this.props.delCollection.bind(this, name)}
-                        className="float-right"
-                        size="sm"
-                    >
-                        X
-                    </Button>
-                )}
-            </ListGroupItem>
+            <>
+                <ListGroupItem
+                    action
+                    active={this.props.isSelected}
+                    onClick={this.props.selectCollection.bind(this, id)}
+                    variant="secondary"
+                >
+                    {/* When one clicks the collection, it is selected as the current collection. */}
+                    {name}
+                    {/* When the button is pressed, this collection will be removed from the collection list. */}
+                    {name !== "Main" && this.props.editable && (
+                        <span
+                            onClick={this.props.delCollection.bind(this, name)}
+                            className="float-right btn-danger btn btn-sm"
+                        >
+                            x
+                        </span>
+                    )}
+                </ListGroupItem>
+            </>
         );
     }
 }

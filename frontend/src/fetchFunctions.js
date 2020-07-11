@@ -15,7 +15,6 @@ export function getBook(bookISBN) {
 }
 
 export function addToCollection(isbn, id) {
-    console.log("ISBN and Col id are: " + isbn + " and " + id);
     fetch("http://localhost:5000/modify_collection", {
         method: "POST",
         headers: {
@@ -31,7 +30,6 @@ export function addToCollection(isbn, id) {
             return res.json();
         })
         .then((json) => {
-            console.log(json);
             return json;
         });
 }

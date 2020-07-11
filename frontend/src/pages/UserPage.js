@@ -34,7 +34,6 @@ class UserPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                console.log(json);
                 this.setState({
                     userPageInfo: json,
                     loading: false,
