@@ -90,55 +90,55 @@ class Login extends Component {
                 >
                     {this.state.errorMessage}
                 </Alert>
-                <form method="POST" onSubmit={this.handleSubmit}>
-                    <Container>
-                        <br></br>
-                        <h1>Login</h1>
-                        <br></br>
-                        <Form>
-                            <Form.Group>
-                                <Form.Label>Username</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Username"
-                                    value={this.state.username}
-                                    onChange={this.updateUsername}
-                                    required
-                                />
-                            </Form.Group>
+                {/* <form> */}
+                <Container>
+                    <br></br>
+                    <h1>Login</h1>
+                    <br></br>
+                    <Form method="POST" onSubmit={this.handleSubmit}>
+                        <Form.Group>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Username"
+                                value={this.state.username}
+                                onChange={this.updateUsername}
+                                required
+                            />
+                        </Form.Group>
 
-                            <Form.Group>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    placeholder="Password"
-                                    value={this.state.password}
-                                    onChange={this.updatePassword}
-                                    required
-                                />
-                            </Form.Group>
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                block
-                                value="Sign In"
-                            >
-                                Sign In
-                            </Button>
-                        </Form>
-                        <br></br>
-                        <p className="text-center"> or </p>
+                        <Form.Group>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                value={this.state.password}
+                                onChange={this.updatePassword}
+                                required
+                            />
+                        </Form.Group>
                         <Button
-                            className="text-centre"
-                            variant="outline-secondary"
-                            href="/createaccount"
+                            variant="primary"
+                            type="submit"
                             block
+                            value="Sign In"
                         >
-                            Create an Account
+                            Sign In
                         </Button>
-                    </Container>
-                </form>
+                    </Form>
+                    <br></br>
+                    <p className="text-center"> or </p>
+                    <Button
+                        className="text-centre"
+                        variant="outline-secondary"
+                        href="/createaccount"
+                        block
+                    >
+                        Create an Account
+                    </Button>
+                </Container>
+                {/* </form> */}
             </div>
         );
     }
