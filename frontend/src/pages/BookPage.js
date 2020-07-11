@@ -99,7 +99,7 @@ class BookPage extends Component {
                                         <h5>Average Rating</h5>
                                         <StarRatings
                                             rating={book.ave_rating}
-                                            // starRatedColor="gold"
+                                            starRatedColor="gold"
                                             numberOfStars={5}
                                             starDimension="30px"
                                             name="rating"
