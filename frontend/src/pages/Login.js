@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Alert, Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
+import { loginContext } from '../LoginContext';
 
 import "./Login.css";
 
@@ -68,6 +69,8 @@ class Login extends Component {
                 // the nav bar, but that is it
                 localStorage.setItem("loggedIn", "true");
 
+                // Perhaps a bit hacky, but the context will be the function that tells the navbar we have logged out
+                this.context();
                 // Change route to home
                 return this.props.history.push("/home");
             })
@@ -143,5 +146,8 @@ class Login extends Component {
         );
     }
 }
+
+// We need this for this.context to work
+Login.contextType = loginContext;
 
 export default Login;
