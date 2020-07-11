@@ -24,3 +24,14 @@ WEEK 04
 I have begun the week continuing to learn React. I am currently looking into what other group members have pushed to git
 with regards to the data base and flask to begin trying to integrate a basic React app with it all so that we can begin
 working on user stories.
+
+WEEK 05
+This week was spent finishing our first sprint. I implemented the create account and login screens which enabled new users
+to create an account and store the new credentials in the database and then log in securely to the site. We performed our demo
+successfully and completed retrospective 1 ready to move onto sprint 2.
+
+WEEK 06
+After struggling to understand React conceptually a little whilst working on the first sprint I have taken some time this week
+to read up on some vanilla JavaScript and React documentation to hopefully make the programming expereince a little nicer whilst
+working on sprint 2. I am currently working on the UI for the search feature. I am implementing a search bar and fetching the results
+from the Flask side to display the correct results to the user.
