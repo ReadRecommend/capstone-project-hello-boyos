@@ -16,10 +16,7 @@ class PrivateRoute extends Component {
     }
 
     componentDidMount() {
-        // If everyone can access this page, no need to check authorisation
-        if (!this.props.roles.includes("everyone")) {
-            this.authorisation(this.props.roles);
-        }
+        this.authorisation(this.props.roles);
     }
 
     authorisation = (roles) => {
@@ -64,27 +61,28 @@ class PrivateRoute extends Component {
             .catch((error) => {
                 console.log(error.message)
                 // Something wrong with the cookie/it's missing, logout
-                this.setState({ loading: false, haveAccess: false, brokenCookie: true });
+                this.setState({ loading: false, haveAccess: false, userInfo: null, brokenCookie: true });
             });
     }
 
     render() {
         const { component: Component, ...rest } = this.props;
-        if (this.props.roles.includes("everyone")) {
-            /* Everyone is allowed on this page so don't do any authentication */
+        if (this.state.loading) {
+            // While we are loading the user info, display loading 
+            return <h1>LOADING...</h1>;
+        } else if (this.props.roles.includes("everyone")) {
+            // Everyone is allowed on this page, so let them through regardless.
+            // If the user was logged in their info will be in initialUserInfo, otherwise, it will be null
             return (
                 <Route {...rest} render={props => (
                     <div>
-                        <Component {...props} />
+                        <Component {...props} initialUserInfo={this.state.userInfo} />
                     </div>
                 )}
                 />
             );
         }
-        else if (this.state.loading) {
-            // While we are loading the user info, display loading 
-            return <h1>LOADING...</h1>;
-        } else if (this.state.brokenCookie) {
+        else if (this.state.brokenCookie) {
             // Cookie is broken/missing, so logout
             return <Redirect to="/logout" />;
         }

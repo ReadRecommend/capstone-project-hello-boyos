@@ -40,13 +40,6 @@ class Main extends Component {
                     />
                     <PrivateRoute
                         exact
-                        path="/login"
-                        component={Login}
-                        roles={["everyone"]}
-                        key="login"
-                    />
-                    <PrivateRoute
-                        exact
                         path="/createAccount"
                         component={CreateAccount}
                         roles={["everyone"]}
@@ -54,17 +47,22 @@ class Main extends Component {
                     />
                     <PrivateRoute
                         exact
-                        path="/logout"
-                        component={Logout}
-                        roles={["everyone"]}
-                        key="logout"
-                    />
-                    <PrivateRoute
-                        exact
                         path="/user/:userId"
                         component={UserPage}
-                        roles={["user"]}
+                        roles={["everyone"]}
                         key="user"
+                    />
+                    <Route
+                        exact
+                        path="/login"
+                        component={Login}
+                        key="login"
+                    />
+                    <Route
+                        exact
+                        path="/logout"
+                        component={Logout}
+                        key="logout"
                     />
                     <Route exact path='*' key="404">
                         <h1>404 Page not found</h1>
