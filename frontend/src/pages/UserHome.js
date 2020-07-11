@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Modal, Alert, Dropdown, Button } from "react-bootstrap";
+import {
+    Modal,
+    Alert,
+    Dropdown,
+    Button,
+    Container,
+    Col,
+    Row,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
@@ -211,7 +219,7 @@ class UserHome extends Component {
     render() {
         return (
             <div className="UserHome">
-                <h3>Welcome {this.state.userInfo.username} </h3>
+                <br></br>
                 {/* Alert for general problems */}
                 <Alert
                     show={this.state.errorGeneralShow}
@@ -237,21 +245,12 @@ class UserHome extends Component {
                         {this.state.errorAddCollectionMessage}
                     </Alert>
 
-                    <Modal.Header>
+                    <Modal.Header closeButton>
                         <Modal.Title>Create New Collection</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <AddCollection addCollection={this.addCollection} />
                     </Modal.Body>
-                    <Modal.Footer>
-                        <button
-                            onClick={() => {
-                                this.handleModal();
-                            }}
-                        >
-                            Close
-                        </button>
-                    </Modal.Footer>
                 </Modal>
 
                 <Modal show={this.state.libraryModalShow}>
@@ -288,60 +287,71 @@ class UserHome extends Component {
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>
                 </Modal>
-                <h4>
-                    Collections
-                    <button
-                        onClick={() => {
-                            this.handleModal();
-                        }}
-                    >
-                        +
-                    </button>
-                </h4>
-
-                <br></br>
-
-                <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Choose a book to add to this collection
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu style={dropdownStyle}>
-                        {this.state.library &&
-                            this.state.library.map((book) => (
-                                <Dropdown.Item
-                                    key={book.isbn}
+                <Container fluid>
+                    <h2>Welcome {this.state.userInfo.username} </h2>
+                    <Row>
+                        <Col md="auto">
+                            <p>
+                                <Button
+                                    block
                                     onClick={() => {
-                                        this.setState({
-                                            libraryBook: book,
-                                        });
-                                        this.handleLibraryModal();
+                                        this.handleModal();
                                     }}
                                 >
-                                    {book.title}
-                                </Dropdown.Item>
-                            ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                                    Create a collection
+                                </Button>
+                            </p>
+                            <p>
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        variant="success"
+                                        id="dropdown-basic"
+                                        className="btn-block"
+                                    >
+                                        Add a book to the current collection
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu style={dropdownStyle}>
+                                        {this.state.library &&
+                                            this.state.library.map((book) => (
+                                                <Dropdown.Item
+                                                    key={book.isbn}
+                                                    onClick={() => {
+                                                        this.setState({
+                                                            libraryBook: book,
+                                                        });
+                                                        this.handleLibraryModal();
+                                                    }}
+                                                >
+                                                    {book.title}
+                                                </Dropdown.Item>
+                                            ))}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </p>
+                            <h4>Your Collections</h4>
+                            <CollectionList
+                                collectionList={this.state.collectionList}
+                                delCollection={this.delCollection}
+                                selectCollection={this.selectCollection}
+                                editable={true}
+                                currentCollection={this.state.currentCollection}
+                            />
+                        </Col>
 
-                <br></br>
-                <div style={collectionListStyle}>
-                    <CollectionList
-                        collectionList={this.state.collectionList}
-                        delCollection={this.delCollection}
-                        selectCollection={this.selectCollection}
-                        editable={true}
-                    />
-                </div>
-                <h2>
-                    <Collection
-                        key={this.state.currentCollection.id}
-                        currentCollection={this.state.currentCollection}
-                        removeBook={this.removeBook}
-                        userCollections={this.state.collectionList}
-                        addToCollection={this.addToCollection}
-                        editable={true}
-                    />
-                </h2>
+                        <Col>
+                            <h1>{this.state.currentCollection.name}</h1>
+                            <br></br>
+                            <Collection
+                                key={this.state.currentCollection.id}
+                                currentCollection={this.state.currentCollection}
+                                removeBook={this.removeBook}
+                                userCollections={this.state.collectionList}
+                                addToCollection={this.addToCollection}
+                                editable={true}
+                            />
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         );
     }
@@ -352,13 +362,8 @@ UserHome.propTypes = {
 };
 
 const dropdownStyle = {
-    maxHeight: "256px",
+    maxHeight: "512px",
     overflowY: "scroll",
-};
-
-const collectionListStyle = {
-    border: "3px #ccc solid",
-    width: "500px",
 };
 
 export default UserHome;

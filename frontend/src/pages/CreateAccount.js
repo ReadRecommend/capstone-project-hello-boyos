@@ -91,64 +91,62 @@ class CreateAccount extends Component {
                 >
                     {this.state.errorMessage}
                 </Alert>
-                <form method="POST" onSubmit={this.handleSubmit}>
-                    <Container>
-                        <br></br>
-                        <h1>Create an Account</h1>
-                        <br></br>
-                        <Form>
-                            <Form.Group>
-                                <Form.Label>Username</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Username"
-                                    value={this.state.username}
-                                    onChange={this.updateUsername}
-                                    required
-                                />
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label>Email</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    name="email"
-                                    placeholder="Email"
-                                    value={this.state.email}
-                                    onChange={this.updateEmail}
-                                />
-                            </Form.Group>
-                            <Form.Group>
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    placeholder="Password"
-                                    value={this.state.password}
-                                    onChange={this.updatePassword}
-                                    required
-                                />
-                            </Form.Group>
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                block
-                                value="Sign In"
-                            >
-                                Sign Up
-                            </Button>
-                        </Form>
-                        <br></br>
-                        <p className="text-center"> or </p>
+                <Container>
+                    <br></br>
+                    <h1>Create an Account</h1>
+                    <br></br>
+                    <Form method="POST" onSubmit={this.handleSubmit}>
+                        <Form.Group>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Username"
+                                value={this.state.username}
+                                onChange={this.updateUsername}
+                                required
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value={this.state.email}
+                                onChange={this.updateEmail}
+                            />
+                        </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                value={this.state.password}
+                                onChange={this.updatePassword}
+                                required
+                            />
+                        </Form.Group>
                         <Button
-                            className="text-centre"
-                            variant="outline-secondary"
-                            href="/login"
+                            variant="primary"
+                            type="submit"
                             block
+                            value="Sign In"
                         >
-                            Login
+                            Sign Up
                         </Button>
-                    </Container>
-                </form>
+                    </Form>
+                    <br></br>
+                    <p className="text-center"> or </p>
+                    <Button
+                        className="text-centre"
+                        variant="outline-secondary"
+                        href="/login"
+                        block
+                    >
+                        Login
+                    </Button>
+                </Container>
             </div>
         );
     }
