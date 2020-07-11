@@ -35,3 +35,55 @@ export function addToCollection(isbn, id) {
             return json;
         });
 }
+
+export function unfollowUser(followerUsername, userUsername) {
+    return fetch("http://localhost:5000/follow", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user: userUsername,
+            follower: followerUsername,
+        }),
+        credentials: "include",
+    })
+        .then((res) => {
+            if (!res.ok) {
+                return res.text().then((text) => {
+                    throw Error(text);
+                });
+            }
+
+            return res.json();
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
+}
+
+export function followUser(followerUsername, userUsername) {
+    return fetch("http://localhost:5000/follow", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            user: userUsername,
+            follower: followerUsername,
+        }),
+        credentials: "include",
+    })
+        .then((res) => {
+            if (!res.ok) {
+                return res.text().then((text) => {
+                    throw Error(text);
+                });
+            }
+
+            return res.json();
+        })
+        .catch((error) => {
+            console.log(error.message);
+        });
+}

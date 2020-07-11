@@ -2,15 +2,8 @@ import React, { Component } from "react";
 import { getUserById } from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
 import Collection from "../components/Collection";
-import {
-    Modal,
-    Alert,
-    Dropdown,
-    Button,
-    Container,
-    Col,
-    Row,
-} from "react-bootstrap";
+import { Button, Container, Col, Row } from "react-bootstrap";
+import { unfollowUser, followUser } from "../fetchFunctions";
 
 class UserPage extends Component {
     constructor(props) {
@@ -21,6 +14,8 @@ class UserPage extends Component {
             userPageInfo: {},
             collectionList: [],
             currentCollection: {},
+            following: false,
+            currentUser: null,
         };
     }
 
@@ -48,6 +43,16 @@ class UserPage extends Component {
 
                 // Select the initial collection
                 this.selectCollection(this.state.collectionList[0]["id"]);
+                if (this.props.initialUserInfo) {
+                    this.setState({ currentUser: this.props.initialUserInfo });
+                    if (
+                        this.state.userPageInfo.followers.find(
+                            (o) => o.id === this.state.currentUser.id
+                        )
+                    ) {
+                        this.setState({ following: true });
+                    }
+                }
             })
             .catch((error) => {
                 this.setState({ userPageInfo: null, loading: false });
@@ -69,6 +74,22 @@ class UserPage extends Component {
             });
     };
 
+    handleUnfollow = (followerUsername, userUsername) => {
+        unfollowUser(followerUsername, userUsername).then((user) => {
+            if (user) {
+                this.setState({ following: false, currentUser: user });
+            }
+        });
+    };
+
+    handleFollow = (followerUsername, userUsername) => {
+        followUser(followerUsername, userUsername).then((user) => {
+            if (user) {
+                this.setState({ following: true, currentUser: user });
+            }
+        });
+    };
+
     render() {
         if (this.state.loading) {
             // Still performing the fetch
@@ -84,6 +105,41 @@ class UserPage extends Component {
                         <h2>{user.username}'s Profile</h2>
                         <Row>
                             <Col md="2">
+                                {!this.state.following &&
+                                    this.state.currentUser && (
+                                        <p>
+                                            <Button
+                                                block
+                                                variant="info"
+                                                onClick={() => {
+                                                    this.handleFollow(
+                                                        this.state.currentUser
+                                                            .username,
+                                                        user.username
+                                                    );
+                                                }}
+                                            >
+                                                Follow
+                                            </Button>
+                                        </p>
+                                    )}
+                                {this.state.following && (
+                                    <p>
+                                        <Button
+                                            block
+                                            variant="info"
+                                            onClick={() => {
+                                                this.handleUnfollow(
+                                                    this.state.currentUser
+                                                        .username,
+                                                    user.username
+                                                );
+                                            }}
+                                        >
+                                            Unfollow
+                                        </Button>
+                                    </p>
+                                )}
                                 <h4>Collections</h4>
                                 <CollectionList
                                     collectionList={user.collections}

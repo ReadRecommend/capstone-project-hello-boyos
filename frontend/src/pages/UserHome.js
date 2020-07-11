@@ -12,6 +12,8 @@ import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
+import FollowList from "../components/FollowList";
+import { unfollowUser } from "../fetchFunctions";
 
 class UserHome extends Component {
     constructor(props) {
@@ -74,6 +76,14 @@ class UserHome extends Component {
             errorAddCollectionMessage: "",
         });
     }
+
+    handleUnfollow = (followerUsername, userUsername) => {
+        unfollowUser(followerUsername, userUsername).then((user) => {
+            if (user) {
+                this.setState({ userInfo: user });
+            }
+        });
+    };
 
     // Function that deletes a collection in a user's collection list
     delCollection = (name) => {
@@ -335,6 +345,12 @@ class UserHome extends Component {
                                 selectCollection={this.selectCollection}
                                 editable={true}
                                 currentCollection={this.state.currentCollection}
+                            />
+                            <br></br>
+                            <h4>Following</h4>
+                            <FollowList
+                                user={this.state.userInfo}
+                                handleUnfollow={this.handleUnfollow}
                             />
                         </Col>
 
