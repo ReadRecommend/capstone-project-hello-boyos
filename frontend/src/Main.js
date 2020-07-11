@@ -65,11 +65,11 @@ class Main extends Component {
                         roles={["user"]}
                         key="user"
                     />
-                    <Route
+                    <PrivateRoute
                         exact
                         path="/book/:bookISBN"
                         component={BookPage}
-                        roles={["user"]}
+                        roles={["everyone"]}
                         key="bookPage"
                     />
                     <Route exact path="*" key="404">
