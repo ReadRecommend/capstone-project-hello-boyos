@@ -54,7 +54,21 @@ def new_book():
         language=language,
     )
 
-    # TODO Add genres/authors
+    # Add genre to the database
+    for genreName in set(genres):
+            if (existingGenre := Genre.query.filter_by(name=genreName).first()) :
+                newBook.genres.append(existingGenre)
+            else:
+                newGenre = Genre(name=genreName)
+                newBook.genres.append(newGenre)
+
+    # Add author to the database
+    for authorName in set(authors):
+        if (existingAuthor := Author.query.filter_by(name=authorName).first()) :
+            newBook.authors.append(existingAuthor)
+        else:
+            newAuthor = Author(name=authorName)
+            newBook.authors.append(newAuthor)
 
     # Add to db
     db.session.add(newBook)

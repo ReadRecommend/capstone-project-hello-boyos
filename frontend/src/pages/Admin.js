@@ -1,29 +1,58 @@
 import React, { Component } from 'react';
-import { Button, Form, Container } from "react-bootstrap";
+import { Alert, Button, Form, Container } from "react-bootstrap";
 import { addBook } from '../fetchFunctions';
+import { WithContext as ReactTags } from 'react-tag-input';
+
+import './AdminAddBook.css'
 
 class Admin extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            isbn: '',
-            title: '',
-            authors: '',
-            genres: '',
-            publisher: '',
+            isbn: "",
+            title: "",
+            authors: [],
+            genres: [],
+            publisher: "",
             publicationDate: -1,
-            summary: '',
-            cover: '',
-            language: ''
+            summary: "",
+            cover: "",
+            language: "",
+            errorShow: false,
+            errorMessage: ""
         }
     }
 
     onSubmit = (e) => {
 
         e.preventDefault();
-        const bookData = this.state;
-        console.log(bookData);
+
+        // Transform authors tags into array
+        const originalAuthors = this.state.authors;
+        let authorsList = [];
+        for (const authorObject of originalAuthors) {
+            authorsList.push(authorObject.text);
+        }
+
+        // Transform genres tags into array
+        const originalGenres = this.state.genres;
+        let genresList = [];
+        for (const genreObject of originalGenres) {
+            genresList.push(genreObject.text);
+        }
+
+        // Prepare the info for the fetch
+        let bookData = {};
+        bookData.isbn = this.state.isbn;
+        bookData.title = this.state.title;
+        bookData.authors = authorsList;
+        bookData.genres = genresList;
+        bookData.publisher = this.state.publisher;
+        bookData.publicationDate = this.state.publicationDate;
+        bookData.summary = this.state.summary;
+        bookData.cover = this.state.cover;
+        bookData.language = this.state.language;
 
         addBook(bookData)
             .then((res) => {
@@ -38,7 +67,8 @@ class Admin extends Component {
             })
             .catch((error) => {
                 // An error occurred
-                alert(error.message)
+                const errorMessage = JSON.parse(error.message).message;
+                this.setState({ errorShow: true, errorMessage: errorMessage });
             });
 
 
@@ -48,17 +78,44 @@ class Admin extends Component {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    onAuthorChange(changedAuthors) {
-        this.setState({ authors: changedAuthors });
+    onAuthorAdd = (author) => {
+        this.setState({ authors: [...this.state.authors, author] });
+    }
+    
+    onAuthorDelete = (i) => {
+        this.setState({
+            authors: this.state.authors.filter((author, index) => index !== i),
+        });
     }
 
-    onGenreChange(changedGenres) {
-        this.setState({ genres: changedGenres });
+    onGenreAdd = (genre) => {
+        this.setState({ genres: [...this.state.genres, genre] });
+    }
+
+    onGenreDelete = (i) => {
+        this.setState({
+            genres: this.state.genres.filter((genre, index) => index !== i),
+        });
+    }
+
+    // Function that makes the error not show
+    handleError() {
+        this.setState({ errorShow: false, errorMessage: "" });
     }
 
     render() {
         return (
             <Container>
+                {/* Alert for general problems */}
+                <Alert
+                    show={this.state.errorShow}
+                    onClose={() => this.handleError()}
+                    variant="danger"
+                    dismissible
+                >
+                    {this.state.errorMessage}
+                </Alert>
+
                 <h1>Add a book</h1>
                 <Form method="POST" onSubmit={this.onSubmit}>
                     <Form.Group>
@@ -87,25 +144,25 @@ class Admin extends Component {
 
                     <Form.Group>
                         <Form.Label>AUTHOR/S</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="authors"
-                            placeholder="Authors"
-                            value={this.state.authors}
-                            onChange={this.onChange}
-                            required
+                        <ReactTags 
+                            tags={this.state.authors}
+                            handleAddition={this.onAuthorAdd}
+                            handleDelete={this.onAuthorDelete}
+                            allowDragDrop={false}
+                            autofocus={false}
+                            placeholder={"Add new Author"}
                         />
                     </Form.Group>
 
                     <Form.Group>
                         <Form.Label>GENRE/S</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="genres"
-                            placeholder="Genres"
-                            value={this.state.genres}
-                            onChange={this.onChange}
-                            required
+                        <ReactTags 
+                            tags={this.state.genres}
+                            handleAddition={this.onGenreAdd}
+                            handleDelete={this.onGenreDelete}
+                            allowDragDrop={false}
+                            autofocus={false}
+                            placeholder={"Add new Genre"}
                         />
                     </Form.Group>
 
@@ -117,7 +174,6 @@ class Admin extends Component {
                             value={this.state.publisher}
                             onChange={this.onChange}
                             placeholder="Publisher"
-                            required
                         />
                     </Form.Group>
 
@@ -129,7 +185,6 @@ class Admin extends Component {
                             value={this.state.publicationDate}
                             onChange={this.onChange}
                             placeholder="Publication Date"
-                            required
                         />
                     </Form.Group>
 
@@ -143,7 +198,6 @@ class Admin extends Component {
                             cols="100"
                             rows="10"
                             placeholder="Summary"
-                            required
                         />
                     </Form.Group>
 
@@ -155,7 +209,6 @@ class Admin extends Component {
                             value={this.state.cover}
                             onChange={this.onChange}
                             placeholder="http(s)//..."
-                            required
                         />
                     </Form.Group>
 
@@ -167,7 +220,6 @@ class Admin extends Component {
                             value={this.state.language}
                             onChange={this.onChange}
                             placeholder="Language"
-                            required
                         />
                     </Form.Group>
 
@@ -184,18 +236,5 @@ class Admin extends Component {
         );
     }
 }
-
-/*
-isbn=book_data.get("isbn")
-title=book_data.get("title"),
-publisher=book_data.get("publisher"),
-publication_date=book_data.get("publication_year"),
-summary=book_data.get("description"),
-cover=book_data.get("image_url"),
-n_ratings=book_data.get("n_reviews"),
-ave_rating=book_data.get("rating"),
-language=book_data.get("language"),
-*/
-
 
 export default Admin;
