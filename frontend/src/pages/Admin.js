@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { Alert, Button, Form, Container } from "react-bootstrap";
-import { addBook } from '../fetchFunctions';
-import { WithContext as ReactTags } from 'react-tag-input';
-
-import './AdminAddBook.css'
+import { addBook } from "../fetchFunctions";
+import { WithContext as ReactTags } from "react-tag-input";
+import Datetime from "react-datetime";
+import "./AdminAddBook.css";
+import "./YearPicker.css";
 
 class Admin extends Component {
     constructor(props) {
@@ -20,12 +21,11 @@ class Admin extends Component {
             cover: "",
             language: "",
             errorShow: false,
-            errorMessage: ""
-        }
+            errorMessage: "",
+        };
     }
 
     onSubmit = (e) => {
-
         e.preventDefault();
 
         // Transform authors tags into array
@@ -70,33 +70,31 @@ class Admin extends Component {
                 const errorMessage = JSON.parse(error.message).message;
                 this.setState({ errorShow: true, errorMessage: errorMessage });
             });
-
-
-    }
+    };
 
     onChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
-    }
+    };
 
     onAuthorAdd = (author) => {
         this.setState({ authors: [...this.state.authors, author] });
-    }
-    
+    };
+
     onAuthorDelete = (i) => {
         this.setState({
             authors: this.state.authors.filter((author, index) => index !== i),
         });
-    }
+    };
 
     onGenreAdd = (genre) => {
         this.setState({ genres: [...this.state.genres, genre] });
-    }
+    };
 
     onGenreDelete = (i) => {
         this.setState({
             genres: this.state.genres.filter((genre, index) => index !== i),
         });
-    }
+    };
 
     // Function that makes the error not show
     handleError() {
@@ -144,25 +142,33 @@ class Admin extends Component {
 
                     <Form.Group>
                         <Form.Label>AUTHOR/S</Form.Label>
-                        <ReactTags 
+                        <ReactTags
                             tags={this.state.authors}
                             handleAddition={this.onAuthorAdd}
                             handleDelete={this.onAuthorDelete}
                             allowDragDrop={false}
                             autofocus={false}
                             placeholder={"Add new Author"}
+                            inputFieldPosition="top"
+                            classNames={{
+                                tagInputField: "form-control",
+                            }}
                         />
                     </Form.Group>
 
                     <Form.Group>
                         <Form.Label>GENRE/S</Form.Label>
-                        <ReactTags 
+                        <ReactTags
                             tags={this.state.genres}
                             handleAddition={this.onGenreAdd}
                             handleDelete={this.onGenreDelete}
                             allowDragDrop={false}
                             autofocus={false}
                             placeholder={"Add new Genre"}
+                            inputFieldPosition="top"
+                            classNames={{
+                                tagInputField: "form-control",
+                            }}
                         />
                     </Form.Group>
 
@@ -178,13 +184,17 @@ class Admin extends Component {
                     </Form.Group>
 
                     <Form.Group>
-                        <Form.Label>PUBLICATION DATE (FORMAT: TODO)</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="publicationDate"
-                            value={this.state.publicationDate}
-                            onChange={this.onChange}
-                            placeholder="Publication Date"
+                        <Form.Label>PUBLICATION DATE</Form.Label>
+                        <Datetime
+                            dateFormat="YYYY"
+                            isValidDate={(current) => {
+                                return current.isBefore(Datetime.moment());
+                            }}
+                            onChange={(date) => {
+                                this.setState({
+                                    publicationDate: date.format("YYYY"),
+                                });
+                            }}
                         />
                     </Form.Group>
 
@@ -231,7 +241,7 @@ class Admin extends Component {
                     >
                         Submit
                     </Button>
-                </Form >
+                </Form>
             </Container>
         );
     }
