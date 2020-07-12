@@ -94,7 +94,7 @@ class UserPage extends Component {
             // Still performing the fetch
             return <h1>LOADING USER PAGE...</h1>;
         }
-        if (this.state.userPageInfo) {
+        if (this.state.userPageInfo && !this.state.userPageInfo.roles.includes("admin")) {
             // Found a valid user
             const user = this.state.userPageInfo;
             return (
@@ -168,7 +168,7 @@ class UserPage extends Component {
                 </div>
             );
         } else {
-            // Didn't find a valid user
+            // Didn't find a valid user, or the user is an admin who shouldn't have a page
             return <h1>404 User not found</h1>;
         }
     }

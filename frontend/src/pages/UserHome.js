@@ -34,6 +34,11 @@ class UserHome extends Component {
     }
 
     componentDidMount() {
+        // If we are admin we shouldn't have a user page
+        if (this.props.initialUserInfo.roles.includes("admin")) {
+            return this.props.history.push("/admin");
+        }
+
         // Select the initial collection
         this.selectCollection(this.state.collectionList[0]["id"]);
 
