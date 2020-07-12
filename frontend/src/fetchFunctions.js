@@ -15,14 +15,14 @@ export function getBook(bookISBN) {
 }
 
 export function addBook(bookDetails) {
-    return fetch(`${apiUrl}/bookadd`, {
+    return fetch(`${apiUrl}/book`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(bookDetails),
         credentials: "include",
-    })
+    });
 }
 
 export function addToCollection(isbn, id) {

@@ -18,7 +18,8 @@ def home():
 # =======================
 
 
-@app.route("/bookadd", methods=["POST"])
+@app.route("/book", methods=["POST"])
+@flask_praetorian.roles_required("admin")
 def new_book():
     bookData = request.json
     isbn = bookData.get("isbn")
@@ -56,11 +57,11 @@ def new_book():
 
     # Add genre to the database
     for genreName in set(genres):
-            if (existingGenre := Genre.query.filter_by(name=genreName).first()) :
-                newBook.genres.append(existingGenre)
-            else:
-                newGenre = Genre(name=genreName)
-                newBook.genres.append(newGenre)
+        if (existingGenre := Genre.query.filter_by(name=genreName).first()) :
+            newBook.genres.append(existingGenre)
+        else:
+            newGenre = Genre(name=genreName)
+            newBook.genres.append(newGenre)
 
     # Add author to the database
     for authorName in set(authors):
@@ -321,17 +322,6 @@ def modify_collection():
         db.session.commit()
 
     return jsonify(collection_schema.dump(collection))
-
-
-# TODO delete this, handled by /user/username
-@app.route("/user/<username>/collections")
-def get_reader_collections(username):
-
-    reader = Reader.query.filter(Reader.username == username).first().id
-
-    ReaderCollection = Collection.query.filter(Collection.reader_id == ReaderID).all()
-
-    return jsonify(collections_schema.dump(ReaderCollection))
 
 
 # =======================
