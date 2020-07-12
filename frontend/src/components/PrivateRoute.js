@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
-
+import { Spinner } from "react-bootstrap";
 import { verifyUser } from "../fetchFunctions";
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
@@ -76,7 +76,21 @@ class PrivateRoute extends Component {
         const { component: Component, ...rest } = this.props;
         if (this.state.loading) {
             // While we are loading the user info, display loading
-            return <h1>LOADING...</h1>;
+            return (
+                <>
+                    {/* <Container> */}
+                    <Spinner
+                        animation="border"
+                        style={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            transform: "translate(-50%, -50%)",
+                        }}
+                    />
+                    {/* </Container> */}
+                </>
+            );
         } else if (this.props.roles.includes("everyone")) {
             // Everyone is allowed on this page, so let them through regardless.
             // If the user was logged in their info will be in initialUserInfo, otherwise, it will be null

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { getUserById } from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
 import Collection from "../components/Collection";
-import { Button, Container, Col, Row } from "react-bootstrap";
+import { Button, Container, Col, Row, Spinner } from "react-bootstrap";
 import { unfollowUser, followUser } from "../fetchFunctions";
 
 class UserPage extends Component {
@@ -92,7 +92,17 @@ class UserPage extends Component {
     render() {
         if (this.state.loading) {
             // Still performing the fetch
-            return <h1>LOADING USER PAGE...</h1>;
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                    }}
+                />
+            );
         }
         if (this.state.userPageInfo) {
             // Found a valid user
