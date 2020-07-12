@@ -10,6 +10,7 @@ import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
 import BookPage from "./pages/BookPage";
+import Search from "./pages/Search"
 class Main extends Component {
     render() {
         return (
@@ -71,6 +72,13 @@ class Main extends Component {
                         component={BookPage}
                         roles={["everyone"]}
                         key="bookPage"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/search"
+                        component={Search}
+                        roles={["user"]}
+                        key="search"
                     />
                     <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>

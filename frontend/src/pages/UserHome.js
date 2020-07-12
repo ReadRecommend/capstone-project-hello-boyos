@@ -305,6 +305,7 @@ class UserHome extends Component {
                                     Create a collection
                                 </Button>
                                 <Button
+                                    href="/search"
                                     block
                                 >
                                     Search
