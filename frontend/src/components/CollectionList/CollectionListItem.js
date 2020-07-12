@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { ListGroupItem, Button } from "react-bootstrap";
+import { ListGroupItem } from "react-bootstrap";
 class CollectionListItem extends Component {
     render() {
         const { name, id } = this.props.collection;

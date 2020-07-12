@@ -84,7 +84,10 @@ class AddBookModal extends Component {
                             {user.collections &&
                                 user.collections.map((collection) => {
                                     return (
-                                        <option value={collection.id}>
+                                        <option
+                                            value={collection.id}
+                                            key={collection.id}
+                                        >
                                             {collection.name}
                                         </option>
                                     );
