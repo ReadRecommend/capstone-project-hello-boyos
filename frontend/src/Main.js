@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
-
+import BookPage from "./pages/BookPage";
 class Main extends Component {
     render() {
         return (
@@ -40,23 +40,22 @@ class Main extends Component {
                     />
                     <PrivateRoute
                         exact
-                        path="/login"
-                        component={Login}
+                        path="/user/:userId"
+                        component={UserPage}
                         roles={["everyone"]}
-                        key="login"
+                        key="user"
                     />
-                    <PrivateRoute
+                    <Route
                         exact
                         path="/createAccount"
                         component={CreateAccount}
-                        roles={["everyone"]}
                         key="createAccount"
                     />
-                    <PrivateRoute
+                    <Route exact path="/login" component={Login} key="login" />
+                    <Route
                         exact
                         path="/logout"
                         component={Logout}
-                        roles={["everyone"]}
                         key="logout"
                     />
                     <PrivateRoute
@@ -66,7 +65,14 @@ class Main extends Component {
                         roles={["user", "admin"]}
                         key="user"
                     />
-                    <Route exact path='*' key="404">
+                    <PrivateRoute
+                        exact
+                        path="/book/:bookISBN"
+                        component={BookPage}
+                        roles={["everyone"]}
+                        key="bookPage"
+                    />
+                    <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>
                     </Route>
                     {/* Example route:

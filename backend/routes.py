@@ -148,7 +148,14 @@ def follow():
         db.session.add(reader)
         db.session.commit()
 
-    return jsonify(readers_schema.dump(follower.follows))
+    # Delete the follower relationship if it does not exist
+    if request.method == "DELETE" and follower in reader.followers:
+        print(f"Deleting {follower.username} from following {reader.username}")
+        reader.followers.remove(follower)
+        db.session.add(reader)
+        db.session.commit()
+
+    return jsonify(reader_schema.dump(follower))
 
 
 @app.route("/verify")

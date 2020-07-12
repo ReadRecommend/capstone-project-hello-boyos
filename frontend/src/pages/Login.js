@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import { Alert, Button } from 'react-bootstrap';
-import { Cookies } from 'react-cookie';
+import React, { Component } from "react";
+import { Alert, Button, Form, Container } from "react-bootstrap";
+import { Cookies } from "react-cookie";
+import { loginContext } from '../LoginContext';
 
 import "./Login.css";
 
@@ -59,7 +60,6 @@ class Login extends Component {
                 return res.json();
             })
             .then((json) => {
-
                 // Put our access token in the cookie
                 let cookie = new Cookies();
                 cookie.set("accessToken", json.access_token, { path: "/" });
@@ -69,12 +69,14 @@ class Login extends Component {
                 // the nav bar, but that is it
                 localStorage.setItem("loggedIn", "true");
 
+                // Perhaps a bit hacky, but the context will be the function that tells the navbar we have logged out
+                this.context();
                 // Change route to home
                 return this.props.history.push("/");
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = error.message;
+                const errorMessage = JSON.parse(error.message).message;
                 this.setState({ errorShow: true, errorMessage: errorMessage });
             });
     };
@@ -91,37 +93,61 @@ class Login extends Component {
                 >
                     {this.state.errorMessage}
                 </Alert>
+                {/* <form> */}
+                <Container>
+                    <br></br>
+                    <h1>Login</h1>
+                    <br></br>
+                    <Form method="POST" onSubmit={this.handleSubmit}>
+                        <Form.Group>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Username"
+                                value={this.state.username}
+                                onChange={this.updateUsername}
+                                required
+                            />
+                        </Form.Group>
 
-                <h1>Login</h1>
-                <br></br>
-                <div>
-                    <form method="POST" onSubmit={this.handleSubmit}>
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="Username"
-                            value={this.state.username}
-                            onChange={this.updateUsername}
-                            required
-                        />
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            value={this.state.password}
-                            onChange={this.updatePassword}
-                            required
-                        />
-                        <input type="submit" value="Sign In" className="btn" />
-                    </form>
-                </div>
-
-                <Button variant="primary" href="/createaccount">
-                    Create an Account
-                </Button>
+                        <Form.Group>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                type="password"
+                                name="password"
+                                placeholder="Password"
+                                value={this.state.password}
+                                onChange={this.updatePassword}
+                                required
+                            />
+                        </Form.Group>
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            block
+                            value="Sign In"
+                        >
+                            Sign In
+                        </Button>
+                    </Form>
+                    <br></br>
+                    <p className="text-center"> or </p>
+                    <Button
+                        className="text-centre"
+                        variant="outline-secondary"
+                        href="/createaccount"
+                        block
+                    >
+                        Create an Account
+                    </Button>
+                </Container>
+                {/* </form> */}
             </div>
         );
     }
 }
+
+// We need this for this.context to work
+Login.contextType = loginContext;
 
 export default Login;

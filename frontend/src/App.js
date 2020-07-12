@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Main from './Main'
-import { Navbar, Nav, Button } from "react-bootstrap";
+import { Navbar, Nav, Button } from 'react-bootstrap';
+import { loginContext } from './LoginContext';
 
 import './App.css';
+
 
 class App extends Component {
     constructor(props) {
@@ -11,6 +13,11 @@ class App extends Component {
         this.state = {
             loggedIn: localStorage.getItem("loggedIn")
         };
+    }
+
+    // We need to call this function to rerender the navbar properly
+    updateLogin = () => {
+        this.setState({ loggedIn: localStorage.getItem("loggedIn") })
     }
 
     render() {
@@ -27,10 +34,12 @@ class App extends Component {
                             {this.state.loggedIn === "true"
                                 ? "Logout"
                                 : "Login / Signup"}
-                            </Button>
+                        </Button>
                     </Nav>
                 </Navbar>
-                <Main/>
+                <loginContext.Provider value={this.updateLogin}>
+                    <Main />
+                </loginContext.Provider>
             </div>
         );
     }
