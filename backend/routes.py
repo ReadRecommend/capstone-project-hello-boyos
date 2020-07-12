@@ -279,6 +279,11 @@ def get_reader_collections(username):
 # * MISC ROUTES
 # =======================
 
+@app.route("/search", methods=["POST"])
+def search():
+    search = request.json.get("search")
+    print(search);
+    return;
 
 @app.route("/genre")
 def get_genres():
