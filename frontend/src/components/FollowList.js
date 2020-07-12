@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 
 class FollowList extends Component {
     render() {
