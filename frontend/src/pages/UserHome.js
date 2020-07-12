@@ -304,6 +304,11 @@ class UserHome extends Component {
                                 >
                                     Create a collection
                                 </Button>
+                                <Button
+                                    block
+                                >
+                                    Search
+                                </Button>
                             </p>
                             <Dropdown>
                                 <Dropdown.Toggle
