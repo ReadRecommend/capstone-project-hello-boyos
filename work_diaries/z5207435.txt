@@ -48,5 +48,6 @@ Got a basic admin book adding screen working
 
 Week 6
 Made small modifications and bug fixes to the code I wrote and features I created
+Created the user pages, where any user can view the collections of another user
 Used React Context to fix the navbar not registering if you are logged in/out properly
 Added error checking, proper form inputs and bug fixes to the admin book adding screen, completing it
