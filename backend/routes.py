@@ -18,7 +18,52 @@ def home():
 # =======================
 
 
-@app.route("/book")
+@app.route("/bookadd", methods=["POST"])
+def new_book():
+    bookData = request.json
+    isbn = bookData.get("isbn")
+    title = bookData.get("title")
+    authors = bookData.get("authors")
+    genres = bookData.get("genres")
+    publisher = bookData.get("publisher")
+    publicationDate = bookData.get("publicationDate")
+    summary = bookData.get("summary")
+    cover = bookData.get("cover")
+    language = bookData.get("language")
+
+    # Ensure request is valid format
+    if not (title and isbn):
+        raise InvalidRequest(
+            "Request should be of the form {{isbn: 'isbn', title: 'title'}}"
+        )
+
+    # Check if a Book with this title/isbn already exists
+    if Book.query.filter((Book.isbn == isbn) | (Book.title == title)).first():
+        raise ResourceExists("A book with this title/isbn already exists")
+
+    # Create new book
+    newBook = Book(
+        isbn=isbn,
+        title=bookData.get("title"),
+        publisher=publisher,
+        publication_date=publicationDate,
+        summary=summary,
+        cover=cover,
+        n_ratings=0,
+        ave_rating=0,
+        language=language,
+    )
+
+    # TODO Add genres/authors
+
+    # Add to db
+    db.session.add(newBook)
+    db.session.commit()
+
+    return book_schema.dump(newBook)
+
+
+@app.route("/book", methods=["GET"])
 def get_books():
     books = Book.query.all()
     return jsonify(books_schema.dump(books))

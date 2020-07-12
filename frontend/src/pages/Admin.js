@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Button, Form, Container } from "react-bootstrap";
+import { addBook } from '../fetchFunctions';
 
 class Admin extends Component {
     constructor(props) {
@@ -7,6 +9,8 @@ class Admin extends Component {
         this.state = {
             isbn: '',
             title: '',
+            authors: '',
+            genres: '',
             publisher: '',
             publicationDate: -1,
             summary: '',
@@ -18,77 +22,165 @@ class Admin extends Component {
     onSubmit = (e) => {
 
         e.preventDefault();
-        alert("Imagine we submitted!");
+        const bookData = this.state;
+        console.log(bookData);
+
+        addBook(bookData)
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
+                // Redirect to new book page
+                return this.props.history.push(`/book/${bookData.isbn}`);
+            })
+            .catch((error) => {
+                // An error occurred
+                alert(error.message)
+            });
+
 
     }
 
-    onChange = (e) => this.setState({ [e.target.name]: e.target.value });
+    onChange = (e) => {
+        this.setState({ [e.target.name]: e.target.value });
+    }
+
+    onAuthorChange(changedAuthors) {
+        this.setState({ authors: changedAuthors });
+    }
+
+    onGenreChange(changedGenres) {
+        this.setState({ genres: changedGenres });
+    }
 
     render() {
-        // TODO 
-        // add required tags
-        // error check
         return (
-            <form>
+            <Container>
                 <h1>Add a book</h1>
-                <h2>ISBN</h2>
-                <input
-                    type="text"
-                    name="isbn"
-                    placeholder="ISBN"
-                //value={this.state.isbn}
-                //onChange={this.onChange}
-                />
-                <h2>TITLE</h2>
-                <input
-                    type="text"
-                    name="title"
-                    placeholder="Title"
-                //value={this.state.title}
-                //onChange={this.onChange}
-                />
-                <h2>PUBLISHER</h2>
-                <input
-                    type="text"
-                    name="publisher"
-                    placeholder="Publisher"
-                //value={this.state.publisher}
-                //onChange={this.onChange}
-                />
-                <h2>PUBLICATION DATE (FORMAT: TODO)</h2>
-                <input
-                    type="number"
-                    name="publicationDate"
-                    placeholder="Publication Date"
-                //value={this.state.publicationDate}
-                //onChange={this.onChange}
-                />
-                <h2>SUMMARY</h2>
-                <textarea
-                    name="summary"
-                    cols="100"
-                    rows="10"
-                    placeholder="Summary"
-                ></textarea>
-                <h2>COVER</h2>
-                <input
-                    type="url"
-                    name="cover"
-                    placeholder="http(s)//..."
-                />
-                <h2>LANGUAGE</h2>
-                <input
-                    type="text"
-                    name="language"
-                    placeholder="language"
-                />
-                <br></br>
-                <br></br>
-                <input
-                    type="submit"
-                    value="Submit"
-                />
-            </form >
+                <Form method="POST" onSubmit={this.onSubmit}>
+                    <Form.Group>
+                        <Form.Label>ISBN</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="isbn"
+                            value={this.state.isbn}
+                            onChange={this.onChange}
+                            placeholder="ISBN"
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>TITLE</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="title"
+                            value={this.state.title}
+                            onChange={this.onChange}
+                            placeholder="Title"
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>AUTHOR/S</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="authors"
+                            placeholder="Authors"
+                            value={this.state.authors}
+                            onChange={this.onChange}
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>GENRE/S</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="genres"
+                            placeholder="Genres"
+                            value={this.state.genres}
+                            onChange={this.onChange}
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>PUBLISHER</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="publisher"
+                            value={this.state.publisher}
+                            onChange={this.onChange}
+                            placeholder="Publisher"
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>PUBLICATION DATE (FORMAT: TODO)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="publicationDate"
+                            value={this.state.publicationDate}
+                            onChange={this.onChange}
+                            placeholder="Publication Date"
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>SUMMARY</Form.Label>
+                        <Form.Control
+                            as="textarea"
+                            name="summary"
+                            value={this.state.summary}
+                            onChange={this.onChange}
+                            cols="100"
+                            rows="10"
+                            placeholder="Summary"
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>COVER</Form.Label>
+                        <Form.Control
+                            type="url"
+                            name="cover"
+                            value={this.state.cover}
+                            onChange={this.onChange}
+                            placeholder="http(s)//..."
+                            required
+                        />
+                    </Form.Group>
+
+                    <Form.Group>
+                        <Form.Label>LANGUAGE</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="language"
+                            value={this.state.language}
+                            onChange={this.onChange}
+                            placeholder="Language"
+                            required
+                        />
+                    </Form.Group>
+
+                    <Button
+                        variant="primary"
+                        type="submit"
+                        block
+                        value="Submit"
+                    >
+                        Submit
+                    </Button>
+                </Form >
+            </Container>
         );
     }
 }
