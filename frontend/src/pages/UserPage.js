@@ -3,13 +3,8 @@ import { getUserById } from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
 import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
-<<<<<<< HEAD
-import { Container, Col, Row } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
-=======
-import { Button, Container, Col, Row, Spinner } from "react-bootstrap";
-import { unfollowUser, followUser } from "../fetchFunctions";
->>>>>>> master
+import { Container, Col, Row, Spinner } from "react-bootstrap";
 
 class UserPage extends Component {
     constructor(props) {
@@ -91,7 +86,10 @@ class UserPage extends Component {
                 />
             );
         }
-        if (this.state.userPageInfo && !this.state.userPageInfo.roles.includes("admin")) {
+        if (
+            this.state.userPageInfo &&
+            !this.state.userPageInfo.roles.includes("admin")
+        ) {
             // Found a valid user
             const user = this.state.userPageInfo;
             return (
