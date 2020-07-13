@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { getUserById } from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
+import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
-import { Button, Container, Col, Row } from "react-bootstrap";
-import { unfollowUser, followUser } from "../fetchFunctions";
+import { Container, Col, Row } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
 
 class UserPage extends Component {
     constructor(props) {
@@ -14,7 +15,6 @@ class UserPage extends Component {
             userPageInfo: {},
             collectionList: [],
             currentCollection: {},
-            following: false,
             currentUser: null,
         };
     }
@@ -45,15 +45,9 @@ class UserPage extends Component {
                 this.selectCollection(this.state.collectionList[0]["id"]);
                 if (this.props.initialUserInfo) {
                     this.setState({ currentUser: this.props.initialUserInfo });
-                    if (
-                        this.state.userPageInfo.followers.find(
-                            (o) => o.id === this.state.currentUser.id
-                        )
-                    ) {
-                        this.setState({ following: true });
-                    }
                 }
             })
+
             .catch((error) => {
                 this.setState({ userPageInfo: null, loading: false });
             });
@@ -74,20 +68,24 @@ class UserPage extends Component {
             });
     };
 
-    handleUnfollow = (followerUsername, userUsername) => {
-        unfollowUser(followerUsername, userUsername).then((user) => {
-            if (user) {
-                this.setState({ following: false, currentUser: user });
-            }
-        });
-    };
+    // handleUnfollow = (followerUsername, userUsername) => {
+    //     unfollowUser(followerUsername, userUsername).then((user) => {
+    //         if (user) {
+    //             this.setState({ following: false, currentUser: user });
+    //         }
+    //     });
+    // };
 
-    handleFollow = (followerUsername, userUsername) => {
-        followUser(followerUsername, userUsername).then((user) => {
-            if (user) {
-                this.setState({ following: true, currentUser: user });
-            }
-        });
+    // handleFollow = (followerUsername, userUsername) => {
+    //     followUser(followerUsername, userUsername).then((user) => {
+    //         if (user) {
+    //             this.setState({ following: true, currentUser: user });
+    //         }
+    //     });
+    // };
+
+    notify = (message) => {
+        toast.info(message);
     };
 
     render() {
@@ -100,45 +98,22 @@ class UserPage extends Component {
             const user = this.state.userPageInfo;
             return (
                 <div className="UserPage">
+                    <ToastContainer
+                        autoClose={4000}
+                        pauseOnHover
+                        closeOnClick
+                    />
                     <br></br>
                     <Container fluid>
                         <h2>{user.username}'s Profile</h2>
                         <Row>
                             <Col md="2">
-                                {!this.state.following &&
-                                    this.state.currentUser && (
-                                        <p>
-                                            <Button
-                                                block
-                                                variant="info"
-                                                onClick={() => {
-                                                    this.handleFollow(
-                                                        this.state.currentUser
-                                                            .username,
-                                                        user.username
-                                                    );
-                                                }}
-                                            >
-                                                Follow
-                                            </Button>
-                                        </p>
-                                    )}
-                                {this.state.following && (
-                                    <p>
-                                        <Button
-                                            block
-                                            variant="info"
-                                            onClick={() => {
-                                                this.handleUnfollow(
-                                                    this.state.currentUser
-                                                        .username,
-                                                    user.username
-                                                );
-                                            }}
-                                        >
-                                            Unfollow
-                                        </Button>
-                                    </p>
+                                {this.state.currentUser && (
+                                    <FollowButton
+                                        user={user}
+                                        currentUser={this.state.currentUser}
+                                        notify={this.notify}
+                                    />
                                 )}
                                 <h4>Collections</h4>
                                 <CollectionList
@@ -163,8 +138,6 @@ class UserPage extends Component {
                                 />
                             </Col>
                         </Row>
-                        {/* <h4>Collections</h4>
-                        <div className="collection_list"></div> */}
                     </Container>
                 </div>
             );
