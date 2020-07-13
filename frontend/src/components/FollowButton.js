@@ -8,8 +8,6 @@ class FollowButton extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // showToast: false,
-            // toastMessage: "",
             following: false,
         };
     }
@@ -25,13 +23,6 @@ class FollowButton extends Component {
             }
         }
     }
-
-    // showToast = () => {
-    //     this.setState({ showToast: true });
-    // };
-    // hideToast = () => {
-    //     this.setState({ showToast: false });
-    // };
 
     handleUnfollow = (followerUsername, userUsername) => {
         unfollowUser(followerUsername, userUsername).then((user) => {
