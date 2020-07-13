@@ -59,22 +59,6 @@ class FollowButton extends Component {
         }
         return (
             <>
-                {/* <Toast
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                    }}
-                    show={this.state.showToast}
-                    onClose={this.hideToast}
-                    delay={3000}
-                    autohide
-                >
-                    <Toast.Header>
-                        <strong className="mr-auto">Success</strong>
-                    </Toast.Header>
-                    <Toast.Body>{this.state.toastMessage}</Toast.Body>
-                </Toast> */}
                 {!following && currentUser && (
                     <p>
                         <Button

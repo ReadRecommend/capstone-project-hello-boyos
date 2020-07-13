@@ -68,22 +68,6 @@ class UserPage extends Component {
             });
     };
 
-    // handleUnfollow = (followerUsername, userUsername) => {
-    //     unfollowUser(followerUsername, userUsername).then((user) => {
-    //         if (user) {
-    //             this.setState({ following: false, currentUser: user });
-    //         }
-    //     });
-    // };
-
-    // handleFollow = (followerUsername, userUsername) => {
-    //     followUser(followerUsername, userUsername).then((user) => {
-    //         if (user) {
-    //             this.setState({ following: true, currentUser: user });
-    //         }
-    //     });
-    // };
-
     notify = (message) => {
         toast.info(message);
     };
