@@ -14,6 +14,7 @@ class SearchResults extends Component {
 				<CardDeck>
 	                {this.props.books.map((book) => (
 	                    <SearchResultsItem
+	                    	key={book.isbn}
 	                        book={book}
 	                    />
 	                ))}

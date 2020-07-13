@@ -1,5 +1,8 @@
-import React, { Component } from 'react';
-import { Button, Form, Container } from "react-bootstrap";
+import React, { Component } from 'react'
+import { Button, Form, Container } from 'react-bootstrap'
+import InputGroup from 'react-bootstrap/InputGroup'
+import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton'
 import SearchResults from '../components/SearchResults.js'
 
 class Search extends Component {
@@ -7,6 +10,7 @@ class Search extends Component {
         super(props);
         this.state = {
             search: "",
+            filter: "",
             currentSearchList: [],
         };
     }
@@ -28,10 +32,15 @@ class Search extends Component {
         this.setState({ search: event.target.value });
     };
 
+    updateFilter = (event) => {
+        this.setState({ filter: event.target.value });
+    };
+
     handleSubmit = (event) => {
         event.preventDefault();
         const data = {
             search: this.state.search,
+            filter: this.state.filter,
         };
         fetch("http://localhost:5000/search", {
             method: "POST",
@@ -56,21 +65,52 @@ class Search extends Component {
                 <Container>
                     <h1> Search Page </h1>
                     <Form method="POST" onSubmit={this.handleSubmit}>
-                        <Form.Control
-                            type="text"
-                            placeholder="Search book"
-                            value={this.state.search}
-                            onChange={this.updateSearch}
-                            required
-                        />
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            block
-                            value="Search"
-                        >
-                            Search
-                        </Button>
+                        <InputGroup>
+                            <Form.Control
+                                type="text"
+                                placeholder="Search book"
+                                value={this.state.search}
+                                onChange={this.updateSearch}
+                                required
+                            />
+
+                            <Form.Control
+                                as="select"
+                                onChange={this.updateFilter}
+                            >
+                                <option> Test01 </option>
+                                <option> Test02 </option>
+                                <option> Test03 </option>
+                            </Form.Control>
+
+                            {/*
+                            <DropdownButton
+                                as={InputGroup.Append}
+                                variant="outline-secondary"
+                                title="Filter"
+                                value={this.state.filter}
+                                onChange={this.updateFilter}
+                            >
+                                <Dropdown.Item href="#">No Filter</Dropdown.Item>
+                                <Dropdown.Divider />
+                                <Dropdown.Item href="#">&ge; 5 Stars</Dropdown.Item>
+                                <Dropdown.Item href="#">&ge; 5 Stars</Dropdown.Item>
+                                <Dropdown.Item href="#">&ge; 4 Stars</Dropdown.Item>
+                                <Dropdown.Item href="#">&ge; 3 Stars</Dropdown.Item>
+                                <Dropdown.Item href="#">&ge; 2 Stars</Dropdown.Item>
+                                <Dropdown.Item href="#">&ge; 1 Star</Dropdown.Item>
+                            </DropdownButton>
+                            */}
+
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                block
+                                value="Search"
+                            >
+                                Search
+                            </Button>
+                        </InputGroup>
                     </Form>
                 </Container>
                 <SearchResults books={this.state.currentSearchList}> </SearchResults>

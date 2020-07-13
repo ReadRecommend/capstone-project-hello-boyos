@@ -282,7 +282,9 @@ def get_reader_collections(username):
 @app.route("/search", methods=["POST"])
 def search():
     search = request.json.get("search")
+    filter = request.json.get("filter")
     print(search);
+    print(filter);
     return;
 
 @app.route("/genre")
