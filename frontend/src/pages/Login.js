@@ -72,7 +72,7 @@ class Login extends Component {
                 // Perhaps a bit hacky, but the context will be the function that tells the navbar we have logged out
                 this.context();
                 // Change route to home
-                return this.props.history.push("/home");
+                return this.props.history.push("/");
             })
             .catch((error) => {
                 // An error occurred

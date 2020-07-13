@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { getBook } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import { Container, Row, Media, Tabs, Tab } from "react-bootstrap";
+import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 
 class BookPage extends Component {
@@ -61,10 +61,12 @@ class BookPage extends Component {
                     </Row>
                     <Row>
                         <Media>
-                            <img
+                            <Image
                                 className="mr-3"
                                 src={book.cover}
                                 alt={book.title}
+                                thumbnail
+                                width="314px"
                             />
                             <Media.Body>
                                 <h1>{book.title}</h1>
