@@ -14,8 +14,18 @@ export function getBook(bookISBN) {
     return fetch(`${apiUrl}/book/${bookISBN}`);
 }
 
+export function addBook(bookDetails) {
+    return fetch(`${apiUrl}/book`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookDetails),
+        credentials: "include",
+    });
+}
+
 export function addToCollection(isbn, id) {
-    console.log("ISBN and Col id are: " + isbn + " and " + id);
     fetch("http://localhost:5000/modify_collection", {
         method: "POST",
         headers: {
@@ -31,7 +41,6 @@ export function addToCollection(isbn, id) {
             return res.json();
         })
         .then((json) => {
-            console.log(json);
             return json;
         });
 }

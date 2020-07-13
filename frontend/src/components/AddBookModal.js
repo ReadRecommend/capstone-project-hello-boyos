@@ -1,5 +1,5 @@
-import React, { Component, useState } from "react";
-import { getBook, addToCollection, verifyUser } from "../fetchFunctions";
+import React, { Component } from "react";
+import { addToCollection } from "../fetchFunctions";
 import { Modal, Button, Form, Toast } from "react-bootstrap";
 import PropTypes from "prop-types";
 
@@ -20,7 +20,6 @@ class AddBookModal extends Component {
     };
 
     handleChange = (e) => {
-        console.log(e.target.value);
         this.setState({ collectionID: e.target.value });
     };
 
@@ -52,7 +51,10 @@ class AddBookModal extends Component {
                             {user.collections &&
                                 user.collections.map((collection) => {
                                     return (
-                                        <option value={collection.id}>
+                                        <option
+                                            value={collection.id}
+                                            key={collection.id}
+                                        >
                                             {collection.name}
                                         </option>
                                     );

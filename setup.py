@@ -111,6 +111,12 @@ user3 = Reader(
     password=guard.hash_password("stevelee123"),
     roles="user,admin",
 )
+user4 = Reader(
+    username="SecretAdmin",
+    email="secretAdmin@gmail.com",
+    password=guard.hash_password("admin"),
+    roles="admin",
+)
 
 user1.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
@@ -119,6 +125,9 @@ user2.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(2).all())
 )
 user3.collections.append(
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
+)
+user4.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
 )
 
@@ -135,7 +144,7 @@ user2.collections.append(
     )
 )
 
-db.session.add_all([user1, user2, user3])
+db.session.add_all([user1, user2, user3, user4])
 db.session.commit()
 
 print("Setup complete!")

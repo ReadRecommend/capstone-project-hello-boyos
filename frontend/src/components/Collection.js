@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import CollectionItem from "./CollectionItem";
 import PropTypes from "prop-types";
-import { Modal, CardDeck } from "react-bootstrap";
+import { CardDeck } from "react-bootstrap";
 
 /*
 The collection contains collection-items, which themselves contain books to be

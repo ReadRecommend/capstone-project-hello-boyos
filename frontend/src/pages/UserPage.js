@@ -3,8 +3,13 @@ import { getUserById } from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
 import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
+<<<<<<< HEAD
 import { Container, Col, Row } from "react-bootstrap";
 import { toast, ToastContainer } from "react-toastify";
+=======
+import { Button, Container, Col, Row, Spinner } from "react-bootstrap";
+import { unfollowUser, followUser } from "../fetchFunctions";
+>>>>>>> master
 
 class UserPage extends Component {
     constructor(props) {
@@ -34,7 +39,6 @@ class UserPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                console.log(json);
                 this.setState({
                     userPageInfo: json,
                     loading: false,
@@ -75,9 +79,19 @@ class UserPage extends Component {
     render() {
         if (this.state.loading) {
             // Still performing the fetch
-            return <h1>LOADING USER PAGE...</h1>;
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%)",
+                    }}
+                />
+            );
         }
-        if (this.state.userPageInfo) {
+        if (this.state.userPageInfo && !this.state.userPageInfo.roles.includes("admin")) {
             // Found a valid user
             const user = this.state.userPageInfo;
             return (
@@ -126,7 +140,7 @@ class UserPage extends Component {
                 </div>
             );
         } else {
-            // Didn't find a valid user
+            // Didn't find a valid user, or the user is an admin who shouldn't have a page
             return <h1>404 User not found</h1>;
         }
     }
