@@ -8,6 +8,9 @@ import SearchResults from '../components/SearchResults.js'
 class Search extends Component {
     constructor(props) {
         super(props);
+
+        this.updateFilter = this.updateFilter.bind(this);
+
         this.state = {
             search: "",
             filter: "",
@@ -71,36 +74,19 @@ class Search extends Component {
                                 placeholder="Search book"
                                 value={this.state.search}
                                 onChange={this.updateSearch}
-                                required
                             />
 
                             <Form.Control
                                 as="select"
-                                onChange={this.updateFilter}
+                                onChange={(event) => { this.updateFilter(event); this.handleSubmit(event); }}
                             >
-                                <option> Test01 </option>
-                                <option> Test02 </option>
-                                <option> Test03 </option>
+                                <option> No Filter </option>
+                                <option> &ge; 5 Stars </option>
+                                <option> &ge; 4 Stars </option>
+                                <option> &ge; 3 Stars </option>
+                                <option> &ge; 2 Stars </option>
+                                <option> &ge; 1 Stars </option>
                             </Form.Control>
-
-                            {/*
-                            <DropdownButton
-                                as={InputGroup.Append}
-                                variant="outline-secondary"
-                                title="Filter"
-                                value={this.state.filter}
-                                onChange={this.updateFilter}
-                            >
-                                <Dropdown.Item href="#">No Filter</Dropdown.Item>
-                                <Dropdown.Divider />
-                                <Dropdown.Item href="#">&ge; 5 Stars</Dropdown.Item>
-                                <Dropdown.Item href="#">&ge; 5 Stars</Dropdown.Item>
-                                <Dropdown.Item href="#">&ge; 4 Stars</Dropdown.Item>
-                                <Dropdown.Item href="#">&ge; 3 Stars</Dropdown.Item>
-                                <Dropdown.Item href="#">&ge; 2 Stars</Dropdown.Item>
-                                <Dropdown.Item href="#">&ge; 1 Star</Dropdown.Item>
-                            </DropdownButton>
-                            */}
 
                             <Button
                                 variant="primary"
