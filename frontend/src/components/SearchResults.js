@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-//import { CardDeck } from "react-bootstrap";
+import { CardDeck } from "react-bootstrap";
 
 import SearchResultsItem from '../components/SearchResultsItem.js'
 
@@ -10,16 +10,15 @@ class SearchResults extends Component {
 
 	render() {
         return (
-			//<h1> SearchResults </h1>
-			//<CardDeck>
-			<div>
-                {this.props.books.map((book) => (
-                    <SearchResultsItem
-                        title={book.title}
-                    />
-                ))}
-            </div>
-            //</CardDeck>
+        	<div>
+				<CardDeck>
+	                {this.props.books.map((book) => (
+	                    <SearchResultsItem
+	                        book={book}
+	                    />
+	                ))}
+	            </CardDeck>
+	        </div>
     	)
     }
 }

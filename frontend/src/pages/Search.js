@@ -1,12 +1,27 @@
 import React, { Component } from 'react';
 import { Button, Form, Container } from "react-bootstrap";
+import SearchResults from '../components/SearchResults.js'
 
 class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            search: ""
+            search: "",
+            currentSearchList: [],
         };
+    }
+
+    componentDidMount() {
+        // Get all the books in the database
+        fetch("http://localhost:5000/book")
+            .then((res) => {
+                return res.json();
+            })
+            .then((books) => {
+                this.setState({
+                    currentSearchList: books,
+                });
+            });
     }
 
     updateSearch = (event) => {
@@ -58,6 +73,7 @@ class Search extends Component {
                         </Button>
                     </Form>
                 </Container>
+                <SearchResults books={this.state.currentSearchList}> </SearchResults>
             </div>
         );
     }
