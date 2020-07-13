@@ -4,6 +4,7 @@ import AddBookModal from "../components/AddBookModal";
 
 import { Container, Row, Col, Media, Tabs, Tab } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
+import { toast, ToastContainer } from "react-toastify";
 
 class BookPage extends Component {
     constructor(props) {
@@ -54,6 +55,10 @@ class BookPage extends Component {
         });
     };
 
+    notify = (message) => {
+        toast.info(message);
+    };
+
     render() {
         const book = this.state.book;
         const user = this.props.initialUserInfo;
@@ -62,6 +67,7 @@ class BookPage extends Component {
         }
         return (
             <div>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Container>
                     <Row>
                         <br></br>
@@ -85,7 +91,11 @@ class BookPage extends Component {
                                 <p>
                                     {console.log("User: " + this.user)}
                                     {user ? (
-                                        <AddBookModal book={book} user={user} />
+                                        <AddBookModal
+                                            book={book}
+                                            user={user}
+                                            notify={this.notify}
+                                        />
                                     ) : null}
                                 </p>
                                 <Tabs defaultActiveKey="summary">
