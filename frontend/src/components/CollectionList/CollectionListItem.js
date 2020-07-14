@@ -15,14 +15,19 @@ class CollectionListItem extends Component {
                     {/* When one clicks the collection, it is selected as the current collection. */}
                     {name}
                     {/* When the button is pressed, this collection will be removed from the collection list. */}
-                    {name !== "Main" && this.props.editable && (
-                        <span
-                            onClick={this.props.delCollection.bind(this, name)}
-                            className="float-right btn-danger btn btn-sm"
-                        >
-                            x
-                        </span>
-                    )}
+                    {name !== "Main" &&
+                        name != "Recently Read" &&
+                        this.props.editable && (
+                            <span
+                                onClick={this.props.delCollection.bind(
+                                    this,
+                                    name
+                                )}
+                                className="float-right btn-danger btn btn-sm"
+                            >
+                                x
+                            </span>
+                        )}
                 </ListGroupItem>
             </>
         );

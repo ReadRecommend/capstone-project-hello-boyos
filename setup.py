@@ -122,7 +122,7 @@ user1.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
 )
 user2.collections.append(
-    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(2).all())
+    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
 )
 user3.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
@@ -130,13 +130,24 @@ user3.collections.append(
 user4.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
 )
+user1.collections.append(Collection(name="Recently Read",))
+user2.collections.append(Collection(name="Recently Read",))
+user3.collections.append(Collection(name="Recently Read",))
+user4.collections.append(Collection(name="Recently Read",))
 
 user1.follows.append(user2)
 user1.follows.append(user3)
 user1.followers.append(user2)
 
-scifi = Genre.query.filter_by(name="Science Fiction").first()
+classics = Genre.query.filter_by(name="Classics").first()
+user1.collections.append(
+    Collection(
+        name="Classics",
+        books=Book.query.filter(Book.genres.contains(classics)).limit(10).all(),
+    )
+)
 
+scifi = Genre.query.filter_by(name="Science Fiction").first()
 user2.collections.append(
     Collection(
         name="SciFi",

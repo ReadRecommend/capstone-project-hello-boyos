@@ -26,3 +26,10 @@ class ResourceExists(FlaskBuzz):
 
 
 app.register_error_handler(ResourceExists, ResourceExists.build_error_handler())
+
+
+class ResourceNotFound(FlaskBuzz):
+    status_code = status_code = HTTPStatus.NOT_FOUND
+
+
+app.register_error_handler(ResourceNotFound, ResourceNotFound.build_error_handler())
