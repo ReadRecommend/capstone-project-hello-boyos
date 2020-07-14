@@ -108,7 +108,11 @@ def add_review(isbn):
     book_id = review_data.get("book_id")
 
     review = review_data.get("review")
-    score = review_data.get("score")
+    score = int(review_data.get("score"))
+
+    if score > 5 or score < 1:
+        raise InvalidRequest("Score should be in between 1 and 5")
+
     if Review.query.filter(
         (Review.reader_id == reader_id) & (Review.book_id == book_id)
     ).first():

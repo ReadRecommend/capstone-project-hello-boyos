@@ -61,9 +61,17 @@ class AddReview extends Component {
         })
             .then((res) => {
                 if (!res.ok) {
+                    var eMessage = "Something went wrong..."
+                    switch (res.statusText) {
+                        case "FORBIDDEN":
+                            eMessage = "You have already reviewed this book."
+                        case "BAD REQUEST":
+                            eMessage = "Please choose a score between 1 and 5"
+                    }
+
                     this.setState({
                         errorShow: true,
-                        errorMessage: "You have already reviewed this book.",
+                        errorMessage: eMessage,
                     }).then(() => {
                         throw Error;
                     });
@@ -76,7 +84,7 @@ class AddReview extends Component {
                     "/book/" + this.state.book_id + "/reviews"
                 );
             })
-            .catch((e) => {});
+            .catch((e) => { });
     };
 
     render() {
