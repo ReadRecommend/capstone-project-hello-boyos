@@ -105,7 +105,7 @@ def add_review(isbn):
     review = review_data.get("review")
     score = review_data.get("score")
     if Review.query.filter(
-        (Review.reader_id == reader_id) and (Review.book_id == book_id)
+        (Review.reader_id == reader_id) & (Review.book_id == book_id)
     ).first():
         raise ResourceExists("User has already reviewed this book")
 
