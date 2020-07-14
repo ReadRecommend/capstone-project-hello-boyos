@@ -360,6 +360,21 @@ def search():
     return jsonify(books_schema.dump(books))
 
 
+@app.route("/usrsearch", methods=["POST"])
+def usrsearch():
+    search = request.json.get("search")
+    print(search)
+
+    search = "%{}%".format(search)
+
+    users = Reader.query.filter(
+        Reader.username.ilike(search) & Reader.roles.contains("user")
+    ).all()
+
+    print(jsonify(readers_schema.dump(users)))
+    return jsonify(readers_schema.dump(users))
+
+
 @app.route("/genre")
 def get_genres():
     genres = Genre.query.all()
