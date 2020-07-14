@@ -96,12 +96,31 @@ class BookPage extends Component {
                                 </p>
                                 <Tabs defaultActiveKey="summary">
                                     <Tab eventKey="summary" title="Summary">
+                                        <br></br>
+
                                         <p>{book.summary}</p>
                                     </Tab>
                                     <Tab
                                         eventKey="reviews"
                                         title="Reviews + Ratings"
                                     >
+                                        {this.props.initialUserInfo && (
+                                            <>
+                                                <br></br>
+                                                <AddReview
+                                                    bookISBN={
+                                                        this.props.match.params
+                                                            .bookISBN
+                                                    }
+                                                    readerID={
+                                                        this.props
+                                                            .initialUserInfo.id
+                                                    }
+                                                    notify={this.notify}
+                                                />
+                                            </>
+                                        )}
+                                        <br></br>
                                         <h5>Average Rating</h5>
                                         <StarRatings
                                             rating={book.ave_rating}
@@ -117,15 +136,6 @@ class BookPage extends Component {
                                             reviews
                                         </small>
 
-                                        <br></br>
-                                        <AddReview
-                                            bookISBN={
-                                                this.props.match.params.bookISBN
-                                            }
-                                            readerID={
-                                                this.props.initialUserInfo.id
-                                            }
-                                        />
                                         <ReviewList
                                             bookISBN={
                                                 this.props.match.params.bookISBN
@@ -136,6 +146,7 @@ class BookPage extends Component {
                                         eventKey="info"
                                         title="Additional Information"
                                     >
+                                        <br></br>
                                         <strong>Publisher: </strong>
                                         {book.publisher}
                                         <br></br>

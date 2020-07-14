@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Alert, Button } from "react-bootstrap";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Alert, Form, Button, Accordion, Card } from "react-bootstrap";
 
 class AddReview extends Component {
     constructor(props) {
         super(props);
-
 
         this.state = {
             reader_id: "",
@@ -20,8 +19,8 @@ class AddReview extends Component {
     }
 
     componentDidMount() {
-        this.setState({ reader_id: this.props.readerID })
-        this.setState({ book_id: this.props.bookISBN })
+        this.setState({ reader_id: this.props.readerID });
+        this.setState({ book_id: this.props.bookISBN });
     }
 
     updateReview = (event) => {
@@ -33,9 +32,8 @@ class AddReview extends Component {
     };
 
     handleError() {
-        this.setState({ errorShow: false, errorMessage: "" })
+        this.setState({ errorShow: false, errorMessage: "" });
     }
-
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -65,8 +63,7 @@ class AddReview extends Component {
                 if (!res.ok) {
                     this.setState({
                         errorShow: true,
-                        errorMessage:
-                            "This book has already been reviewed.",
+                        errorMessage: "You have already reviewed this book.",
                     }).then(() => {
                         throw Error;
                     });
@@ -74,10 +71,13 @@ class AddReview extends Component {
                 return res.json();
             })
             .then(() => {
-                return this.props.history.push("/book/" + this.state.book_id + "/reviews");
+                this.props.notify("Review successfully published!");
+                return this.props.history.push(
+                    "/book/" + this.state.book_id + "/reviews"
+                );
             })
-            .catch((e) => { });
-    }
+            .catch((e) => {});
+    };
 
     render() {
         return (
@@ -90,43 +90,61 @@ class AddReview extends Component {
                 >
                     {this.state.errorMessage}
                 </Alert>
-
-                <h5>Write Review</h5>
-                <br></br>
-
-                <form method="POST" onSubmit={this.handleSubmit}>
-                    <input
-                        type="text"
-                        name="review"
-                        placeholder="Write a review..."
-                        value={this.state.review}
-                        onChange={this.updateReview}
-                    />
-                    <input
-                        type="number"
-                        name="score"
-                        placeholder="1 - 5"
-                        value={this.state.score}
-                        onChange={this.updateScore}
-                        min="1"
-                        max="5"
-                    />
-                    <br></br>
-                    <input
-                        type="submit"
-                        value="Add Review"
-                    />
-
-                </form>
-
+                <Accordion>
+                    <Card>
+                        {/* <Card.Header> */}
+                        <Accordion.Toggle
+                            as={Card.Header}
+                            variant="link"
+                            eventKey="0"
+                        >
+                            <a href="#">
+                                <h5>Leave a review</h5>
+                            </a>
+                        </Accordion.Toggle>
+                        {/* </Card.Header> */}
+                        <Accordion.Collapse eventKey="0">
+                            <Card.Body>
+                                <Form
+                                    method="POST"
+                                    onSubmit={this.handleSubmit}
+                                >
+                                    <Form.Group>
+                                        <Form.Control
+                                            type="number"
+                                            name="score"
+                                            placeholder="1 - 5"
+                                            value={this.state.score}
+                                            onChange={this.updateScore}
+                                            min="1"
+                                            max="5"
+                                        />
+                                    </Form.Group>
+                                    <Form.Group controlId="exampleForm.ControlTextarea1">
+                                        <Form.Control
+                                            as="textarea"
+                                            rows="3"
+                                            placeholder="What did you think of this book..."
+                                            value={this.state.review}
+                                            onChange={this.updateReview}
+                                            name="review"
+                                        />
+                                    </Form.Group>
+                                    <Button variant="primary" type="submit">
+                                        Submit
+                                    </Button>
+                                </Form>
+                            </Card.Body>
+                        </Accordion.Collapse>
+                    </Card>
+                </Accordion>
             </div>
-        )
+        );
     }
-
 }
 
 AddReview.propTypes = {
-    initialUserInfo: PropTypes.object.isRequired
-}
+    initialUserInfo: PropTypes.object.isRequired,
+};
 
 export default AddReview;
