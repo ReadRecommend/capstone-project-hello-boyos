@@ -328,13 +328,23 @@ def modify_collection():
 # * MISC ROUTES
 # =======================
 
+
 @app.route("/search", methods=["POST"])
 def search():
     search = request.json.get("search")
     filter = request.json.get("filter")
-    print(search);
-    print(filter);
-    return;
+    print(search)
+    print(filter)
+
+    search = "%{}%".format(search)
+
+    books = Book.query.filter(
+        Book.authors.any(Author.name.ilike(search)) | Book.title.ilike(search)
+    ).all()
+
+    print(jsonify(books_schema.dump(books)))
+    return jsonify(books_schema.dump(books))
+
 
 @app.route("/genre")
 def get_genres():
