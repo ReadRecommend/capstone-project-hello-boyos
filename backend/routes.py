@@ -336,10 +336,24 @@ def search():
     print(search)
     print(filter)
 
+    if filter == "5 Stars":
+        filter = 5
+    elif filter == "≥ 4 Stars":
+        filter = 4
+    elif filter == "≥ 3 Stars":
+        filter = 3
+    elif filter == "≥ 2 Stars":
+        filter = 2
+    elif filter == "≥ 1 Stars":
+        filter = 1
+    elif filter == "No Filter":
+        filter = 0
+
     search = "%{}%".format(search)
 
     books = Book.query.filter(
-        Book.authors.any(Author.name.ilike(search)) | Book.title.ilike(search)
+        (Book.authors.any(Author.name.ilike(search)) | Book.title.ilike(search))
+        & (Book.ave_rating >= filter)
     ).all()
 
     print(jsonify(books_schema.dump(books)))
