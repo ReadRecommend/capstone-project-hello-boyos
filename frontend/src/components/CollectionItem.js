@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Modal } from "react-bootstrap";
+import { Modal, Card, Button, ListGroup, ListGroupItem } from "react-bootstrap";
 
 /*
 The CollectionItem class deals with displaying the books contained within a collection.
@@ -15,20 +15,23 @@ class CollectionItem extends Component {
 
     displayCollections = () => {
         const { isbn } = this.props.book;
-        console.log("User Collections 2: " + this.props.userCollections);
-        return this.props.userCollections.map((collection) => (
-            <div key={collection.id}>
-                <button
-                    onClick={this.props.addToCollection.bind(
-                        this,
-                        isbn,
-                        collection.id
-                    )}
-                >
-                    {collection.name}
-                </button>
-            </div>
-        ));
+        return (
+            <ListGroup variant="flush">
+                {this.props.userCollections.map((collection) => (
+                    <ListGroupItem
+                        action
+                        key={collection.id}
+                        onClick={this.props.addToCollection.bind(
+                            this,
+                            isbn,
+                            collection.id
+                        )}
+                    >
+                        {collection.name}
+                    </ListGroupItem>
+                ))}
+            </ListGroup>
+        );
     };
 
     // Can move this to a class in css later
@@ -48,16 +51,20 @@ class CollectionItem extends Component {
     };
 
     addButton = () => {
-        console.log("User Collections 1: " + this.props.userCollections);
         if (
             this.props.book !== null &&
             typeof this.props.book !== "undefined" &&
             this.props.editable === true
         ) {
             return (
-                <button onClick={this.handleModal} style={addButton}>
+                <Button
+                    variant="success"
+                    className="float-left"
+                    size="sm"
+                    onClick={this.handleModal}
+                >
                     +
-                </button>
+                </Button>
             );
         }
     };
@@ -74,60 +81,52 @@ class CollectionItem extends Component {
             this.props.editable === true
         ) {
             return (
-                <button
+                <Button
+                    variant="danger"
+                    className="float-right"
+                    size="sm"
                     onClick={this.props.removeBook.bind(book, book.isbn)}
-                    style={removeButton}
                 >
                     x
-                </button>
+                </Button>
             );
         }
     };
 
     render() {
-        const { title, summary, cover } = this.props.book;
+        const { title, cover, isbn } = this.props.book;
         return (
-            <div style={this.getStyle()}>
+            <div>
                 {this.props.editable === true && (
-                    <Modal show={this.state.modalShow}>
-                        <Modal.Header>
+                    <Modal
+                        show={this.state.modalShow}
+                        onHide={this.handleModal}
+                    >
+                        <Modal.Header closeButton>
                             <Modal.Title>Add to a Collection</Modal.Title>
-                            <button
-                                onClick={() => {
-                                    this.handleModal();
-                                }}
-                            >
-                                x
-                            </button>
                         </Modal.Header>
                         <Modal.Body>{this.displayCollections()}</Modal.Body>
                         <Modal.Footer></Modal.Footer>
                     </Modal>
                 )}
-
-                <h1>
-                    {this.addButton()}
-                    {title + " "}
-                    {this.removeButton()}
-                </h1>
-                <a href={`/book/${this.props.book.isbn}`}>
-                    <img src={cover} alt={title} />
-                </a>
-                <p>{summary}</p>
+                <Card style={{ width: "314px" }}>
+                    <a href={`/book/${isbn}`}>
+                        <Card.Img variant="top" src={cover} height="475px" />
+                    </a>
+                    <Card.Body>
+                        <Card.Text>
+                            <a href={`/book/${isbn}`}>{title}</a>
+                        </Card.Text>
+                        <Card.Text>
+                            {this.addButton()}
+                            {this.removeButton()}
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
             </div>
         );
     }
 }
-
-const removeButton = {
-    background: "red",
-    textAlign: "right",
-};
-
-const addButton = {
-    background: "green",
-    textAlign: "left",
-};
 
 CollectionItem.propTypes = {
     book: PropTypes.object.isRequired,

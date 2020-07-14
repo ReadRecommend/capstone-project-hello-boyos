@@ -1,9 +1,19 @@
 import React, { Component } from "react";
-import { Modal, Alert, Dropdown, Button } from "react-bootstrap";
+import {
+    Modal,
+    Alert,
+    Dropdown,
+    Button,
+    Container,
+    Col,
+    Row,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
+import FollowList from "../components/FollowList";
+import { unfollowUser } from "../fetchFunctions";
 
 class UserHome extends Component {
     constructor(props) {
@@ -24,6 +34,11 @@ class UserHome extends Component {
     }
 
     componentDidMount() {
+        // If we are admin we shouldn't have a user page
+        if (this.props.initialUserInfo.roles.includes("admin")) {
+            return this.props.history.push("/admin");
+        }
+
         // Select the initial collection
         this.selectCollection(this.state.collectionList[0]["id"]);
 
@@ -67,11 +82,17 @@ class UserHome extends Component {
         });
     }
 
+    handleUnfollow = (followerUsername, userUsername) => {
+        unfollowUser(followerUsername, userUsername).then((user) => {
+            if (user) {
+                this.setState({ userInfo: user });
+            }
+        });
+    };
+
     // Function that deletes a collection in a user's collection list
     delCollection = (name) => {
         const data = { reader_id: this.state.userInfo.id, name: name };
-        console.log(data);
-        console.log("AccessToken:" + this.props.accessToken);
 
         // We will let the backend do the checking for us
         fetch("http://localhost:5000/collection", {
@@ -92,7 +113,6 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                console.log(json);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
@@ -110,7 +130,6 @@ class UserHome extends Component {
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
         const data = { reader_id: this.state.userInfo.id, name: name };
-        console.log(data);
 
         // We will let the backend do the checking for us
         fetch("http://localhost:5000/collection", {
@@ -131,7 +150,6 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                console.log(json);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
@@ -188,7 +206,6 @@ class UserHome extends Component {
     };
 
     addToCollection = (isbn, id) => {
-        console.log("ISBN and Col id are: " + isbn + " and " + id);
         fetch("http://localhost:5000/modify_collection", {
             method: "POST",
             headers: {
@@ -211,7 +228,7 @@ class UserHome extends Component {
     render() {
         return (
             <div className="UserHome">
-                <h3>Welcome {this.state.userInfo.username} </h3>
+                <br></br>
                 {/* Alert for general problems */}
                 <Alert
                     show={this.state.errorGeneralShow}
@@ -237,21 +254,12 @@ class UserHome extends Component {
                         {this.state.errorAddCollectionMessage}
                     </Alert>
 
-                    <Modal.Header>
+                    <Modal.Header closeButton>
                         <Modal.Title>Create New Collection</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <AddCollection addCollection={this.addCollection} />
                     </Modal.Body>
-                    <Modal.Footer>
-                        <button
-                            onClick={() => {
-                                this.handleModal();
-                            }}
-                        >
-                            Close
-                        </button>
-                    </Modal.Footer>
                 </Modal>
 
                 <Modal show={this.state.libraryModalShow}>
@@ -288,60 +296,76 @@ class UserHome extends Component {
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>
                 </Modal>
-                <h4>
-                    Collections
-                    <button
-                        onClick={() => {
-                            this.handleModal();
-                        }}
-                    >
-                        +
-                    </button>
-                </h4>
-
-                <br></br>
-
-                <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Choose a book to add to this collection
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu style={dropdownStyle}>
-                        {this.state.library &&
-                            this.state.library.map((book) => (
-                                <Dropdown.Item
-                                    key={book.isbn}
+                <Container fluid>
+                    <h2>Welcome {this.state.userInfo.username} </h2>
+                    <Row>
+                        <Col md="2">
+                            <p>
+                                <Button
+                                    block
                                     onClick={() => {
-                                        this.setState({
-                                            libraryBook: book,
-                                        });
-                                        this.handleLibraryModal();
+                                        this.handleModal();
                                     }}
                                 >
-                                    {book.title}
-                                </Dropdown.Item>
-                            ))}
-                    </Dropdown.Menu>
-                </Dropdown>
+                                    Create a collection
+                                </Button>
+                            </p>
+                            <Dropdown>
+                                <Dropdown.Toggle
+                                    variant="success"
+                                    id="dropdown-basic"
+                                    className="btn-block"
+                                >
+                                    Add a book to the current collection
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={dropdownStyle}>
+                                    {this.state.library &&
+                                        this.state.library.map((book) => (
+                                            <Dropdown.Item
+                                                key={book.isbn}
+                                                onClick={() => {
+                                                    this.setState({
+                                                        libraryBook: book,
+                                                    });
+                                                    this.handleLibraryModal();
+                                                }}
+                                            >
+                                                {book.title}
+                                            </Dropdown.Item>
+                                        ))}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <br></br>
+                            <h4>Your Collections</h4>
+                            <CollectionList
+                                collectionList={this.state.collectionList}
+                                delCollection={this.delCollection}
+                                selectCollection={this.selectCollection}
+                                editable={true}
+                                currentCollection={this.state.currentCollection}
+                            />
+                            <br></br>
+                            <h4>Following</h4>
+                            <FollowList
+                                user={this.state.userInfo}
+                                handleUnfollow={this.handleUnfollow}
+                            />
+                        </Col>
 
-                <br></br>
-                <div style={collectionListStyle}>
-                    <CollectionList
-                        collectionList={this.state.collectionList}
-                        delCollection={this.delCollection}
-                        selectCollection={this.selectCollection}
-                        editable={true}
-                    />
-                </div>
-                <h2>
-                    <Collection
-                        key={this.state.currentCollection.id}
-                        currentCollection={this.state.currentCollection}
-                        removeBook={this.removeBook}
-                        userCollections={this.state.collectionList}
-                        addToCollection={this.addToCollection}
-                        editable={true}
-                    />
-                </h2>
+                        <Col>
+                            <h1>{this.state.currentCollection.name}</h1>
+                            <br></br>
+                            <Collection
+                                key={this.state.currentCollection.id}
+                                currentCollection={this.state.currentCollection}
+                                removeBook={this.removeBook}
+                                userCollections={this.state.collectionList}
+                                addToCollection={this.addToCollection}
+                                editable={true}
+                            />
+                        </Col>
+                    </Row>
+                </Container>
             </div>
         );
     }
@@ -352,13 +376,8 @@ UserHome.propTypes = {
 };
 
 const dropdownStyle = {
-    maxHeight: "256px",
+    maxHeight: "512px",
     overflowY: "scroll",
-};
-
-const collectionListStyle = {
-    border: "3px #ccc solid",
-    width: "500px",
 };
 
 export default UserHome;

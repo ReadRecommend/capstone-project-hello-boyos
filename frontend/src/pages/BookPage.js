@@ -1,11 +1,12 @@
-import React, { Component, useState } from "react";
-import { getBook, addToCollection, verifyUser } from "../fetchFunctions";
+import React, { Component } from "react";
+import { getBook } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import { Container, Row, Col, Media, Tabs, Tab } from "react-bootstrap";
+import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
+import { toast, ToastContainer } from "react-toastify";
 
 class BookPage extends Component {
     constructor(props) {
@@ -34,16 +35,9 @@ class BookPage extends Component {
                 this.setState({
                     book: json,
                 });
-            })
-            .catch(() => {
-                this.setState({ userPageInfo: null, loading: false });
             });
     }
-    /**
-     * Sort authors first by role (i.e. if they wrote or if they authored/illustrated)
-     * by checking if the author name contains a role in brackets. Then sort alphabetically
-     * @param {array} authors
-     */
+
     sortAuthors = (authors) => {
         return authors.sort(function (a, b) {
             if (a.includes("(") && !b.includes("(")) {
@@ -56,6 +50,10 @@ class BookPage extends Component {
         });
     };
 
+    notify = (message) => {
+        toast.info(message);
+    };
+
     render() {
         const book = this.state.book;
         const user = this.props.initialUserInfo;
@@ -64,16 +62,19 @@ class BookPage extends Component {
         }
         return (
             <div>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Container>
                     <Row>
                         <br></br>
                     </Row>
                     <Row>
                         <Media>
-                            <img
+                            <Image
                                 className="mr-3"
                                 src={book.cover}
                                 alt={book.title}
+                                thumbnail
+                                width="314px"
                             />
                             <Media.Body>
                                 <h1>{book.title}</h1>
@@ -85,9 +86,12 @@ class BookPage extends Component {
                                     </small>
                                 </h5>
                                 <p>
-                                    {console.log("User: " + this.user)}
                                     {user ? (
-                                        <AddBookModal book={book} user={user} />
+                                        <AddBookModal
+                                            book={book}
+                                            user={user}
+                                            notify={this.notify}
+                                        />
                                     ) : null}
                                 </p>
                                 <Tabs defaultActiveKey="summary">
@@ -101,7 +105,7 @@ class BookPage extends Component {
                                         <h5>Average Rating</h5>
                                         <StarRatings
                                             rating={book.ave_rating}
-                                            // starRatedColor="gold"
+                                            starRatedColor="gold"
                                             numberOfStars={5}
                                             starDimension="30px"
                                             name="rating"
@@ -114,8 +118,19 @@ class BookPage extends Component {
                                         </small>
 
                                         <br></br>
-                                        <AddReview bookISBN={this.props.match.params.bookISBN} readerID={this.props.initialUserInfo.id} />
-                                        <ReviewList bookISBN={this.props.match.params.bookISBN} />
+                                        <AddReview
+                                            bookISBN={
+                                                this.props.match.params.bookISBN
+                                            }
+                                            readerID={
+                                                this.props.initialUserInfo.id
+                                            }
+                                        />
+                                        <ReviewList
+                                            bookISBN={
+                                                this.props.match.params.bookISBN
+                                            }
+                                        />
                                     </Tab>
                                     <Tab
                                         eventKey="info"
@@ -143,8 +158,6 @@ class BookPage extends Component {
                     </Row>
                     <br></br>
                 </Container>
-
-
             </div>
         );
     }

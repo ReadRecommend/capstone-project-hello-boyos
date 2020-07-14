@@ -65,7 +65,7 @@ class Main extends Component {
                         exact
                         path="/user/:userId"
                         component={UserPage}
-                        roles={["user"]}
+                        roles={["user", "admin"]}
                         key="user"
                     />
                     <PrivateRoute

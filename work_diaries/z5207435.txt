@@ -27,3 +27,27 @@ Create a script to turn a json file of books into sql statements that can be ins
 Meeting on Saturday
     Discussed and planned the schema and layout of the database
 Edited script to turn a json file of books into sql statements to work with all the new attributes and tables in our database
+
+Week 4
+Researched how React works and watched an hour and a half long tutorial on it
+Made a basic framework for the frontend, which queries the backend for a list of the books and outputs the title, cover and summary in a pretty format
+Meeting on Wednesday
+    Helping teammates to set up and fix their environments
+Added a baseline for React Router
+Added a collection list, adding and removing collections in both the frontend and backend
+
+Week 5
+Added proper error handling to login and collection operations
+Helped to refactor, fix and get login working on the front end
+Got privileged pages and redirect to login working
+Meeting on Wednesday
+    Did the Retrospective with my teammates, where we constructively talked about issues and how to improve
+Redid the way we did authentication, by moving it to storing the jwt token in the cookies, and allowing for multiple user roles (user, admin etc).
+Created the functionality for dynamic user pages, so that people logged in can view other people’s pages
+Got a basic admin book adding screen working
+
+Week 6
+Made small modifications and bug fixes to the code I wrote and features I created
+Created the user pages, where any user can view the collections of another user
+Used React Context to fix the navbar not registering if you are logged in/out properly
+Added error checking, proper form inputs and bug fixes to the admin book adding screen, completing it

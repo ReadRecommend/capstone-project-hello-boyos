@@ -1,48 +1,38 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import { ListGroupItem } from "react-bootstrap";
 class CollectionListItem extends Component {
-    // Can move this to a class in css later
-    getStyle = () => {
-        return {
-            background: "#f4f4f4",
-            textAlign: "center",
-            padding: "10px",
-            borderBottom: "1px #ccc dotted"
-        }
-    }
-
     render() {
         const { name, id } = this.props.collection;
         return (
-            <div style={this.getStyle()}>
-                <p>
-                    {/* When one clicks the name of the collection, it is selected as the current collection. */}
-                    <button style={linkButton} onClick={this.props.selectCollection.bind(this, id)}>{name}</button>
-                    {" "}
+            <>
+                <ListGroupItem
+                    action
+                    active={this.props.isSelected}
+                    onClick={this.props.selectCollection.bind(this, id)}
+                    variant="secondary"
+                >
+                    {/* When one clicks the collection, it is selected as the current collection. */}
+                    {name}
                     {/* When the button is pressed, this collection will be removed from the collection list. */}
-                    {name !== "Main" && this.props.editable &&
-                        <button onClick={this.props.delCollection.bind(this, name)}>X</button>
-                    }
-                </p>
-            </div>
-        )
+                    {name !== "Main" && this.props.editable && (
+                        <span
+                            onClick={this.props.delCollection.bind(this, name)}
+                            className="float-right btn-danger btn btn-sm"
+                        >
+                            x
+                        </span>
+                    )}
+                </ListGroupItem>
+            </>
+        );
     }
 }
 
 CollectionListItem.propTypes = {
     collection: PropTypes.object.isRequired,
-    selectCollection: PropTypes.func.isRequired
-}
-
-const linkButton = {
-    backgroundcolor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    textdecoration: 'underline',
-    display: 'inline',
-    margin: '0',
-    padding: '0'
-}
+    selectCollection: PropTypes.func.isRequired,
+    isSelected: PropTypes.bool.isRequired,
+};
 
 export default CollectionListItem;
