@@ -259,21 +259,17 @@ class UserHome extends Component {
           </Modal.Body>
         </Modal>
 
-        <Modal show={this.state.libraryModalShow}>
-          <Modal.Header>
+        <Modal
+          show={this.state.libraryModalShow}
+          onHide={() => this.handleLibraryModal()}
+        >
+          <Modal.Header closeButton>
             <Modal.Title>
               Add {this.state.libraryBook && this.state.libraryBook.title} to{" "}
               {this.state.currentCollection.name
                 ? this.state.currentCollection.name
                 : "<choose a collection>"}
             </Modal.Title>
-            <button
-              onClick={() => {
-                this.handleLibraryModal();
-              }}
-            >
-              x
-            </button>
           </Modal.Header>
           <Modal.Body>
             <Button
@@ -284,8 +280,9 @@ class UserHome extends Component {
                 );
                 this.handleLibraryModal();
               }}
+              block
             >
-              Add!
+              Add
             </Button>
           </Modal.Body>
           <Modal.Footer></Modal.Footer>

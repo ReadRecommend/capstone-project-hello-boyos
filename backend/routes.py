@@ -3,7 +3,12 @@ from flask import Response, abort, jsonify, request
 from flask_cors import cross_origin
 
 from backend import app, db, guard
-from backend.errors import AuthenticationError, InvalidRequest, ResourceExists
+from backend.errors import (
+    AuthenticationError,
+    InvalidRequest,
+    ResourceExists,
+    ResourceNotFound,
+)
 from backend.model.schema import *
 
 
@@ -90,6 +95,35 @@ def get_book(isbn):
     return book_schema.dump(book)
 
 
+@app.route("/book/<isbn>/reviews")
+def get_review(isbn):
+    review = Review.query.filter_by(book_id=isbn).all()
+    return jsonify(reviews_schema.dump(review))
+
+
+@app.route("/book/<isbn>/addreview", methods=["POST"])
+def add_review(isbn):
+    review_data = request.json
+    reader_id = review_data.get("reader_id")
+    book_id = review_data.get("book_id")
+
+    review = review_data.get("review")
+    score = review_data.get("score")
+    if Review.query.filter(
+        (Review.reader_id == reader_id) & (Review.book_id == book_id)
+    ).first():
+        raise ResourceExists("User has already reviewed this book")
+
+    new_review = Review(
+        reader_id=reader_id, book_id=book_id, review=review, score=score,
+    )
+
+    db.session.add(new_review)
+    db.session.commit()
+
+    return review_schema.dump(review)
+
+
 # =======================
 # * USER ROUTES
 # =======================
@@ -124,6 +158,8 @@ def add_reader():
     # Add the new user's Main collection
     main_collection = Collection(name="Main")
     new_reader.collections.append(main_collection)
+    recently_read = Collection(name="Recently Read")
+    new_reader.collections.append(recently_read)
 
     db.session.add(new_reader)
     db.session.commit()
@@ -153,10 +189,7 @@ def get_reader(username):
 
 @app.route("/user/id/<id>")
 def get_reader_by_id(id):
-
-    try:
-        id = int(id)
-    except:
+    if not isinstance(id, int) and not id.isdigit():
         raise InvalidRequest(r"Id should be an int",)
 
     readers = Reader.query.filter_by(id=id).first_or_404()
@@ -245,8 +278,8 @@ def add_collection():
         )
 
     # Ensure we are not trying to delete or create main
-    if collection_name == "Main":
-        return Response(r"Cannot create or delete a collection called Main", status=403)
+    if collection_name == "Main" or collection_name == "Recently Read":
+        raise InvalidRequest("Cannot create or delete a collection with this name")
 
     if reader_id != flask_praetorian.current_user().id:
         raise AuthenticationError("You can only add/delete your own collections")
@@ -258,14 +291,14 @@ def add_collection():
 
     # Check reader exists
     if not reader:
-        return Response(r"Reader is not in the database", status=403)
+        raise ResourceNotFound(r"Reader is not in the database")
 
     # If we are making a new collection
     if request.method == "POST":
         # Ensure there isn't an already existing collection
         if collection:
-            return Response(
-                r"A collection with this name already exists for this user", status=403
+            raise InvalidRequest(
+                r"A collection with this name already exists for this user"
             )
 
         # Create a new collection
@@ -276,8 +309,8 @@ def add_collection():
     elif request.method == "DELETE":
         # Ensure there is an already existing collection
         if not collection:
-            return Response(
-                r"A collection with this name does not exist for this user", status=403
+            return ResourceNotFound(
+                r"A collection with this name does not exist for this user"
             )
 
         # Remove the collection
@@ -303,15 +336,18 @@ def modify_collection():
     collection_id = request.json.get("collection_id")
     book_id = request.json.get("book_id")
     if not (collection_id and book_id):
-        return abort(
-            400, r"Request should be of the form {collection_id: <id>, book_id: <id>}",
+        raise InvalidRequest(
+            "Request should be of the form {{'collection_id': id, 'book_id': id}}",
         )
     collection = Collection.query.filter_by(id=collection_id).first()
     book = Book.query.filter_by(isbn=book_id).first()
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:
+        if collection.name == "Recently Read":
+            return InvalidRequest("You cannot manually add books to your recently read")
         collection.books.append(book)
+        handle_recent_10(book, collection)
         db.session.add(collection)
         db.session.commit()
 
@@ -385,3 +421,26 @@ def get_genres():
 def get_authors():
     authors = Author.query.all()
     return jsonify(authors_schema.dump(authors))
+
+
+def handle_recent_10(book, collection):
+    print("handling")
+    reader = collection.reader
+
+    recently_read = Collection.query.filter_by(
+        reader_id=reader.id, name="Recently Read"
+    ).first()
+
+    if len(recently_read.books) < 10:
+        recently_read.books.append(book)
+        db.session.add(recently_read)
+        db.session.commit()
+        return
+
+    memberships = sorted(recently_read.book_memberships, key=lambda mem: mem.date_added)
+    oldest_book = memberships[0].book
+    recently_read.books.remove(oldest_book)
+    recently_read.books.append(book)
+    db.session.add(recently_read)
+    db.session.commit
+

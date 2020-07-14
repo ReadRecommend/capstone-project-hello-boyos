@@ -9,3 +9,10 @@ They're all in a .rar file on the google doc
 
 Week 3:
 Basic SQL Alchemy added
+
+Week 4:
+Finished off backend SQL
+
+Week 5:
+Implementing Reviews Posting
+Implementing Reviews front end and back end

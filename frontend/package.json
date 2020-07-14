@@ -4,7 +4,9 @@
     "private": true,
     "dependencies": {
         "bootstrap": "^4.5.0",
+        "jquery": "^1.9.1",
         "moment": "^2.27.0",
+        "popper.js": "^1.16.1",
         "react": "^16.13.1",
         "react-bootstrap": "^1.0.1",
         "react-cookie": "^4.0.3",
@@ -16,7 +18,9 @@
         "react-router-dom": "^5.2.0",
         "react-scripts": "^3.4.1",
         "react-star-ratings": "^2.3.0",
-        "react-tag-input": "^6.4.3"
+        "react-tag-input": "^6.4.3",
+        "react-toastify": "^6.0.8",
+        "typescript": "^3.9.6"
     },
     "scripts": {
         "start": "react-scripts start",

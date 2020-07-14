@@ -4,6 +4,9 @@ import AddBookModal from "../components/AddBookModal";
 
 import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
+import ReviewList from "../components/ReviewList";
+import AddReview from "../components/AddReview";
+import { toast, ToastContainer } from "react-toastify";
 
 class BookPage extends Component {
     constructor(props) {
@@ -47,6 +50,10 @@ class BookPage extends Component {
         });
     };
 
+    notify = (message) => {
+        toast.info(message);
+    };
+
     render() {
         const book = this.state.book;
         const user = this.props.initialUserInfo;
@@ -55,6 +62,7 @@ class BookPage extends Component {
         }
         return (
             <div>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Container>
                     <Row>
                         <br></br>
@@ -79,17 +87,40 @@ class BookPage extends Component {
                                 </h5>
                                 <p>
                                     {user ? (
-                                        <AddBookModal book={book} user={user} />
+                                        <AddBookModal
+                                            book={book}
+                                            user={user}
+                                            notify={this.notify}
+                                        />
                                     ) : null}
                                 </p>
                                 <Tabs defaultActiveKey="summary">
                                     <Tab eventKey="summary" title="Summary">
+                                        <br></br>
+
                                         <p>{book.summary}</p>
                                     </Tab>
                                     <Tab
                                         eventKey="reviews"
                                         title="Reviews + Ratings"
                                     >
+                                        {this.props.initialUserInfo && (
+                                            <>
+                                                <br></br>
+                                                <AddReview
+                                                    bookISBN={
+                                                        this.props.match.params
+                                                            .bookISBN
+                                                    }
+                                                    readerID={
+                                                        this.props
+                                                            .initialUserInfo.id
+                                                    }
+                                                    notify={this.notify}
+                                                />
+                                            </>
+                                        )}
+                                        <br></br>
                                         <h5>Average Rating</h5>
                                         <StarRatings
                                             rating={book.ave_rating}
@@ -104,11 +135,18 @@ class BookPage extends Component {
                                             {book.n_ratings.toLocaleString()}{" "}
                                             reviews
                                         </small>
+
+                                        <ReviewList
+                                            bookISBN={
+                                                this.props.match.params.bookISBN
+                                            }
+                                        />
                                     </Tab>
                                     <Tab
                                         eventKey="info"
                                         title="Additional Information"
                                     >
+                                        <br></br>
                                         <strong>Publisher: </strong>
                                         {book.publisher}
                                         <br></br>

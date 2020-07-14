@@ -14,6 +14,10 @@ export function getBook(bookISBN) {
     return fetch(`${apiUrl}/book/${bookISBN}`);
 }
 
+export function getReview(bookISBN) {
+    return fetch(`${apiUrl}/book/${bookISBN}/reviews`);
+}
+
 export function addBook(bookDetails) {
     return fetch(`${apiUrl}/book`, {
         method: "POST",

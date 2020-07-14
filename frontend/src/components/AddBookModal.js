@@ -9,7 +9,6 @@ class AddBookModal extends Component {
         this.state = {
             show: false,
             collectionID: null,
-            showToast: false,
         };
     }
 
@@ -18,12 +17,6 @@ class AddBookModal extends Component {
     };
     hideModal = () => {
         this.setState({ show: false });
-    };
-    showToast = () => {
-        this.setState({ showToast: true });
-    };
-    hideToast = () => {
-        this.setState({ showToast: false });
     };
 
     handleChange = (e) => {
@@ -37,32 +30,6 @@ class AddBookModal extends Component {
         }
         return (
             <>
-                <Toast
-                    style={{
-                        position: "absolute",
-                        top: 0,
-                        right: 0,
-                    }}
-                    show={this.state.showToast}
-                    onClose={this.hideToast}
-                    delay={3000}
-                    autohide
-                >
-                    <Toast.Header>
-                        <img
-                            width="10%"
-                            height="10%"
-                            className="mr-3"
-                            src={book.cover}
-                            alt={book.title}
-                        />
-                        <strong className="mr-auto">Congratulations!</strong>
-                    </Toast.Header>
-                    <Toast.Body>
-                        <strong>{book.title}</strong> was successfully added to
-                        your collection
-                    </Toast.Body>
-                </Toast>
                 <Button
                     variant="primary"
                     onClick={() => {
@@ -106,7 +73,9 @@ class AddBookModal extends Component {
                                     this.state.collectionID
                                 );
                                 this.hideModal();
-                                this.showToast();
+                                this.props.notify(
+                                    `Successfully added ${book.title} to your collection`
+                                );
                             }}
                         >
                             Save Changes

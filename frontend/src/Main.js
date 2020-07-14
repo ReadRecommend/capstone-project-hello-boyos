@@ -9,6 +9,9 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
+import Reviews from "./pages/Reviews";
+import AddReview from "./components/AddReview";
+
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
