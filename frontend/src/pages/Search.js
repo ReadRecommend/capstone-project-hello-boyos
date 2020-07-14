@@ -13,7 +13,7 @@ class Search extends Component {
 
         this.state = {
             search: "",
-            filter: "",
+            filter: "5 Stars",
             currentSearchList: [],
         };
     }
@@ -36,11 +36,17 @@ class Search extends Component {
     };
 
     updateFilter = (event) => {
-        this.setState({ filter: event.target.value });
+        // When calling handleSubmit asynchronously the event will
+        // be nullified otherwise
+        event.persist();
+        this.setState({ filter: event.target.value }, () => {
+            this.handleSubmit(event); // Call asynchronously
+        });
     };
 
     handleSubmit = (event) => {
         event.preventDefault();
+        console.log(this.state.filter);
         const data = {
             search: this.state.search,
             filter: this.state.filter,
@@ -78,14 +84,15 @@ class Search extends Component {
 
                             <Form.Control
                                 as="select"
-                                onChange={(event) => { this.updateFilter(event); this.handleSubmit(event); }}
+                                defaultValue={"5 Stars"}
+                                onChange={this.updateFilter}
                             >
-                                <option> No Filter </option>
-                                <option> &ge; 5 Stars </option>
-                                <option> &ge; 4 Stars </option>
-                                <option> &ge; 3 Stars </option>
-                                <option> &ge; 2 Stars </option>
-                                <option> &ge; 1 Stars </option>
+                                <option>No Filter</option>
+                                <option>5 Stars</option>
+                                <option>&ge; 4 Stars</option>
+                                <option>&ge; 3 Stars</option>
+                                <option>&ge; 2 Stars</option>
+                                <option>&ge; 1 Stars</option>
                             </Form.Control>
 
                             <Button
