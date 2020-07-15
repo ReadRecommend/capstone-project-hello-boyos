@@ -14,6 +14,10 @@ export function getBook(bookISBN) {
     return fetch(`${apiUrl}/book/${bookISBN}`);
 }
 
+export function getAllBooks() {
+    return fetch(`${apiUrl}/book`);
+}
+
 export function getReview(bookISBN) {
     return fetch(`${apiUrl}/book/${bookISBN}/reviews`);
 }

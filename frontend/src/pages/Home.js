@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 class Home extends Component {
     render() {
         if (this.props.initialUserInfo.roles.includes("admin")) {
-            return (<Redirect to="/admin"/>);
+            return (<Redirect to="/admin/addBook" />);
         } else {
-            return (<Redirect to="/home"/>);
+            return (<Redirect to="/home" />);
         }
     }
 }

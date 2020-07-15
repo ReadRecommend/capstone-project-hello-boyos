@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Alert, Button, Form, Container } from "react-bootstrap";
-import { addBook } from "../fetchFunctions";
+import { addBook } from "../../fetchFunctions";
 import { WithContext as ReactTags } from "react-tag-input";
 import Datetime from "react-datetime";
 import "./AdminAddBook.css";
-import "./YearPicker.css";
+import "../YearPicker.css";
 
-class Admin extends Component {
+class AdminAddBook extends Component {
     constructor(props) {
         super(props);
 
@@ -247,4 +247,4 @@ class Admin extends Component {
     }
 }
 
-export default Admin;
+export default AdminAddBook;

@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 
 import PrivateRoute from "./components/PrivateRoute";
-import Admin from "./pages/Admin";
+import AdminAddBook from "./pages/Admin/AdminAddBook";
+import AdminRemoveBook from "./pages/Admin/AdminRemoveBook";
 import UserHome from "./pages/UserHome";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -39,10 +40,17 @@ class Main extends Component {
           />
           <PrivateRoute
             exact
-            path="/admin"
-            component={Admin}
+            path="/admin/addBook"
+            component={AdminAddBook}
             roles={["admin"]}
-            key="admin"
+            key="adminAddBook"
+          />
+          <PrivateRoute
+            exact
+            path="/admin/removeBook"
+            component={AdminRemoveBook}
+            roles={["admin"]}
+            key="adminRemoveBook"
           />
           <PrivateRoute
             exact
