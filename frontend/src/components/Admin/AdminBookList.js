@@ -13,6 +13,7 @@ class AdminBookList extends Component {
 
     componentDidMount() {
 
+        // Get all the books in the db
         getAllBooks()
             .then((res) => {
 
@@ -26,7 +27,10 @@ class AdminBookList extends Component {
             })
             .then((json) => {
 
-                this.setState({ books: json })
+                //Sort the books by n_ratings
+                json.sort((a, b) => (b.n_ratings - a.n_ratings));
+
+                this.setState({ books: json });
 
             })
             .catch((error) => {

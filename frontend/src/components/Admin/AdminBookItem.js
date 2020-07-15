@@ -9,10 +9,11 @@ class AdminBookItem extends Component {
 
     render() {
         return (
-            <ListGroup.Item>
-                {this.props.book.title}
-                <Button>DELETE</Button>
-            </ListGroup.Item>
+            <tr>
+                <td>{this.props.book.title}</td>
+                <td>{this.props.book.n_ratings}</td>
+                <td><Button>DELETE</Button></td>
+            </tr>
         )
     }
 
