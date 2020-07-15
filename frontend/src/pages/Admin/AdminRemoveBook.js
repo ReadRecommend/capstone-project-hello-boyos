@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Container, Button } from 'react-bootstrap';
+import { Container, Button, Spinner } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import {Link} from 'react-router-dom';
 
-import { getAllBooks } from '../../fetchFunctions';
+import { getAllBooks, deleteBook } from '../../fetchFunctions';
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
@@ -14,6 +15,7 @@ class AdminRemoveBook extends Component {
 
         this.getDeleteFormatter = this.getDeleteFormatter.bind(this);
         this.state = {
+            loading: true,
             books: []
         }
     }
@@ -32,9 +34,7 @@ class AdminRemoveBook extends Component {
                 return res.json();
             })
             .then((json) => {
-
-                this.setState({ books: json });
-
+                this.setState({ books: json, loading: false });
             })
             .catch((error) => {
                 // An error occurred
@@ -46,7 +46,13 @@ class AdminRemoveBook extends Component {
 
     // Function that returns the button that will be displayed in the final dummy column of the table 
     getDeleteFormatter(cell, row) {
-        return (<Button onClick={this.deleteBook.bind(this, row.isbn)}>DELETE</Button>)
+        return (<Button onClick={this.handleDeleteBook.bind(this, row.isbn)}>DELETE</Button>)
+    }
+
+    // Function that returns href for the title
+    // TODO
+    getTitleFormatter(cell, row) {
+        return (<Link to="/book">{cell}</Link>)
     }
 
     getColumns() {
@@ -57,6 +63,7 @@ class AdminRemoveBook extends Component {
         }, {
             dataField: "title",
             text: "Title",
+            formatter: this.getTitleFormatter,
             sort: true
         }, {
             dataField: "n_ratings",
@@ -67,37 +74,64 @@ class AdminRemoveBook extends Component {
             text: "",
             isDummyField: true,
             formatter: this.getDeleteFormatter,
-            style: { textAlign: "center", width: "50px" }
+            style: { textAlign: "center" }
         }]
 
         return columns;
     }
 
     // Function that deletes the book from the database, and the state
-    deleteBook(isbn) {
+    handleDeleteBook(isbn) {
         console.log(isbn);
 
-        // TODO Make route to delete book and call it
+        this.setState({loading: true});
 
-        // Filter out the book that matches this isbn
-        const newBookList = this.state.books.filter((book) => book.isbn !== isbn);
-        this.setState({
-            books: newBookList
-        })
+        deleteBook(isbn)
+            .then((res) => {
+
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
+                return res.json();
+            })
+            .then((json) => {
+                this.setState({ books: json, loading: false });
+            })
+            .catch((error) => {
+                // An error occurred
+                const errorMessage = error.message;
+                console.log(errorMessage);
+            })
+
     }
 
     render() {
-        return (
-            <Container>
-                <h1>Remove books</h1>
-                <BootstrapTable
-                    data={this.state.books}
-                    keyField="isbn"
-                    columns={this.getColumns()}
-                    pagination={paginationFactory()}
-                    bootstrap4 />
-            </Container>
-        )
+        if (this.state.loading) {
+            // Still performing the fetch
+            return(<Spinner
+                animation="border"
+                style={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                }}
+            />);
+        } else {
+            return (
+                <Container>
+                    <h1>Remove books</h1>
+                    <BootstrapTable
+                        data={this.state.books}
+                        keyField="isbn"
+                        columns={this.getColumns()}
+                        pagination={paginationFactory({alwaysShowAllBtns: true})}
+                        bootstrap4 />
+                </Container>
+            );
+        }
     }
 
 }

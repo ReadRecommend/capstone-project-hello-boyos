@@ -82,6 +82,28 @@ def new_book():
 
     return book_schema.dump(newBook)
 
+@app.route("/book", methods=["DELETE"])
+@flask_praetorian.roles_required("admin")
+def delete_book():
+    isbn = request.json.get("isbn")
+
+    # Ensure proper fields exist
+    if not (isbn):
+        raise InvalidRequest("Request should be of the form {{isbn: 'isbn'}}")
+
+    book = Book.query.filter_by(isbn=isbn).first()
+
+    # Check book exists
+    if not (book):
+        raise ResourceNotFound("Book does not exist")
+
+    # Delete the book
+    db.session.delete(book)
+    db.session.commit()
+
+    # Return the new state of all books in the db
+    books = Book.query.all()
+    return jsonify(books_schema.dump(books))
 
 @app.route("/book", methods=["GET"])
 def get_books():

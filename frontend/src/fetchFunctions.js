@@ -14,6 +14,17 @@ export function getBook(bookISBN) {
     return fetch(`${apiUrl}/book/${bookISBN}`);
 }
 
+export function deleteBook(bookISBN) {
+    return fetch(`${apiUrl}/book`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({isbn: bookISBN}),
+        credentials: "include"
+    })
+}
+
 export function getAllBooks() {
     return fetch(`${apiUrl}/book`);
 }
