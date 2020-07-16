@@ -6,7 +6,8 @@ from sqlalchemy.ext.associationproxy import association_proxy
 
 
 class Book(db.Model):
-    isbn = db.Column(db.String, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    isbn = db.Column(db.String, unique=True)
     title = db.Column(db.String, nullable=False)
 
     publisher = db.Column(db.String)
@@ -29,7 +30,7 @@ class Book(db.Model):
     authors = db.relationship(
         "Author",
         secondary=authors,
-        lazy="dynamic",
+        lazy="subquery",
         backref=db.backref("books", lazy=True),
     )
 
@@ -41,7 +42,6 @@ class Book(db.Model):
         "collection",
         creator=lambda collection: CollectionMembership(collection=collection),
     )
-    # TODO: Reviews
 
     def __repr__(self):
         return f"<Book(title='{self.title}, authors='{self.authors}', publisher='{self.publisher}')>"

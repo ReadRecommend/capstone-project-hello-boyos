@@ -69,7 +69,7 @@ class Main extends Component {
           <Route exact path="/logout" component={Logout} key="logout" />
           <PrivateRoute
             exact
-            path="/book/:bookISBN"
+            path="/book/:bookID"
             component={BookPage}
             roles={["everyone"]}
             key="bookPage"

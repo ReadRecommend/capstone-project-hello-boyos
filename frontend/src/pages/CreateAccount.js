@@ -52,7 +52,7 @@ class CreateAccount extends Component {
             email: this.state.email,
             password: this.state.password,
         };
-        fetch("http://localhost:5000/createaccount", {
+        fetch("http://localhost:5000/auth/signup", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -75,7 +75,7 @@ class CreateAccount extends Component {
                 // Change route to login
                 return this.props.history.push("/login");
             })
-            .catch((e) => {});
+            .catch((e) => { });
     };
 
     render() {
@@ -126,14 +126,9 @@ class CreateAccount extends Component {
                                 required
                             />
                         </Form.Group>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            block
-                            value="Sign In"
-                        >
+                        <Button variant="primary" type="submit" block value="Sign In">
                             Sign Up
-                        </Button>
+            </Button>
                     </Form>
                     <br></br>
                     <p className="text-center"> or </p>
@@ -144,7 +139,7 @@ class CreateAccount extends Component {
                         block
                     >
                         Login
-                    </Button>
+          </Button>
                 </Container>
             </div>
         );

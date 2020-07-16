@@ -6,7 +6,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 
 class Review(db.Model):
     reader_id = db.Column(db.Integer, db.ForeignKey("reader.id"), primary_key=True)
-    book_id = db.Column(db.String, primary_key=True)
+    book_id = db.Column(db.Integer, primary_key=True)
 
     creation_date = db.Column(db.DateTime, default=datetime.utcnow())
 
@@ -18,4 +18,4 @@ class Review(db.Model):
     )
 
     def __repr__(self):
-        return f"<Review(reader_id='{self.reader_id}', book_isbn='{self.book_id}', creation_date='{self.creation_date}', score='{self.score}')>"
+        return f"<Review(reader_id='{self.reader_id}', book_id='{self.book_id}', creation_date='{self.creation_date}', score='{self.score}')>"

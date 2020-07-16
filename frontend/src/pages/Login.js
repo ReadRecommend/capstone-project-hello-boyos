@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Alert, Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
-import { loginContext } from '../LoginContext';
+import { loginContext } from "../LoginContext";
 
 import "./Login.css";
 
@@ -44,7 +44,7 @@ class Login extends Component {
             username: this.state.username,
             password: this.state.password,
         };
-        fetch("http://localhost:5000/login", {
+        fetch("http://localhost:5000/auth/login", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -121,14 +121,9 @@ class Login extends Component {
                                 required
                             />
                         </Form.Group>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            block
-                            value="Sign In"
-                        >
+                        <Button variant="primary" type="submit" block value="Sign In">
                             Sign In
-                        </Button>
+            </Button>
                     </Form>
                     <br></br>
                     <p className="text-center"> or </p>
@@ -139,7 +134,7 @@ class Login extends Component {
                         block
                     >
                         Create an Account
-                    </Button>
+          </Button>
                 </Container>
                 {/* </form> */}
             </div>

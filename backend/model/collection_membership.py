@@ -5,7 +5,7 @@ from backend import db
 
 class CollectionMembership(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.String, db.ForeignKey("book.isbn"))
+    book_id = db.Column(db.Integer, db.ForeignKey("book.id"))
     collection_id = db.Column(db.Integer, db.ForeignKey("collection.id"))
     date_added = db.Column(db.DateTime, nullable=False, default=datetime.utcnow())
 

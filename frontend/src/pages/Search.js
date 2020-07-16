@@ -99,20 +99,13 @@ class Search extends Component {
                                 <option>&ge; 2 Stars</option>
                                 <option>&ge; 1 Stars</option>
                             </Form.Control>
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                block
-                                value="Search"
-                            >
+                            <Button variant="primary" type="submit" block value="Search">
                                 Search
-                            </Button>
+              </Button>
                         </InputGroup>
                     </Form>
                     <br></br>
-                    <SearchResults
-                        books={this.state.currentSearchList}
-                    ></SearchResults>
+                    <SearchResults books={this.state.currentSearchList}></SearchResults>
                 </Container>
             </div>
         );

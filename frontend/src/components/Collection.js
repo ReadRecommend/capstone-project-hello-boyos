@@ -9,36 +9,36 @@ displayed.
 This class deals with displaying those collection items.
 */
 class Collection extends Component {
-    displayCollection = () => {
-        const { currentCollection } = this.props;
-        if (
-            currentCollection !== null &&
-            typeof currentCollection.books !== "undefined"
-        ) {
-            return (
-                <CardDeck>
-                    {currentCollection.books.map((book) => (
-                        <CollectionItem
-                            key={book.isbn}
-                            book={book}
-                            removeBook={this.props.removeBook}
-                            addToCollection={this.props.addToCollection}
-                            userCollections={this.props.userCollections}
-                            editable={this.props.editable}
-                        />
-                    ))}
-                </CardDeck>
-            );
-        }
-    };
-
-    render() {
-        return <div>{this.displayCollection()}</div>;
+  displayCollection = () => {
+    const { currentCollection } = this.props;
+    if (
+      currentCollection !== null &&
+      typeof currentCollection.books !== "undefined"
+    ) {
+      return (
+        <CardDeck>
+          {currentCollection.books.map((book) => (
+            <CollectionItem
+              key={book.id}
+              book={book}
+              removeBook={this.props.removeBook}
+              addToCollection={this.props.addToCollection}
+              userCollections={this.props.userCollections}
+              editable={this.props.editable}
+            />
+          ))}
+        </CardDeck>
+      );
     }
+  };
+
+  render() {
+    return <div>{this.displayCollection()}</div>;
+  }
 }
 
 Collection.propTypes = {
-    currentCollection: PropTypes.object.isRequired,
+  currentCollection: PropTypes.object.isRequired,
 };
 
 export default Collection;

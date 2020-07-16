@@ -43,7 +43,7 @@ def strip_book(url):
     if (genres := soup.find_all(class_="actionLinkLite bookPageGenreLink")) :
         book["genres"] = [genre.text.strip() for genre in genres]
     else:
-        book["genres"] = None
+        book["genres"] = []
 
     if (language_element := soup.find(itemprop="inLanguage")) :
         book["language"] = language_element.text.strip()
@@ -56,9 +56,11 @@ def strip_book(url):
         book[""] = None
 
     if (reviews_element := soup.find(itemprop="reviewCount")) :
-        book["n_reviews"] = int(
+        n_review_string = (
             reviews_element.text.split("reviews")[0].strip().replace(",", "")
         )
+        if n_review_string.isdigit():
+            book["n_reviews"] = int(n_review_string)
     else:
         book["n_reviews"] = None
 

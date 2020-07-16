@@ -68,7 +68,7 @@ class AdminAddBook extends Component {
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = JSON.parse(error.message).message;
+                const errorMessage = error.message;
                 this.setState({ errorShow: true, errorMessage: errorMessage });
             });
     };
