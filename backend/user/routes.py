@@ -32,7 +32,7 @@ def get_reader_by_id(id):
     return jsonify(reader_schema.dump(reader))
 
 
-@user_bp.route("/")
+@user_bp.route("")
 def get_readers():
     readers = Reader.query.all()
     return jsonify(readers_schema.dump(readers))

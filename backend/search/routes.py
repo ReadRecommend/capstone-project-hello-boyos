@@ -10,7 +10,7 @@ from backend.model.schema import (
 )
 
 
-@search_bp.route("/", methods=["POST"])
+@search_bp.route("", methods=["POST"])
 def search():
     search_term = request.json.get("search")
     rating_filter = request.json.get("filter")

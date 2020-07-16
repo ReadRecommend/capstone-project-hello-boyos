@@ -21,7 +21,7 @@ def get_collection(collectionID):
     return jsonify(collection_schema.dump(collection))
 
 
-@collection_bp.route("/", methods=["POST", "DELETE"])
+@collection_bp.route("", methods=["POST", "DELETE"])
 @flask_praetorian.auth_required
 def add_collection():
     collection_data = request.json

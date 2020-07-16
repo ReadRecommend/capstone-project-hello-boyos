@@ -16,7 +16,7 @@ from backend.model.schema import (
 )
 
 
-@book_bp.route("/", methods=["POST"])
+@book_bp.route("", methods=["POST"])
 @flask_praetorian.roles_required("admin")
 def add_book():
     bookData = request.json
@@ -76,7 +76,7 @@ def add_book():
     return jsonify(book_schema.dump(new_book))
 
 
-@book_bp.route("/", methods=["GET"])
+@book_bp.route("", methods=["GET"])
 def get_books():
     books = Book.query.all()
     return jsonify(books_schema.dump(books))
