@@ -20,7 +20,7 @@ class AddReview extends Component {
 
     componentDidMount() {
         this.setState({ reader_id: this.props.readerID });
-        this.setState({ book_id: this.props.bookISBN });
+        this.setState({ book_id: this.props.bookID });
     }
 
     updateReview = (event) => {
@@ -52,7 +52,7 @@ class AddReview extends Component {
             score: this.state.score,
         };
 
-        fetch("http://localhost:5000/book/${book_id}/addreview", {
+        fetch("http://localhost:5000/book/review", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {
@@ -61,17 +61,9 @@ class AddReview extends Component {
         })
             .then((res) => {
                 if (!res.ok) {
-                    var eMessage = "Something went wrong..."
-                    switch (res.statusText) {
-                        case "FORBIDDEN":
-                            eMessage = "You have already reviewed this book."
-                        case "BAD REQUEST":
-                            eMessage = "Please choose a score between 1 and 5"
-                    }
-
                     this.setState({
                         errorShow: true,
-                        errorMessage: eMessage,
+                        errorMessage: "You have already reviewed this book.",
                     }).then(() => {
                         throw Error;
                     });
@@ -101,11 +93,7 @@ class AddReview extends Component {
                 <Accordion>
                     <Card>
                         {/* <Card.Header> */}
-                        <Accordion.Toggle
-                            as={Card.Header}
-                            variant="link"
-                            eventKey="0"
-                        >
+                        <Accordion.Toggle as={Card.Header} variant="link" eventKey="0">
                             <a href="#">
                                 <h5>Leave a review</h5>
                             </a>
@@ -113,10 +101,7 @@ class AddReview extends Component {
                         {/* </Card.Header> */}
                         <Accordion.Collapse eventKey="0">
                             <Card.Body>
-                                <Form
-                                    method="POST"
-                                    onSubmit={this.handleSubmit}
-                                >
+                                <Form method="POST" onSubmit={this.handleSubmit}>
                                     <Form.Group>
                                         <Form.Control
                                             type="number"
@@ -140,7 +125,7 @@ class AddReview extends Component {
                                     </Form.Group>
                                     <Button variant="primary" type="submit">
                                         Submit
-                                    </Button>
+                  </Button>
                                 </Form>
                             </Card.Body>
                         </Accordion.Collapse>

@@ -16,7 +16,6 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    // Get all the books in the database
     fetch("http://localhost:5000/user")
       .then((res) => {
         return res.json();
@@ -37,7 +36,7 @@ class Search extends Component {
     const data = {
       search: this.state.search,
     };
-    fetch("http://localhost:5000/usrsearch", {
+    fetch("http://localhost:5000/search/users", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

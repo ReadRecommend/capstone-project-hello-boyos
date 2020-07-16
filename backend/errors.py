@@ -13,7 +13,7 @@ app.register_error_handler(
 
 
 class AuthenticationError(FlaskBuzz):
-    status_code = status_code = HTTPStatus.UNAUTHORIZED
+    status_code = status_code = HTTPStatus.FORBIDDEN
 
 
 app.register_error_handler(
@@ -33,3 +33,10 @@ class ResourceNotFound(FlaskBuzz):
 
 
 app.register_error_handler(ResourceNotFound, ResourceNotFound.build_error_handler())
+
+
+class ForbiddenResource(FlaskBuzz):
+    status_code = status_code = HTTPStatus.FORBIDDEN
+
+
+app.register_error_handler(ForbiddenResource, ForbiddenResource.build_error_handler())

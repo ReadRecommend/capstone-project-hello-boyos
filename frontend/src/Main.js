@@ -68,7 +68,7 @@ class Main extends Component {
           />
           <PrivateRoute
             exact
-            path="/book/:bookISBN"
+            path="/book/:bookID"
             component={BookPage}
             roles={["everyone"]}
             key="bookPage"
