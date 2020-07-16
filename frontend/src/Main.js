@@ -69,13 +69,6 @@ class Main extends Component {
           <Route exact path="/logout" component={Logout} key="logout" />
           <PrivateRoute
             exact
-            path="/user/:userId"
-            component={UserPage}
-            roles={["user", "admin"]}
-            key="user"
-          />
-          <PrivateRoute
-            exact
             path="/book/:bookISBN"
             component={BookPage}
             roles={["everyone"]}
@@ -98,8 +91,6 @@ class Main extends Component {
           <Route exact path="*" key="404">
             <h1>404 Page not found</h1>
           </Route>
-          {/* Example route:
-            <Route exact path='/signup' component={Signup}></Route> */}
         </Switch>
       </div>
     );
