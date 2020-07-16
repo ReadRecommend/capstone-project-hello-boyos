@@ -1,10 +1,11 @@
-import React, { Component } from "react";
-import { Alert, Button, Form, Container } from "react-bootstrap";
-import { addBook } from "../../fetchFunctions";
-import { WithContext as ReactTags } from "react-tag-input";
-import Datetime from "react-datetime";
-import "./AdminAddBook.css";
-import "../YearPicker.css";
+import React, { Component } from 'react';
+import { Alert, Button, Form, Container } from 'react-bootstrap';
+import { addBook } from '../../fetchFunctions';
+import { WithContext as ReactTags } from 'react-tag-input';
+import { Link } from 'react-router-dom';
+import Datetime from 'react-datetime';
+import './AdminAddBook.css';
+import '../YearPicker.css';
 
 class AdminAddBook extends Component {
     constructor(props) {
@@ -113,6 +114,9 @@ class AdminAddBook extends Component {
                 >
                     {this.state.errorMessage}
                 </Alert>
+
+                {/* Links to other admin functions */}
+                <Link to="/admin/removeBook">Remove Books</Link>
 
                 <h1>Add a book</h1>
                 <Form method="POST" onSubmit={this.onSubmit}>

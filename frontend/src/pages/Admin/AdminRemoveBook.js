@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { Container, Button, Spinner } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import {Link} from 'react-router-dom';
+import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
+import { Link } from 'react-router-dom';
 
 import { getAllBooks, deleteBook } from '../../fetchFunctions';
 
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+
+const { SearchBar } = Search;
 
 class AdminRemoveBook extends Component {
     constructor(props) {
@@ -38,7 +42,7 @@ class AdminRemoveBook extends Component {
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = JSON.parse(error.message).message;
+                const errorMessage = error.message;
                 console.log(errorMessage);
             });
 
@@ -52,22 +56,28 @@ class AdminRemoveBook extends Component {
     // Function that returns href for the title
     // TODO
     getTitleFormatter(cell, row) {
-        return (<Link to="/book">{cell}</Link>)
+        return (<Link to={"/book/" + row.isbn}>{cell}</Link>)
     }
 
     getColumns() {
         // Define the columns for our table
         const columns = [{
             dataField: "isbn",
-            text: "ISBN"
+            text: "ISBN",
+            style: { wordWrap: "break-word" }
         }, {
             dataField: "title",
             text: "Title",
             formatter: this.getTitleFormatter,
-            sort: true
+            sort: true,
+            style: { wordWrap: "break-word" }
         }, {
             dataField: "n_ratings",
             text: "Number of ratings",
+            sort: true
+        }, {
+            dataField: "ave_rating",
+            text: "Average rating",
             sort: true
         }, {
             dataField: "delete",
@@ -84,7 +94,7 @@ class AdminRemoveBook extends Component {
     handleDeleteBook(isbn) {
         console.log(isbn);
 
-        this.setState({loading: true});
+        this.setState({ loading: true });
 
         deleteBook(isbn)
             .then((res) => {
@@ -111,7 +121,7 @@ class AdminRemoveBook extends Component {
     render() {
         if (this.state.loading) {
             // Still performing the fetch
-            return(<Spinner
+            return (<Spinner
                 animation="border"
                 style={{
                     position: "absolute",
@@ -122,13 +132,30 @@ class AdminRemoveBook extends Component {
         } else {
             return (
                 <Container>
+                    {/* Links to other admin functions */}
+                    <Link to="/admin/addBook">Add New Book</Link>
+
                     <h1>Remove books</h1>
-                    <BootstrapTable
+                    <br></br>
+                    {/* This is for react bootstrap table 2 */}
+                    <ToolkitProvider
                         data={this.state.books}
                         keyField="isbn"
                         columns={this.getColumns()}
-                        pagination={paginationFactory({alwaysShowAllBtns: true})}
-                        bootstrap4 />
+                        bootstrap4
+                        search >
+                        {
+                            props => (
+                                <div>
+                                    <h3>Search in any of the columns</h3>
+                                    <SearchBar {...props.searchProps} />
+                                    <BootstrapTable
+                                        {...props.baseProps}
+                                        pagination={paginationFactory({ alwaysShowAllBtns: true })} />
+                                </div>
+                            )
+                        }
+                    </ToolkitProvider>
                 </Container>
             );
         }
