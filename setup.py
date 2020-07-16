@@ -49,7 +49,7 @@ def json_to_db(path):
                 book.genres.append(new_genre)
 
         for author_name in set(book_data.get("authors", [])):
-            if "(" or ")" in author_name:
+            if "(" in author_name or ")" in author_name:
                 continue
             if (existing_author := Author.query.filter_by(name=author_name).first()) :
                 book.authors.append(existing_author)
