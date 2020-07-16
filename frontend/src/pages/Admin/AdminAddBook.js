@@ -63,8 +63,11 @@ class AdminAddBook extends Component {
                     });
                 }
 
+                return res.json()
+            })
+            .then((json) => {
                 // Redirect to new book page
-                return this.props.history.push(`/book/${bookData.isbn}`);
+                return this.props.history.push(`/book/${json.id}`);
             })
             .catch((error) => {
                 // An error occurred
