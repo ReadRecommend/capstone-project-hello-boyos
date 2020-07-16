@@ -170,14 +170,14 @@ class UserHome extends Component {
     upon the user clicking the remove book button. The new collection without the book
     is returned and set as the current collection.
     */
-  removeBook = (isbn) => {
+  removeBook = (bookID) => {
     fetch("http://localhost:5000/collection/modify", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        book_id: isbn,
+        book_id: bookID,
         collection_id: this.state.currentCollection.id,
       }),
       credentials: "include",
@@ -205,15 +205,15 @@ class UserHome extends Component {
       });
   };
 
-  addToCollection = (isbn, id) => {
+  addToCollection = (bookID, collectionID) => {
     fetch("http://localhost:5000/collection/modify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        book_id: isbn,
-        collection_id: id,
+        book_id: bookID,
+        collection_id: collectionID,
       }),
       credentials: "include",
     })
@@ -275,7 +275,7 @@ class UserHome extends Component {
             <Button
               onClick={() => {
                 this.addToCollection(
-                  this.state.libraryBook.isbn,
+                  this.state.libraryBook.id,
                   this.state.currentCollection.id
                 );
                 this.handleLibraryModal();
@@ -319,7 +319,7 @@ class UserHome extends Component {
                   {this.state.library &&
                     this.state.library.map((book) => (
                       <Dropdown.Item
-                        key={book.isbn}
+                        key={book.id}
                         onClick={() => {
                           this.setState({
                             libraryBook: book,

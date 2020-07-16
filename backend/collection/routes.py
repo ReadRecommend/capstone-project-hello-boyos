@@ -89,7 +89,7 @@ def modify_collection():
             "Request should be of the form {{'collection_id': id, 'book_id': id}}",
         )
     collection = Collection.query.filter_by(id=collection_id).first()
-    book = Book.query.filter_by(isbn=book_id).first()
+    book = Book.query.filter_by(id=book_id).first()
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:

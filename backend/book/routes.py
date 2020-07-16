@@ -3,7 +3,7 @@ from flask import jsonify, request
 import flask_praetorian
 from backend import db
 from backend.book import book_bp
-from backend.errors import InvalidRequest, ResourceExists
+from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
 from backend.model.schema import (
     Book,
     book_schema,
@@ -82,15 +82,17 @@ def get_books():
     return jsonify(books_schema.dump(books))
 
 
-@book_bp.route("/<isbn>")
-def get_book(isbn):
-    book = Book.query.filter_by(isbn=isbn).first_or_404()
+@book_bp.route("/<id>")
+def get_book(id):
+    book = Book.query.filter_by(id=id).first()
+    if not book:
+        raise ResourceNotFound("A book with this id does not exist")
     return jsonify(book_schema.dump(book))
 
 
-@book_bp.route("/<isbn>/reviews")
-def get_review(isbn):
-    review = Review.query.filter_by(book_id=isbn).all()
+@book_bp.route("/<id>/reviews")
+def get_review(id):
+    review = Review.query.filter_by(book_id=id).all()
     return jsonify(reviews_schema.dump(review))
 
 

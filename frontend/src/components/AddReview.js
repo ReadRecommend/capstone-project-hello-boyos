@@ -20,7 +20,7 @@ class AddReview extends Component {
 
   componentDidMount() {
     this.setState({ reader_id: this.props.readerID });
-    this.setState({ book_id: this.props.bookISBN });
+    this.setState({ book_id: this.props.bookID });
   }
 
   updateReview = (event) => {

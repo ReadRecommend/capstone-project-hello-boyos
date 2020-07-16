@@ -30,9 +30,7 @@ def json_to_db(path):
 
     for book_data in data:
         book = Book(
-            isbn=book_data.get("isbn")
-            # If no isbn, assign a uuid
-            or uuid.uuid5(namespace, book_data.get("title")).hex,
+            isbn=book_data.get("isbn"),
             title=book_data.get("title"),
             publisher=book_data.get("publisher"),
             publication_date=book_data.get("publication_year"),
@@ -51,6 +49,8 @@ def json_to_db(path):
                 book.genres.append(new_genre)
 
         for author_name in set(book_data.get("authors", [])):
+            if "(" or ")" in author_name:
+                continue
             if (existing_author := Author.query.filter_by(name=author_name).first()) :
                 book.authors.append(existing_author)
             else:
@@ -74,8 +74,6 @@ conn = psycopg2.connect(
     user=user, password=password, host=host, port=port, database=database,
 )
 
-# Print state of connection after opening
-print(conn)
 cur = conn.cursor()
 
 print("Deleting all existing tables")

@@ -19,16 +19,16 @@ def get_reader(username):
     return jsonify(reader_schema.dump(reader))
 
 
-@user_bp.route("/id/<idx>")
-def get_reader_by_id(idx):
-    if not isinstance(idx, int) and not idx.isdigit():
+@user_bp.route("/id/<id>")
+def get_reader_by_id(id):
+    if not isinstance(id, int) and not id.isdigit():
         raise InvalidRequest(
             r"Id should be an integer or a string interpretable as an integer",
         )
 
-    reader = Reader.query.filter_by(id=idx).first()
+    reader = Reader.query.filter_by(id=id).first()
     if not reader:
-        raise ResourceNotFound(f"A user with the id {idx} does not exist")
+        raise ResourceNotFound(f"A user with the id {id} does not exist")
     return jsonify(reader_schema.dump(reader))
 
 

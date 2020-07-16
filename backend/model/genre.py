@@ -2,7 +2,7 @@ from backend import db
 
 genres = db.Table(
     "genres",
-    db.Column("book_id", db.String, db.ForeignKey("book.isbn"), primary_key=True),
+    db.Column("book_id", db.Integer, db.ForeignKey("book.id"), primary_key=True),
     db.Column("genre_id", db.String, db.ForeignKey("genre.name"), primary_key=True),
 )
 

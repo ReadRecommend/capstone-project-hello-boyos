@@ -10,12 +10,12 @@ export function verifyUser() {
   });
 }
 
-export function getBook(bookISBN) {
-  return fetch(`${apiUrl}/book/${bookISBN}`);
+export function getBook(bookID) {
+  return fetch(`${apiUrl}/book/${bookID}`);
 }
 
-export function getReview(bookISBN) {
-  return fetch(`${apiUrl}/book/${bookISBN}/reviews`);
+export function getReview(bookID) {
+  return fetch(`${apiUrl}/book/${bookID}/reviews`);
 }
 
 export function addBook(bookDetails) {
@@ -29,15 +29,15 @@ export function addBook(bookDetails) {
   });
 }
 
-export function addToCollection(isbn, id) {
+export function addToCollection(bookID, collectionID) {
   fetch(`${apiUrl}/collection/modify`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      book_id: isbn,
-      collection_id: id,
+      book_id: bookID,
+      collection_id: collectionID,
     }),
     credentials: "include",
   })
