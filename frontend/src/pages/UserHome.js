@@ -171,7 +171,7 @@ class UserHome extends Component {
     is returned and set as the current collection.
     */
   removeBook = (isbn) => {
-    fetch("http://localhost:5000/modify_collection", {
+    fetch("http://localhost:5000/collection/modify", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -206,7 +206,7 @@ class UserHome extends Component {
   };
 
   addToCollection = (isbn, id) => {
-    fetch("http://localhost:5000/modify_collection", {
+    fetch("http://localhost:5000/collection/modify", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
