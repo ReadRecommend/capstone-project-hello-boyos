@@ -30,7 +30,7 @@ class Book(db.Model):
     authors = db.relationship(
         "Author",
         secondary=authors,
-        lazy="dynamic",
+        lazy="subquery",
         backref=db.backref("books", lazy=True),
     )
 
