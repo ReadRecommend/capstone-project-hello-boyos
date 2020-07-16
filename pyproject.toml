@@ -5,7 +5,7 @@ description = ""
 authors = ["Felix <felix.lonergan@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "3.8.3"
 flask = "^1.1.2"
 black = "^19.10b0"
 pylint = "^2.5.2"
