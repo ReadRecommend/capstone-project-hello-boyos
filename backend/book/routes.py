@@ -19,31 +19,33 @@ from backend.model.schema import (
 @book_bp.route("", methods=["POST"])
 @flask_praetorian.roles_required("admin")
 def add_book():
-    bookData = request.json
-    isbn = bookData.get("isbn")
-    title = bookData.get("title")
-    authors = bookData.get("authors")
-    genres = bookData.get("genres")
-    publisher = bookData.get("publisher")
-    publicationDate = bookData.get("publicationDate")
-    summary = bookData.get("summary")
-    cover = bookData.get("cover")
-    language = bookData.get("language")
+    book_data = request.json
+    isbn = book_data.get("isbn")
+    title = book_data.get("title")
+    authors = book_data.get("authors")
+    genres = book_data.get("genres")
+    publisher = book_data.get("publisher")
+    publicationDate = book_data.get("publicationDate")
+    summary = book_data.get("summary")
+    cover = book_data.get("cover")
+    language = book_data.get("language")
 
     # Ensure request is valid format
-    if not (title and isbn):
+    if not (title and isbn and authors):
         raise InvalidRequest(
-            "Request should be of the form {{isbn: 'isbn', title: 'title'}}"
+            "Request should be of the form {{isbn: 'isbn', title: 'title', authors: [authors]}}"
         )
 
-    # Check if a Book with this title/isbn already exists
-    if Book.query.filter((Book.isbn == isbn) | (Book.title == title)).first():
-        raise ResourceExists("A book with this title/isbn already exists")
+    # Check if a Book with this isbn already exists
+    if Book.query.filter((Book.isbn == isbn)).first():
+        raise ResourceExists("A book with this isbn already exists")
+
+    # TODO Check if a book with this title/author combo exists
 
     # Create new book
     new_book = Book(
         isbn=isbn,
-        title=bookData.get("title"),
+        title=title,
         publisher=publisher,
         publication_date=publicationDate,
         summary=summary,
@@ -55,13 +57,13 @@ def add_book():
 
     # Add genre to the database if it does not already exist
     for genre_name in set(genres):
-        if (existingGenre := Genre.query.filter_by(name=genre_name).first()) :
-            new_book.genres.append(existingGenre)
+        if (existing_genre := Genre.query.filter_by(name=genre_name).first()) :
+            new_book.genres.append(existing_genre)
         else:
-            newGenre = Genre(name=genre_name)
-            new_book.genres.append(newGenre)
+            new_genre = Genre(name=genre_name)
+            new_book.genres.append(new_genre)
 
-    # Add author to the database
+    # Add author to the database if it does not already exist
     for author_name in set(authors):
         if (existing_author := Author.query.filter_by(name=author_name).first()) :
             new_book.authors.append(existing_author)
@@ -74,6 +76,30 @@ def add_book():
     db.session.commit()
 
     return jsonify(book_schema.dump(new_book))
+
+
+@book_bp.route("", methods=["DELETE"])
+@flask_praetorian.roles_required("admin")
+def delete_book():
+    book_id = request.json.get("id")
+
+    # Ensure proper fields exist
+    if not (book_id):
+        raise InvalidRequest("Request should be of the form {{book_id: 'book_id'}}")
+
+    book = Book.query.filter_by(id=book_id).first()
+
+    # Check book exists
+    if not (book):
+        raise ResourceNotFound("Book does not exist")
+
+    # Delete the book
+    db.session.delete(book)
+    db.session.commit()
+
+    # Return the new state of all books in the db
+    books = Book.query.all()
+    return jsonify(books_schema.dump(books))
 
 
 @book_bp.route("", methods=["GET"])
