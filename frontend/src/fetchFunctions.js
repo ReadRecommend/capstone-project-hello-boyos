@@ -5,13 +5,13 @@ export function getUserById(userId) {
 }
 
 export function verifyUser() {
-  return fetch(`${apiUrl}/auth/verify`, {
+  return fetch(`${apiUrl}/verify`, {
     credentials: "include",
   });
 }
 
-export function getBook(bookID) {
-  return fetch(`${apiUrl}/book/${bookID}`);
+export function getBook(bookISBN) {
+  return fetch(`${apiUrl}/book/${bookISBN}`);
 }
 
 export function getReview(bookID, reviewPage, nReviews) {
@@ -41,15 +41,15 @@ export function addBook(bookDetails) {
   });
 }
 
-export function addToCollection(bookID, collectionID) {
-  fetch(`${apiUrl}/collection/modify`, {
+export function addToCollection(isbn, id) {
+  fetch("http://localhost:5000/modify_collection", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      book_id: bookID,
-      collection_id: collectionID,
+      book_id: isbn,
+      collection_id: id,
     }),
     credentials: "include",
   })
@@ -62,7 +62,7 @@ export function addToCollection(bookID, collectionID) {
 }
 
 export function unfollowUser(followerUsername, userUsername) {
-  return fetch(`${apiUrl}/user/follow`, {
+  return fetch("http://localhost:5000/follow", {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -88,7 +88,7 @@ export function unfollowUser(followerUsername, userUsername) {
 }
 
 export function followUser(followerUsername, userUsername) {
-  return fetch("${apiUrl}/user/follow", {
+  return fetch("http://localhost:5000/follow", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -11,7 +11,6 @@ class ReviewList extends Component {
       reviewList: [],
       reviewPage: this.props.reviewPage,
       nReviews: 2,
-
     };
   }
 

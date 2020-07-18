@@ -72,6 +72,7 @@ class AddReview extends Component {
             })
             .then(() => {
                 this.props.notify("Review successfully published!");
+                window.location.reload()
                 return this.props.history.push(
                     "/book/" + this.state.book_id + "/reviews"
                 );

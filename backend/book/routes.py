@@ -1,4 +1,5 @@
 from flask import jsonify, request
+import flask_sqlalchemy
 
 import flask_praetorian
 from backend import db
