@@ -9,11 +9,18 @@ class ReviewList extends Component {
 
     this.state = {
       reviewList: [],
+      reviewPage: this.props.reviewPage,
+      nReviews: 2,
+
     };
   }
 
   componentDidMount() {
-    getReview(this.props.bookID)
+    this.updateReviews()
+  }
+
+  updateReviews() {
+    getReview(this.props.bookID, this.state.reviewPage, this.state.nReviews)
       .then((res) => {
         return res.json();
       })
@@ -21,6 +28,14 @@ class ReviewList extends Component {
         this.setState({ reviewList: json });
       });
   }
+
+  componentDidUpdate(previousProps, previousState) {
+    if (previousProps.reviewPage !== this.props.reviewPage) {
+      this.setState({ reviewPage: this.props.reviewPage })
+      this.updateReviews();
+    }
+  }
+
 
   render() {
     return this.state.reviewList.map((review) => (

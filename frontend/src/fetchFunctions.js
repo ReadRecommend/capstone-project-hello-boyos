@@ -14,8 +14,20 @@ export function getBook(bookID) {
   return fetch(`${apiUrl}/book/${bookID}`);
 }
 
-export function getReview(bookID) {
-  return fetch(`${apiUrl}/book/${bookID}/reviews`);
+export function getReview(bookID, reviewPage, nReviews) {
+  const data = {
+    page: reviewPage,
+    reviews_per_page: nReviews,
+  }
+  return fetch(`${apiUrl}/book/${bookID}/reviews`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  }
+
+  );
 }
 
 export function addBook(bookDetails) {

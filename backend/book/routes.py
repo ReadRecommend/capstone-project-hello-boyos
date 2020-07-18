@@ -90,10 +90,14 @@ def get_book(id):
     return jsonify(book_schema.dump(book))
 
 
-@book_bp.route("/<id>/reviews")
+@book_bp.route("/<id>/reviews", methods=["POST"])
 def get_review(id):
-    review = Review.query.filter_by(book_id=id).all()
-    return jsonify(reviews_schema.dump(review))
+    review_data = request.json
+    page = review_data.get("page")
+    nReview = review_data.get("reviews_per_page")
+
+    review = Review.query.filter_by(book_id=id).paginate(page, nReview, True)
+    return jsonify(reviews_schema.dump(review.items))
 
 
 @book_bp.route("/review", methods=["POST"])

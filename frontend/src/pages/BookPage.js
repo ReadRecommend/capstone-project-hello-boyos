@@ -14,6 +14,7 @@ class BookPage extends Component {
     this.state = {
       book: {},
       collection: {},
+      reviewPage: 1,
     };
   }
 
@@ -53,6 +54,10 @@ class BookPage extends Component {
   notify = (message) => {
     toast.info(message);
   };
+
+  movePage = (displacement) => {
+    this.setState({ reviewPage: this.state.reviewPage + displacement })
+  }
 
   render() {
     const book = this.state.book;
@@ -122,7 +127,11 @@ class BookPage extends Component {
                       reviews
                     </small>
 
-                    <ReviewList bookID={this.props.match.params.bookID} />
+                    <ReviewList bookID={this.props.match.params.bookID} reviewPage={this.state.reviewPage} />
+                    <button onClick={() => this.movePage(-1)}>Previous page</button>
+                    {this.state.reviewPage}
+                    <button onClick={() => this.movePage(1)}>Next page</button>
+
                   </Tab>
                   <Tab eventKey="info" title="Additional Information">
                     <br></br>
