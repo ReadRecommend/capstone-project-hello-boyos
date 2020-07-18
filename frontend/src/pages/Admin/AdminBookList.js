@@ -43,6 +43,7 @@ class AdminBookList extends Component {
             .catch((error) => {
                 // An error occurred
                 const errorMessage = error.message;
+                console.log(errorMessage);
             });
 
     }
