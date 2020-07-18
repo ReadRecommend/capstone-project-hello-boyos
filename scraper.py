@@ -7,6 +7,24 @@ import argparse
 from multiprocessing import Pool
 
 
+def strip_list_page(url):
+    """Given the url to a page in a Goodreads list, will return a list of urls to books on that page
+
+    Args:
+        url (str): The url to a Goodreads page
+
+    Returns:
+        List[str]: A list of urls to the books listed on the page
+    """
+    # Read in the page HTML
+    page = requests.get(url)
+    soup = BeautifulSoup(page.content, "html.parser")
+
+    bookFind = soup.find_all("a", class_="bookTitle")
+    books_on_page = [f"https://www.goodreads.com{book['href']}" for book in bookFind]
+    return books_on_page
+
+
 def strip_book(url):
     """Given the url to a Goodreads book, will return a dictionary of that books key information
     Args:
@@ -127,7 +145,6 @@ if __name__ == "__main__":
         help="The amount of books desired. Default: 500",
         default=500,
     )
-
     parser.add_argument(
         "-l",
         "--list",
@@ -159,54 +176,52 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Start of scraping script
-    results = []
+    book_urls = []
+    books = []
     n_books = args.books
-    n_pages = int((n_books - 1) / 100) + 1
+    n_pages = ((n_books - 1) // 100) + 1
     list_url = args.list
 
     # Process pool for parallel scraping
-    # Should not create more threads than books
     threads = min([n_books - 1, args.threads])
     pool = Pool(threads)
 
-    # Setup progress bar
-    page_pbar = tqdm(total=n_pages, unit="page", ncols=100, file=sys.stdout)
-    for page_no in range(1, n_pages + 1):
-        page_pbar.set_description(f"Scraping page {page_no}")
-        page_pbar.update(1)
-        # Calculate limit if n_books does not equal a whole number of pages.
-        # Will only be < 100 on final page
-        if (page_no == n_pages) and (n_books % 100) != 0:
-            limit = n_books % 100
-        else:
-            limit = 100
+    # All pages to scrape the books from (100 books per page)
+    page_urls = [f"{list_url}?page={page_no}" for page_no in range(1, n_pages + 1)]
 
-        # Get the url for the current page of the list
-        url = f"{list_url}?page={page_no}"
+    # Setup progress bar for creating book list
+    list_pbar = tqdm(
+        pool.imap_unordered(strip_list_page, page_urls),
+        total=n_pages,
+        unit="page",
+        ncols=100,
+        file=sys.stdout,
+    )
+    list_pbar.set_description("Collecting list of books to scrape")
 
-        # Read in the page HTML
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, "html.parser")
+    for books_on_page in list_pbar:
+        list_pbar.update(1)
+        book_urls += books_on_page
 
-        # Create list of up to `limit` book urls/titles to scrape
-        bookFind = soup.find_all("a", class_="bookTitle", limit=limit)
-        book_urls = [f"https://www.goodreads.com{book['href']}" for book in bookFind]
+    # book_urls will have a multiple of 100 books, slice to get exactlyu n_books
+    book_urls = book_urls[:n_books]
 
-        pbar = tqdm(
-            pool.imap_unordered(strip_book, book_urls),
-            total=limit,
-            unit="book",
-            ncols=100,
-            file=sys.stdout,
-        )
-        for result in pbar:
-            pbar.set_description(f"Scraping books from page {page_no}")
-            pbar.update(1)
-            results.append(result)
+    # Create pbar to measure progress scraping books
+    pbar = tqdm(
+        pool.imap_unordered(strip_book, book_urls),
+        total=n_books,
+        unit="book",
+        ncols=100,
+        file=sys.stdout,
+    )
+    for book in pbar:
+        pbar.set_description("Scraping books")
+        pbar.update(1)
+        books.append(book)
 
     # Close the process pool
     pool.close()
     pool.join()
 
     with open(args.out, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(books, f, indent=2)
