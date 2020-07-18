@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Alert, Button, Form, Container } from 'react-bootstrap';
+import { Button, Form, Container } from 'react-bootstrap';
 import { addBook } from '../../fetchFunctions';
 import { WithContext as ReactTags } from 'react-tag-input';
 import { Link } from 'react-router-dom';
 import Datetime from 'react-datetime';
+import { toast, ToastContainer } from 'react-toastify';
 import './AdminAddBook.css';
 import '../YearPicker.css';
 
@@ -20,14 +21,18 @@ class AdminAddBook extends Component {
             publicationDate: -1,
             summary: "",
             cover: "",
-            language: "",
-            errorShow: false,
-            errorMessage: "",
+            language: ""
         };
     }
 
+    // On form submission
     onSubmit = (e) => {
         e.preventDefault();
+
+        if (!this.state.isbn || !this.state.title || this.state.authors.length == 0) {
+            toast.error("Please provide a isbn, title and author.");
+            return;
+        }
 
         // Transform authors tags into array
         const originalAuthors = this.state.authors;
@@ -71,8 +76,14 @@ class AdminAddBook extends Component {
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = error.message;
-                this.setState({ errorShow: true, errorMessage: errorMessage });
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -100,26 +111,10 @@ class AdminAddBook extends Component {
         });
     };
 
-    // Function that makes the error not show
-    handleError() {
-        this.setState({ errorShow: false, errorMessage: "" });
-    }
-
     render() {
         return (
             <Container>
-                {/* Alert for general problems */}
-                <Alert
-                    show={this.state.errorShow}
-                    onClose={() => this.handleError()}
-                    variant="danger"
-                    dismissible
-                >
-                    {this.state.errorMessage}
-                </Alert>
-
-                {/* Links to other admin functions */}
-                <Link to="/admin/bookList">Remove Books</Link>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
 
                 <h1>Add a book</h1>
                 <Form method="POST" onSubmit={this.onSubmit}>
@@ -131,7 +126,6 @@ class AdminAddBook extends Component {
                             value={this.state.isbn}
                             onChange={this.onChange}
                             placeholder="ISBN"
-                            required
                         />
                     </Form.Group>
 
@@ -143,7 +137,6 @@ class AdminAddBook extends Component {
                             value={this.state.title}
                             onChange={this.onChange}
                             placeholder="Title"
-                            required
                         />
                     </Form.Group>
 

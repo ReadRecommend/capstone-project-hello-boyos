@@ -4,6 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 import { getAllBooks, deleteBook } from '../../fetchFunctions';
 
@@ -42,15 +43,21 @@ class AdminBookList extends Component {
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = error.message;
-                console.log(errorMessage);
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
 
     }
 
     // Function that returns the button that will be displayed in the final dummy column of the table 
     getDeleteFormatter(cell, row) {
-        return (<Button onClick={this.handleDeleteBook.bind(this, row.id)}>DELETE</Button>)
+        return (<Button variant="danger" onClick={this.handleDeleteBook.bind(this, row.id)}>DELETE</Button>)
     }
 
     // Function that returns href for the title
@@ -63,7 +70,8 @@ class AdminBookList extends Component {
         const columns = [{
             dataField: "id",
             text: "ID",
-            style: { wordWrap: "break-word" }
+            style: { wordWrap: "break-word" },
+            sort:  true
         }, {
             dataField: "title",
             text: "Title",
@@ -106,12 +114,19 @@ class AdminBookList extends Component {
                 return res.json();
             })
             .then((json) => {
+                toast.success(`Successfully deleted book with id \'${id}\'!`);
                 this.setState({ books: json, loading: false });
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = error.message;
-                console.log(errorMessage);
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             })
 
     }
@@ -130,8 +145,7 @@ class AdminBookList extends Component {
         } else {
             return (
                 <Container>
-                    {/* Links to other admin functions */}
-                    <Link to="/admin/addBook">Add New Book</Link>
+                    <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
 
                     <h1>Remove books</h1>
                     <br></br>

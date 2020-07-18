@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Alert, Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
 import { loginContext } from "../LoginContext";
+import { toast, ToastContainer } from 'react-toastify';
 
 import "./Login.css";
 
@@ -12,8 +13,6 @@ class Login extends Component {
             username: "",
             password: "",
             access_token: "",
-            errorShow: false,
-            errorMessage: "",
         };
     }
 
@@ -25,18 +24,10 @@ class Login extends Component {
         this.setState({ password: event.target.value });
     };
 
-    // Function that makes the error not show
-    handleError() {
-        this.setState({ errorShow: false, errorMessage: "" });
-    }
-
     handleSubmit = (event) => {
         event.preventDefault();
         if (!this.state.username || !this.state.password) {
-            this.setState({
-                errorShow: true,
-                errorMessage: "Please fill in the required fields",
-            });
+            toast.error("Please fill in the correct fields");
             return;
         }
 
@@ -64,35 +55,39 @@ class Login extends Component {
                 let cookie = new Cookies();
                 cookie.set("accessToken", json.access_token, { path: "/" });
 
-                // Set logged in to true in localstorage
-                // NOTE this is purely for the nav bar, so a user can change it and it will confuse
-                // the nav bar, but that is it
-                localStorage.setItem("loggedIn", "true");
+                let role = "User";
+                if (json.roles.search("admin") != -1) {
+                    role = "Admin";
+                }
 
-                // Perhaps a bit hacky, but the context will be the function that tells the navbar we have logged out
+                // Set our logged in role in localstorage
+                // NOTE this is purely for the nav bar, so a user can change it and it will confuse
+                // the nav bar, but that is it. It won't make you admin/an admin a user
+                localStorage.setItem("loggedInRole", role);
+
+                // Perhaps a bit hacky, but the context will be the function that tells the navbar we have logged in
                 this.context();
                 // Change route to home
                 return this.props.history.push("/");
             })
             .catch((error) => {
                 // An error occurred
-                const errorMessage = JSON.parse(error.message).message;
-                this.setState({ errorShow: true, errorMessage: errorMessage });
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
     render() {
         return (
             <div className="Login">
-                {/* Alert for general problems */}
-                <Alert
-                    show={this.state.errorShow}
-                    onClose={() => this.handleError()}
-                    variant="danger"
-                    dismissible
-                >
-                    {this.state.errorMessage}
-                </Alert>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
+
                 {/* <form> */}
                 <Container>
                     <br></br>
