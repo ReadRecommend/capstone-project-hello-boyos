@@ -13,7 +13,7 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 
 const { SearchBar, ClearSearchButton } = Search;
 
-class AdminRemoveBook extends Component {
+class AdminBookList extends Component {
     constructor(props) {
         super(props);
 
@@ -163,4 +163,4 @@ class AdminRemoveBook extends Component {
 
 }
 
-export default AdminRemoveBook;
+export default AdminBookList;

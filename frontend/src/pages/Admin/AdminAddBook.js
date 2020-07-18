@@ -119,7 +119,7 @@ class AdminAddBook extends Component {
                 </Alert>
 
                 {/* Links to other admin functions */}
-                <Link to="/admin/removeBook">Remove Books</Link>
+                <Link to="/admin/bookList">Remove Books</Link>
 
                 <h1>Add a book</h1>
                 <Form method="POST" onSubmit={this.onSubmit}>
