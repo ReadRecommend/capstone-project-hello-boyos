@@ -43,7 +43,6 @@ class AdminBookList extends Component {
             .catch((error) => {
                 // An error occurred
                 const errorMessage = error.message;
-                console.log(errorMessage);
             });
 
     }
@@ -91,7 +90,6 @@ class AdminBookList extends Component {
 
     // Function that deletes the book from the database, and the state
     handleDeleteBook(id) {
-        console.log(id);
 
         this.setState({ loading: true });
 
