@@ -1,6 +1,8 @@
 from flask import jsonify, request
 import flask_sqlalchemy
 
+
+import json
 import flask_praetorian
 from backend import db
 from backend.book import book_bp
@@ -94,10 +96,12 @@ def get_book(id):
 @book_bp.route("/<id>/reviews", methods=["POST"])
 def get_review(id):
     review_data = request.json
+
     page = review_data.get("page")
     nReview = review_data.get("reviews_per_page")
 
     review = Review.query.filter_by(book_id=id).paginate(page, nReview, True)
+
     return jsonify(reviews_schema.dump(review.items))
 
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getBook } from "../fetchFunctions";
+import { getBook, getReview } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
 import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
@@ -15,6 +15,9 @@ class BookPage extends Component {
       book: {},
       collection: {},
       reviewPage: 1,
+      reviewsPerPage: 2,
+      hasNextReview: false,
+      hasPrevReview: false,
     };
   }
 
@@ -37,7 +40,9 @@ class BookPage extends Component {
           book: json,
         });
       });
+    this.updatePages()
   }
+
 
   sortAuthors = (authors) => {
     return authors.sort(function (a, b) {
@@ -56,7 +61,21 @@ class BookPage extends Component {
   };
 
   movePage = (displacement) => {
-    this.setState({ reviewPage: this.state.reviewPage + displacement })
+    this.setState({ reviewPage: this.state.reviewPage + displacement },
+      () => { this.updatePages(); this.forceUpdate() })
+  }
+
+  updatePages() {
+    getReview(this.props.match.params.bookID, this.state.reviewPage + 1, this.state.reviewsPerPage)
+      .then((res) => {
+        this.setState({ hasNextReview: (res.status == 200) ? true : false })
+      });
+    getReview(this.props.match.params.bookID, this.state.reviewPage - 1, this.state.reviewsPerPage)
+      .then((res) => {
+        this.setState({ hasPrevReview: (res.status == 200) ? true : false }, () => { this.forceUpdate() })
+
+      });
+
   }
 
   render() {
@@ -127,10 +146,11 @@ class BookPage extends Component {
                       reviews
                     </small>
 
-                    <ReviewList bookID={this.props.match.params.bookID} reviewPage={this.state.reviewPage} />
-                    <button onClick={() => this.movePage(-1)}>Previous page</button>
+                    <ReviewList bookID={this.props.match.params.bookID} reviewPage={this.state.reviewPage} reviewsPerPage={this.state.reviewsPerPage} />
+
+                    {this.state.hasPrevReview && <button onClick={() => this.movePage(-1)}>Previous page</button>}
                     {this.state.reviewPage}
-                    <button onClick={() => this.movePage(1)}>Next page</button>
+                    {this.state.hasNextReview && <button onClick={() => this.movePage(1)}>Next page</button>}
 
                   </Tab>
                   <Tab eventKey="info" title="Additional Information">
@@ -156,8 +176,8 @@ class BookPage extends Component {
             </Media>
           </Row>
           <br></br>
-        </Container>
-      </div>
+        </Container >
+      </div >
     );
   }
 }

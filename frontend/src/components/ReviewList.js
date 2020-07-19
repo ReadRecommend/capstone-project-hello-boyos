@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getReview, addToCollection, verifyUser } from "../fetchFunctions";
+import { getReview, getReviewCount } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
 
 class ReviewList extends Component {
@@ -18,6 +18,8 @@ class ReviewList extends Component {
     this.updateReviews()
   }
 
+
+
   updateReviews() {
     getReview(this.props.bookID, this.state.reviewPage, this.state.nReviews)
       .then((res) => {
@@ -28,10 +30,13 @@ class ReviewList extends Component {
       });
   }
 
-  componentDidUpdate(previousProps, previousState) {
+  componentDidUpdate(previousProps) {
+
     if (previousProps.reviewPage !== this.props.reviewPage) {
-      this.setState({ reviewPage: this.props.reviewPage })
-      this.updateReviews();
+      this.setState({ reviewPage: this.props.reviewPage }, () => {
+        this.updateReviews();
+      })
+      this.forceUpdate()
     }
   }
 
