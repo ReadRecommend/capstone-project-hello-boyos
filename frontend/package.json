@@ -24,6 +24,7 @@
         "react-star-ratings": "^2.3.0",
         "react-tag-input": "^6.4.3",
         "react-toastify": "^6.0.8",
+        "recharts": "^1.8.5",
         "typescript": "^3.9.6"
     },
     "scripts": {
