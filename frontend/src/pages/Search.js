@@ -5,7 +5,7 @@ import SearchResults from "../components/SearchResults.js";
 import Pagination from 'react-bootstrap/Pagination'
 import PageItem from 'react-bootstrap/PageItem'
 import DropdownItem from "react-bootstrap/DropdownItem";
-
+ 
 class Search extends Component {
     constructor(props) {
         super(props);
