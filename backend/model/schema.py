@@ -5,6 +5,7 @@ from backend.model.collection import Collection
 from backend.model.genre import Genre
 from backend.model.review import Review
 from backend.model.reader import Reader
+from backend.model.reader_goal import ReaderGoal
 
 
 class AuthorSchema(ma.SQLAlchemyAutoSchema):
@@ -83,3 +84,13 @@ class ReviewSchema(ma.SQLAlchemyAutoSchema):
 
 review_schema = ReviewSchema()
 reviews_schema = ReviewSchema(many=True)
+
+
+class ReaderGoalSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = ReaderGoal
+        include_relationships = True
+
+
+goal_schema = ReaderGoalSchema()
+goals_schema = ReaderGoalSchema(many=True)

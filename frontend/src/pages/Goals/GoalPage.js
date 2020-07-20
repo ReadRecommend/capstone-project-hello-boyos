@@ -1,91 +1,131 @@
 import React, { Component } from 'react';
-import { Container } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import Datetime from 'react-datetime';
 import '../YearPicker.css';
+import { getGoals } from '../../fetchFunctions';
+import { toast, ToastContainer } from 'react-toastify';
+
+import AddGoalModal from '../../components/Goals/AddGoalModal';
+
 
 class GoalPage extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            data: [{ month: 'Jan', read: 3 }, { month: 'Feb', read: 50 }, { month: 'March', read: 6 }, { month: 'April', read: 23 }],
+            data: [
+                { month: "Jan", goal: 0, n_read: 0 },
+                { month: "Feb", goal: 0, n_read: 0 },
+                { month: "Mar", goal: 0, n_read: 0 },
+                { month: "Apr", goal: 0, n_read: 0 },
+                { month: "May", goal: 0, n_read: 0 },
+                { month: "Jun", goal: 0, n_read: 0 },
+                { month: "Jul", goal: 0, n_read: 0 },
+                { month: "Aug", goal: 0, n_read: 0 },
+                { month: "Sep", goal: 0, n_read: 0 },
+                { month: "Oct", goal: 0, n_read: 0 },
+                { month: "Nov", goal: 0, n_read: 0 },
+                { month: "Dec", goal: 0, n_read: 0 }],
             yearView: null,
-            timePeriod: null
+            modalShow: false
         }
     }
 
-    // Function that handles the 
-    onDateViewChange = (date) => {
-        if (this.validDate(date)) {
-            this.setState({
-                yearView: date.toDate().getFullYear(),
-            });
-        } else {
-            console.log("invalid");
-        }
+    // Function that makes the modal show
+    openModal = () => {
+        this.setState({ modalShow: true, });
     }
 
-    onDateAddChange = (date) => {
-        if (this.validDate(date)) {
-            this.setState({
-                timePeriod: [date.toDate().getMonth(), date.toDate().getFullYear()],
-            });
-            console.log(this.state.timePeriod);
-        } else {
-            console.log("invalid");
-        }
+    // Function that makes the modal close
+    closeModal = () => {
+        this.setState({ modalShow: false, });
     }
 
-    // Function that determines if a date given is valid datetime format
-    validDate = (date) => {
-        try {
-            date.toDate();
-            return true;
-        } catch {
-            return false;
+    // Function that updates the data in the state given data from a fetch
+    updateData = (data) => {
+
+        let stateDataCopy = this.state.data;
+        for (const dataPoint of data) {
+            let monthDataPoint = stateDataCopy[dataPoint.month - 1];
+            monthDataPoint.n_read = dataPoint.n_read;
+            monthDataPoint.goal = dataPoint.goal;
         }
+
+        console.log(stateDataCopy);
+        this.setState({ data: stateDataCopy }, console.log(this.state.data));
+
+    }
+
+    // Function that handles a change in the year picker
+    onYearViewChange = (date) => {
+        const year = date.toDate().getFullYear();
+        this.setState({
+            yearView: year,
+        });
+
+        getGoals(year)
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
+                return res.json()
+            })
+            .then((json) => {
+                console.log(json);
+                this.updateData(json);
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
+            })
+
     }
 
     render() {
         return (
             <Container>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
+
                 <h1>Goal Page</h1>
-                <h3>Select a year:</h3>
+                <h3>Select a year to view your goal progress for that year:</h3>
                 <Datetime
                     dateFormat="YYYY"
                     input={false}
-                    onChange={this.onDateViewChange}
+                    onChange={this.onYearViewChange}
                 />
 
-                <h3>{this.state.yearView}</h3>
-                <ResponsiveContainer width="100%" height={400}>
-                    <LineChart width={1200} height={400} data={this.state.data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                        <Line type="linear" dataKey="read" stroke="#8884d8" />
-                        <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                    </LineChart>
-                </ResponsiveContainer>
+                <h3>{this.state.yearView || "No Year Selected"}</h3>
+                { // Ensure we have a year selected before displaying the diagram
+                    this.state.yearView &&
+                    < ResponsiveContainer width="100%" height={400}>
+                        <LineChart width={1200} height={400} data={this.state.data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                            <Line type="linear" dataKey="n_read" stroke="#8884d8" />
+                            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                            <XAxis dataKey="month" />
+                            <YAxis />
+                            <Tooltip />
+                        </LineChart>
+                    </ResponsiveContainer>
+                }
 
-                <h1>Add new goal</h1>
-                <Datetime
-                    dateFormat="MMM YYYY"
-                    input={false}
-                    isValidDate={(current) => {
-                        return current.isAfter(Datetime.moment());
-                    }}
-                    onChange={this.onDateAddChange}
-                />
+                <h1>Create/Update Goal</h1>
+                <AddGoalModal show={this.state.modalShow} closeModal={this.closeModal} />
+                <Button onClick={this.openModal}>Create/Update Goal</Button>
             </Container >
         );
     }
-}
-
-GoalPage.propTypes = {
-    initialUserInfo: PropTypes.object.isRequired
 }
 
 export default GoalPage;

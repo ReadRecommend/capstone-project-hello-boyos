@@ -91,7 +91,7 @@ export function unfollowUser(followerUsername, userUsername) {
 }
 
 export function followUser(followerUsername, userUsername) {
-    return fetch("${apiUrl}/user/follow", {
+    return fetch(`${apiUrl}/user/follow`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -114,4 +114,26 @@ export function followUser(followerUsername, userUsername) {
         .catch((error) => {
             console.log(error.message);
         });
+}
+
+export function getGoals(year) {
+    return fetch(`${apiUrl}/goals/${year}`, {
+        credentials: "include"
+    });
+}
+
+export function updateGoal(month, year, goal, n_read) {
+    return fetch(`${apiUrl}/goals`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            month: month,
+            year: year,
+            goal: goal,
+            n_read: n_read
+        }),
+        credentials: "include"
+    })
 }
