@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import SearchResults from "../components/SearchResults.js";
+import Pagination from 'react-bootstrap/Pagination'
+import PageItem from 'react-bootstrap/PageItem'
 
 class Search extends Component {
     constructor(props) {
@@ -15,11 +15,18 @@ class Search extends Component {
             search: "",
             filter: "5 Stars",
             currentSearchList: [],
+            currentDisplayList:[],
+            currentPage : 1,
+            booksPerPage: 9,
+            numberOfPages: 1,
+            pages:[],
+
         };
     }
 
     componentDidMount() {
         // Get all the books in the database
+        const {booksPerPage} = this.state
         fetch("http://localhost:5000/book")
             .then((res) => {
                 return res.json();
@@ -27,6 +34,7 @@ class Search extends Component {
             .then((books) => {
                 this.setState({
                     currentSearchList: books,
+                    numberOfPages: Object.keys(books).length/booksPerPage
                 });
             });
     }
@@ -43,6 +51,36 @@ class Search extends Component {
             this.handleSubmit(event); // Call asynchronously
         });
     };
+
+    changePage = (newPage) => {
+        const {booksPerPage,currentPage, currentSearchList, numberOfPages} = this.state
+        if (newPage > 0 && newPage <= numberOfPages){
+            this.setState({
+                currentDisplayList: currentSearchList.slice((currentPage-1)*booksPerPage,currentPage*booksPerPage),
+                currentPage: newPage
+            })
+            this.refreshPageList(newPage)
+        }
+    }
+
+    refreshPageList = (activePage) => {
+        let list = []
+        console.log("Number of Pages: " + this.state.numberOfPages)
+        for( let i = activePage-1; i <= this.state.numberOfPages &&  i <= activePage + 1; i++) {
+            console.log(i);
+            if(i < 1) {
+                continue;
+            }
+
+            list.push(
+                <Pagination.Item key={i} active={i === activePage} onClick={() => this.changePage(i)}>{i}</Pagination.Item>
+            )
+        }
+
+        this.setState({pages:list})
+    }
+
+
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -69,11 +107,14 @@ class Search extends Component {
             .then((books) => {
                 this.setState({
                     currentSearchList: books,
+                    numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage)
                 });
+                this.changePage(1)
             });
     };
 
     render() {
+        const {currentPage} = this.state
         return (
             <div className="Search">
                 <Container>
@@ -101,11 +142,17 @@ class Search extends Component {
                             </Form.Control>
                             <Button variant="primary" type="submit" block value="Search">
                                 Search
-              </Button>
+                            </Button>
                         </InputGroup>
                     </Form>
                     <br></br>
-                    <SearchResults books={this.state.currentSearchList}></SearchResults>
+                    <SearchResults books={this.state.currentDisplayList}></SearchResults>
+                    <br></br>
+                    <Pagination>
+                        <Pagination.Prev onClick={() => this.changePage(currentPage - 1)}/>
+                        {this.state.pages}
+                        <Pagination.Next onClick={() => this.changePage(currentPage + 1)}/>
+                    </Pagination>
                 </Container>
             </div>
         );
