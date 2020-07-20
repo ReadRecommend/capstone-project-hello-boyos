@@ -7,16 +7,6 @@ from backend.model.review import Review
 from backend.model.reader import Reader
 
 
-class AuthorSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Author
-        include_relationships = True
-
-
-author_schema = AuthorSchema()
-authors_schema = AuthorSchema(many=True)
-
-
 class BookSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Book
@@ -25,6 +15,18 @@ class BookSchema(ma.SQLAlchemyAutoSchema):
 
 book_schema = BookSchema()
 books_schema = BookSchema(many=True)
+
+
+class AuthorSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Author
+        include_relationships = True
+
+    books = ma.Nested(BookSchema, many=True)
+
+
+author_schema = AuthorSchema()
+authors_schema = AuthorSchema(many=True)
 
 
 class CollectionSchema(ma.SQLAlchemyAutoSchema):
@@ -67,6 +69,8 @@ class GenreSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Genre
         include_relationships = True
+
+    books = ma.Nested(BookSchema, many=True)
 
 
 genre_schema = GenreSchema()
