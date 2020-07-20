@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Button, Form, Container } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, Dropdown, DropdownButton } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from 'react-bootstrap/Pagination'
 import PageItem from 'react-bootstrap/PageItem'
+import DropdownItem from "react-bootstrap/DropdownItem";
 
 class Search extends Component {
     constructor(props) {
@@ -53,7 +54,7 @@ class Search extends Component {
     };
 
     changePage = (newPage) => {
-        const {booksPerPage,currentPage, currentSearchList, numberOfPages} = this.state
+        const {booksPerPage, currentSearchList, numberOfPages} = this.state
         if (newPage > 0 && newPage <= numberOfPages){
             this.setState({
                 currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
@@ -65,23 +66,21 @@ class Search extends Component {
 
     refreshPageList = (activePage) => {
         let list = []
-        console.log("Number of Pages: " + this.state.numberOfPages)
-        console.log("Active Page: " + this.state.currentPage)
         for( let i = activePage-2; i <= this.state.numberOfPages &&  i <= activePage + 2; i++) {
-            console.log(i);
             if(i < 1) {
                 continue;
             }
-
             list.push(
                 <Pagination.Item key={i} active={i === activePage} onClick={() => this.changePage(i)}>{i}</Pagination.Item>
             )
         }
-
         this.setState({pages:list})
     }
 
-
+    changeBooksPerPage = (newLimit) => {
+        this.setState({booksPerPage:newLimit})
+        return newLimit;
+    }
 
     handleSubmit = (event) => {
         event.preventDefault();
@@ -112,7 +111,7 @@ class Search extends Component {
                 this.changePage(1)
             });
     };
-
+    // TODO: Change page occurs before changeBooksPerPage, find a way to make this happen syncronously so that the page refreshes when the limit is changed
     render() {
         const {currentPage} = this.state
         return (
@@ -147,11 +146,26 @@ class Search extends Component {
                     <br></br>
                     <SearchResults books={this.state.currentDisplayList}></SearchResults>
                     <br></br>
-                    <Pagination>
-                        <Pagination.Prev onClick={() => this.changePage(currentPage - 1)}/>
-                        {this.state.pages}
-                        <Pagination.Next onClick={() => this.changePage(currentPage + 1)}/>
-                    </Pagination>
+                    <Container>
+                        <Row>
+                            <Col>
+                                <Pagination>
+                                    <Pagination.Prev onClick={() => this.changePage(currentPage - 1)}/>
+                                    {this.state.pages}
+                                    <Pagination.Next onClick={() => this.changePage(currentPage + 1)}/>
+                                </Pagination>
+                            </Col>
+                            <Col className="float-right">
+                                <DropdownButton id="per-page-dropdown" title="Books Per Page" style={{float: 'right'}}>
+                                    <Dropdown.Item id="12" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>12</Dropdown.Item>
+                                    <Dropdown.Item id="24" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>24</Dropdown.Item>
+                                    <Dropdown.Item id="48" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>48</Dropdown.Item>
+                                    <Dropdown.Item id="96" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>96</Dropdown.Item>
+                                </DropdownButton>
+                            </Col>
+                        </Row>
+                        
+                    </Container>
                 </Container>
             </div>
         );
