@@ -13,7 +13,7 @@ class Search extends Component {
 
         this.state = {
             search: "",
-            filter: "5 Stars",
+            filter: "No Filter",
             currentSearchList: [],
             currentDisplayList:[],
             currentPage : 1,
@@ -34,7 +34,7 @@ class Search extends Component {
             .then((books) => {
                 this.setState({
                     currentSearchList: books,
-                    numberOfPages: Object.keys(books).length/booksPerPage
+                    numberOfPages: Math.ceil(Object.keys(books).length/booksPerPage)
                 });
             });
     }
@@ -56,7 +56,7 @@ class Search extends Component {
         const {booksPerPage,currentPage, currentSearchList, numberOfPages} = this.state
         if (newPage > 0 && newPage <= numberOfPages){
             this.setState({
-                currentDisplayList: currentSearchList.slice((currentPage-1)*booksPerPage,currentPage*booksPerPage),
+                currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
                 currentPage: newPage
             })
             this.refreshPageList(newPage)
@@ -66,7 +66,8 @@ class Search extends Component {
     refreshPageList = (activePage) => {
         let list = []
         console.log("Number of Pages: " + this.state.numberOfPages)
-        for( let i = activePage-1; i <= this.state.numberOfPages &&  i <= activePage + 1; i++) {
+        console.log("Active Page: " + this.state.currentPage)
+        for( let i = activePage-2; i <= this.state.numberOfPages &&  i <= activePage + 2; i++) {
             console.log(i);
             if(i < 1) {
                 continue;
@@ -84,7 +85,6 @@ class Search extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state.filter);
         const data = {
             search: this.state.search,
             filter: this.state.filter,
@@ -134,7 +134,6 @@ class Search extends Component {
                                 onChange={this.updateFilter}
                             >
                                 <option>No Filter</option>
-                                <option>5 Stars</option>
                                 <option>&ge; 4 Stars</option>
                                 <option>&ge; 3 Stars</option>
                                 <option>&ge; 2 Stars</option>
