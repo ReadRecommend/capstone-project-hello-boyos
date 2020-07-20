@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { getReview, getReviewCount } from "../fetchFunctions";
+import { getReview, getReviewPages } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
 
 class ReviewList extends Component {
@@ -42,17 +42,20 @@ class ReviewList extends Component {
 
 
   render() {
-    return this.state.reviewList.map((review) => (
-      <ReviewListItem
-        key={review.id}
-        book_id={review.book_id}
-        creation_date={review.creation_date}
-        reader={review.reader.username}
-        score={review.score}
-        review={review.review}
-      />
-    ));
-  }
+    return (
+      this.state.reviewList.map((review) => (
+        <ReviewListItem
+          key={review.id}
+          book_id={review.book_id}
+          creation_date={review.creation_date}
+          reader={review.reader.username}
+          score={review.score}
+          review={review.review}
+        />
+      )
+      )
+    )
+  };
 }
 
 ReviewList.propTypes = {

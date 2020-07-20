@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { getBook, getReview } from "../fetchFunctions";
+import { getBook, getReview, getReviewPages } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
+import { Container, Row, Media, Tabs, Tab, Image, Pagination } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
@@ -15,9 +15,11 @@ class BookPage extends Component {
       book: {},
       collection: {},
       reviewPage: 1,
+      // TODO: Make this an input on the page
       reviewsPerPage: 2,
-      hasNextReview: false,
-      hasPrevReview: false,
+
+      totalReviewPages: 1,
+      items: []
     };
   }
 
@@ -40,9 +42,50 @@ class BookPage extends Component {
           book: json,
         });
       });
-    this.updatePages()
+
+    getReviewPages(this.props.match.params.bookID, this.state.reviewsPerPage)
+      .then((res) => {
+        return res.json();
+      })
+      .then((json) => {
+        this.buildPageBar(json.count)
+      })
+      .then(() => {
+        this.forceUpdate()
+      });
   }
 
+  refreshPageBar() {
+    this.setState({ items: [] }, () => {
+      this.buildPageBar(this.state.totalReviewPages)
+    })
+  }
+
+  buildPageBar = (reviewPages) => {
+    this.setState({ totalReviewPages: reviewPages }, () => {
+      this.state.items.push(
+        <Pagination.First disabled={this.state.reviewPage == 1} onClick={() => this.movePage(1)} />
+      );
+      this.state.items.push(
+        <Pagination.Prev disabled={this.state.reviewPage == 1} onClick={() => this.movePage(this.state.reviewPage - 1)} />
+      );
+
+      for (let number = 1; number <= this.state.totalReviewPages; number++) {
+        this.state.items.push(
+          <Pagination.Item key={number} active={number === this.state.reviewPage} onClick={() => this.movePage(number)}>
+            {number}
+          </Pagination.Item >,
+        );
+      }
+      this.state.items.push(
+        <Pagination.Next disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
+      );
+      this.state.items.push(
+        <Pagination.Last disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.totalReviewPages)} />
+      );
+      this.forceUpdate()
+    })
+  }
 
   sortAuthors = (authors) => {
     return authors.sort(function (a, b) {
@@ -60,23 +103,15 @@ class BookPage extends Component {
     toast.info(message);
   };
 
-  movePage = (displacement) => {
-    this.setState({ reviewPage: this.state.reviewPage + displacement },
-      () => { this.updatePages(); this.forceUpdate() })
-  }
+  movePage = (page) => {
 
-  updatePages() {
-    getReview(this.props.match.params.bookID, this.state.reviewPage + 1, this.state.reviewsPerPage)
-      .then((res) => {
-        this.setState({ hasNextReview: (res.status == 200) ? true : false })
-      });
-    getReview(this.props.match.params.bookID, this.state.reviewPage - 1, this.state.reviewsPerPage)
-      .then((res) => {
-        this.setState({ hasPrevReview: (res.status == 200) ? true : false }, () => { this.forceUpdate() })
 
-      });
+    this.setState({ reviewPage: page },
+      () => { this.refreshPageBar() })
 
   }
+
+
 
   render() {
     const book = this.state.book;
@@ -148,9 +183,8 @@ class BookPage extends Component {
 
                     <ReviewList bookID={this.props.match.params.bookID} reviewPage={this.state.reviewPage} reviewsPerPage={this.state.reviewsPerPage} />
 
-                    {this.state.hasPrevReview && <button onClick={() => this.movePage(-1)}>Previous page</button>}
-                    {this.state.reviewPage}
-                    {this.state.hasNextReview && <button onClick={() => this.movePage(1)}>Next page</button>}
+                    <Pagination>{this.state.items}</Pagination>
+                    <br />
 
                   </Tab>
                   <Tab eventKey="info" title="Additional Information">

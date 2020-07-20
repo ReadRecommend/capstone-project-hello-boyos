@@ -29,6 +29,20 @@ export function getReview(bookID, reviewPage, nReviews) {
   );
 }
 
+export function getReviewPages(bookID, nReviews) {
+  const data = {
+    reviews_per_page: nReviews,
+  }
+  return fetch(`${apiUrl}/book/${bookID}/reviewpage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  }
+  );
+}
+
 
 
 
