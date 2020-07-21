@@ -89,7 +89,10 @@ class BookPage extends Component {
                       notify={this.notify}
                     />
                   ) : null}
-                  <Button variant="primary">
+                  <Button
+                    variant="primary"
+                    href="/recommend"
+                  >
                     Recommend Similar
                   </Button>
                 </p>

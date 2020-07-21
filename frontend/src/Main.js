@@ -15,6 +15,7 @@ import AddReview from "./components/AddReview";
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
+import Recommend from "./pages/Recommend";
 
 class Main extends Component {
   render() {
@@ -86,6 +87,13 @@ class Main extends Component {
             component={UserSearch}
             roles={["user"]}
             key="userSearch"
+          />
+          <PrivateRoute
+            exact
+            path="/recommend"
+            component={Recommend}
+            roles={["user"]}
+            key="recommend"
           />
           <Route exact path="*" key="404">
             <h1>404 Page not found</h1>
