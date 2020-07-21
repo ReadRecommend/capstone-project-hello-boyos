@@ -87,7 +87,8 @@ class BookPage extends Component {
                                 </h5>
                                 <h6>
                                     <small>
-                                        Read by {book.n_readers} users
+                                        Read by {book.n_readers} user
+                                        {book.n_readers == 1 ? "" : "s"}
                                     </small>
                                 </h6>
                                 <p>
