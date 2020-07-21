@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Alert, Form, Button, Accordion, Card } from "react-bootstrap";
 
 class AddReview extends Component {
@@ -72,6 +71,7 @@ class AddReview extends Component {
             })
             .then(() => {
                 this.props.notify("Review successfully published!");
+                window.location.reload()
                 return this.props.history.push(
                     "/book/" + this.state.book_id + "/reviews"
                 );
@@ -136,8 +136,6 @@ class AddReview extends Component {
     }
 }
 
-AddReview.propTypes = {
-    initialUserInfo: PropTypes.object.isRequired,
-};
+
 
 export default AddReview;

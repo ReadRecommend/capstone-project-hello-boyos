@@ -29,9 +29,38 @@ export function getAllBooks() {
     return fetch(`${apiUrl}/book`);
 }
 
-export function getReview(bookID) {
-    return fetch(`${apiUrl}/book/${bookID}/reviews`);
+export function getReview(bookID, reviewPage, nReviews) {
+    const data = {
+        page: reviewPage,
+        reviews_per_page: nReviews,
+    }
+    return fetch(`${apiUrl}/book/${bookID}/reviews`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    }
+    );
 }
+
+export function getReviewPages(bookID, nReviews) {
+    const data = {
+        reviews_per_page: nReviews,
+    }
+    return fetch(`${apiUrl}/book/${bookID}/reviewpage`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    }
+    );
+}
+
+
+
+
 
 export function addBook(bookDetails) {
     return fetch(`${apiUrl}/book`, {
