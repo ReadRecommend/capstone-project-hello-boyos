@@ -91,7 +91,7 @@ export function unfollowUser(followerUsername, userUsername) {
 }
 
 export function followUser(followerUsername, userUsername) {
-    return fetch("${apiUrl}/user/follow", {
+    return fetch(`${apiUrl}/user/follow`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
