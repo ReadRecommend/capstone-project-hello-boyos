@@ -9,7 +9,7 @@ class ReviewList extends Component {
     this.state = {
       reviewList: [],
       reviewPage: this.props.reviewPage,
-      nReviews: 2,
+      nReviews: this.props.reviewsPerPage,
     };
   }
 

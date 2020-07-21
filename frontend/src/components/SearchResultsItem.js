@@ -31,7 +31,7 @@ class SearchResultsItem extends Component {
               <a href={`/book/${book.id}`}>{book.title}</a>
             </Card.Text>
             <StarRatings
-              rating={book.ave_rating}
+              rating={book.ave_rating.toFixed(2)}
               starRatedColor="gold"
               numberOfStars={5}
               starDimension="20px"
@@ -39,7 +39,7 @@ class SearchResultsItem extends Component {
             />
             <br></br>
             <small>
-              {book.ave_rating} from {book.n_ratings.toLocaleString()} reviews
+              {book.ave_rating.toFixed(2)} from {book.n_ratings.toLocaleString()} reviews
             </small>
           </Card.Body>
         </Card>

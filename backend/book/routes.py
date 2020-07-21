@@ -133,6 +133,13 @@ def add_review():
         reader_id=reader_id, book_id=book_id, review=review, score=score,
     )
 
+    book = Book.query.filter_by(id=book_id).first()
+
+    book.n_ratings += 1
+    book.ave_rating = (
+        (int(score) - book.ave_rating) / (book.n_ratings)
+    ) + book.ave_rating
+
     db.session.add(new_review)
     db.session.commit()
 

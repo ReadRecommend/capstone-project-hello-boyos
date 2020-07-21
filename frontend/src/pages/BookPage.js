@@ -72,6 +72,12 @@ class BookPage extends Component {
         );
       }
 
+      if (this.state.reviewPage - 2 > 1) {
+        this.state.items.push(
+          <Pagination.Ellipsis key={this.state.totalReviewPages + 5} />
+        );
+      }
+
       for (let number = this.state.reviewPage - 2; number <= this.state.reviewPage + 2; number++) {
         if (number > 0 && number <= this.state.totalReviewPages) {
           this.state.items.push(
@@ -80,9 +86,14 @@ class BookPage extends Component {
             </Pagination.Item >,
           );
         }
-
-
       }
+
+      if (this.state.reviewPage + 2 < this.state.totalReviewPages) {
+        this.state.items.push(
+          <Pagination.Ellipsis key={this.state.totalReviewPages + 6} />
+        );
+      }
+
       if (this.state.reviewPage !== this.state.totalReviewPages && this.state.totalReviewPages !== 0) {
         this.state.items.push(
           <Pagination.Next key={this.state.totalReviewPages + 3} disabled={this.state.reviewPage === this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
@@ -185,7 +196,7 @@ class BookPage extends Component {
                     />
                     <br></br>
                     <small>
-                      {book.ave_rating} from {book.n_ratings.toLocaleString()}{" "}
+                      {book.ave_rating.toFixed(2)} from {book.n_ratings.toLocaleString()}{" "}
                       reviews
                     </small>
 
