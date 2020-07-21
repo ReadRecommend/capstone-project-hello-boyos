@@ -79,8 +79,17 @@ class BookPage extends Component {
                             <Media.Body>
                                 <h1>{book.title}</h1>
                                 <h5>
-                                    <small>{this.sortAuthors(book.authors).join(", ")}</small>
+                                    <small>
+                                        {this.sortAuthors(book.authors).join(
+                                            ", "
+                                        )}
+                                    </small>
                                 </h5>
+                                <h6>
+                                    <small>
+                                        Read by {book.n_readers} users
+                                    </small>
+                                </h6>
                                 <p>
                                     {user ? (
                                         <AddBookModal
@@ -96,13 +105,22 @@ class BookPage extends Component {
 
                                         <p>{book.summary}</p>
                                     </Tab>
-                                    <Tab eventKey="reviews" title="Reviews + Ratings">
+                                    <Tab
+                                        eventKey="reviews"
+                                        title="Reviews + Ratings"
+                                    >
                                         {this.props.initialUserInfo && (
                                             <>
                                                 <br></br>
                                                 <AddReview
-                                                    bookID={this.props.match.params.bookID}
-                                                    readerID={this.props.initialUserInfo.id}
+                                                    bookID={
+                                                        this.props.match.params
+                                                            .bookID
+                                                    }
+                                                    readerID={
+                                                        this.props
+                                                            .initialUserInfo.id
+                                                    }
                                                     notify={this.notify}
                                                 />
                                             </>
@@ -118,13 +136,21 @@ class BookPage extends Component {
                                         />
                                         <br></br>
                                         <small>
-                                            {book.ave_rating} from {book.n_ratings.toLocaleString()}{" "}
-                      reviews
-                    </small>
+                                            {book.ave_rating} from{" "}
+                                            {book.n_ratings.toLocaleString()}{" "}
+                                            reviews
+                                        </small>
 
-                                        <ReviewList bookID={this.props.match.params.bookID} />
+                                        <ReviewList
+                                            bookID={
+                                                this.props.match.params.bookID
+                                            }
+                                        />
                                     </Tab>
-                                    <Tab eventKey="info" title="Additional Information">
+                                    <Tab
+                                        eventKey="info"
+                                        title="Additional Information"
+                                    >
                                         <br></br>
                                         <strong>Publisher: </strong>
                                         {book.publisher}
