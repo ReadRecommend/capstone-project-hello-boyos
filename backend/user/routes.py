@@ -3,12 +3,18 @@ from flask import jsonify, request
 import flask_praetorian
 from backend import db
 from backend.user import user_bp
+from backend.user.utils import get_recently_read, get_all_books
 from backend.errors import (
     InvalidRequest,
     ResourceNotFound,
     ForbiddenResource,
 )
-from backend.model.schema import Reader, reader_schema, readers_schema
+from backend.model.schema import (
+    Reader,
+    collection_schema,
+    reader_schema,
+    readers_schema,
+)
 
 
 @user_bp.route("/<username>")
@@ -30,6 +36,24 @@ def get_reader_by_id(id):
     if not reader:
         raise ResourceNotFound(f"A user with the id {id} does not exist")
     return jsonify(reader_schema.dump(reader))
+
+
+@user_bp.route("/<username>/all_books")
+def get_all_readers_books(username):
+    reader = Reader.query.filter_by(username=username).first()
+    if not reader:
+        raise ResourceNotFound(f"A user with the username {username} does not exist")
+    all_books = get_all_books(reader)
+    return jsonify(collection_schema.dump(all_books))
+
+
+@user_bp.route("/<username>/recently_read")
+def get_readers_recently_read(username):
+    reader = Reader.query.filter_by(username=username).first()
+    if not reader:
+        raise ResourceNotFound(f"A user with the username {username} does not exist")
+    recently_read = get_recently_read(reader)
+    return jsonify(collection_schema.dump(recently_read))
 
 
 @user_bp.route("")
