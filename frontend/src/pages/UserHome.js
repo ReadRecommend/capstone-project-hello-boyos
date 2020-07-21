@@ -408,7 +408,13 @@ class UserHome extends Component {
                                 removeBook={this.removeBook}
                                 userCollections={this.state.collectionList}
                                 addToCollection={this.addToCollection}
-                                editable={true}
+                                editable={
+                                    true &&
+                                    this.state.currentCollection.name !=
+                                        "All" &&
+                                    this.state.currentCollection.name !=
+                                        "Recently Read"
+                                }
                             />
                         </Col>
                     </Row>
