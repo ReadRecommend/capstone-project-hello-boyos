@@ -15,21 +15,23 @@ class GoalPage extends Component {
         super(props);
 
         this.state = {
-            data: [
-                { month: "Jan", goal: 0, n_read: 0 },
-                { month: "Feb", goal: 0, n_read: 0 },
-                { month: "Mar", goal: 0, n_read: 0 },
-                { month: "Apr", goal: 0, n_read: 0 },
-                { month: "May", goal: 0, n_read: 0 },
-                { month: "Jun", goal: 0, n_read: 0 },
-                { month: "Jul", goal: 0, n_read: 0 },
-                { month: "Aug", goal: 0, n_read: 0 },
-                { month: "Sep", goal: 0, n_read: 0 },
-                { month: "Oct", goal: 0, n_read: 0 },
-                { month: "Nov", goal: 0, n_read: 0 },
-                { month: "Dec", goal: 0, n_read: 0 }],
+            months: [
+                { month: "Jan" },
+                { month: "Feb" },
+                { month: "Mar" },
+                { month: "Apr" },
+                { month: "May" },
+                { month: "Jun" },
+                { month: "Jul" },
+                { month: "Aug" },
+                { month: "Sep" },
+                { month: "Oct" },
+                { month: "Nov" },
+                { month: "Dec", }],
+            data: [],
             yearView: null,
-            modalShow: false
+            modalShow: false,
+            loading: false
         }
     }
 
@@ -46,15 +48,21 @@ class GoalPage extends Component {
     // Function that updates the data in the state given data from a fetch
     updateData = (data) => {
 
-        let stateDataCopy = this.state.data;
+        if (data.length === 0) {
+            return;
+        }
+
+        // Make a copy of the months array
+        let monthsBase = JSON.parse(JSON.stringify(this.state.months));
         for (const dataPoint of data) {
-            let monthDataPoint = stateDataCopy[dataPoint.month - 1];
+            let monthDataPoint = monthsBase[dataPoint.month - 1];
             monthDataPoint.n_read = dataPoint.n_read;
             monthDataPoint.goal = dataPoint.goal;
         }
 
-        console.log(stateDataCopy);
-        this.setState({ data: stateDataCopy }, console.log(this.state.data));
+        console.log(monthsBase);
+        console.log(this.state.data);
+        this.setState({ data: monthsBase }, console.log(this.state.data));
 
     }
 
@@ -63,6 +71,7 @@ class GoalPage extends Component {
         const year = date.toDate().getFullYear();
         this.setState({
             yearView: year,
+            data: []
         });
 
         getGoals(year)
@@ -99,19 +108,26 @@ class GoalPage extends Component {
                 <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
 
                 <h1>Goal Page</h1>
-                <h3>Select a year to view your goal progress for that year:</h3>
+                <h3>Select a year to view your goal progress for that year</h3>
+                <h3>{this.state.yearView || "No Year Selected"}</h3>
+                { // If we are loading, Don't show any of this
+
+                }
                 <Datetime
                     dateFormat="YYYY"
                     input={false}
                     onChange={this.onYearViewChange}
                 />
 
-                <h3>{this.state.yearView || "No Year Selected"}</h3>
-                { // Ensure we have a year selected before displaying the diagram
-                    this.state.yearView &&
+                {this.state.data.length === 0 &&
+                    <p>No Goals found for this year...</p>
+                }
+                { // Ensure we have a year selected, and data was returned before displaying the diagram
+                    this.state.yearView && this.state.data.length !== 0 &&
                     < ResponsiveContainer width="100%" height={400}>
                         <LineChart width={1200} height={400} data={this.state.data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                             <Line type="linear" dataKey="n_read" stroke="#8884d8" />
+                            <Line type="linear" dataKey="goal" stroke="green" />
                             <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
                             <XAxis dataKey="month" />
                             <YAxis />

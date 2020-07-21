@@ -14,6 +14,7 @@ class AddGoalModal extends Component {
 
         this.state = {
             timePeriod: null,
+            dateInput: null,
             goal: 1,
             nRead: 0
         }
@@ -22,7 +23,8 @@ class AddGoalModal extends Component {
     // Function that handles a selection of month/year in Datetime component
     onDateChange = (date) => {
         this.setState({
-            timePeriod: { month: date.toDate().getMonth() + 1, year: date.toDate().getFullYear() }
+            timePeriod: { month: date.toDate().getMonth() + 1, year: date.toDate().getFullYear() },
+            dateInput: date
         });
     }
 
@@ -86,9 +88,6 @@ class AddGoalModal extends Component {
                                 <Datetime
                                     dateFormat="MMM YYYY"
                                     input={false}
-                                    isValidDate={(current) => {
-                                        return current.isAfter(Datetime.moment());
-                                    }}
                                     onChange={this.onDateChange}
                                 />
                             </Form.Group>
