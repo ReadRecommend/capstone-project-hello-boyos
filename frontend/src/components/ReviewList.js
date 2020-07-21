@@ -45,7 +45,7 @@ class ReviewList extends Component {
     return (
       this.state.reviewList.map((review) => (
         <ReviewListItem
-          key={review.id}
+          key={review.reader.id}
           book_id={review.book_id}
           creation_date={review.creation_date}
           reader={review.reader.username}
