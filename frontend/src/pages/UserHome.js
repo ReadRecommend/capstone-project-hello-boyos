@@ -306,6 +306,9 @@ class UserHome extends Component {
                 <Button href="/usrsearch" block>
                   User Search
                 </Button>
+                <Button href="/discover" block>
+                  Discover
+                </Button>
               </p>
               <Dropdown>
                 <Dropdown.Toggle
