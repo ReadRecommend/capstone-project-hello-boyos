@@ -53,6 +53,13 @@ def sort_books(
         for collection in reader.collections
         for membership in collection.book_memberships
     ]
-
     sorted_memberships = sorted(memberships, key=sort_func, reverse=reverse)
-    return [membership.book for membership in sorted_memberships]
+
+    # Need to only include each book a maximum of once, even if it is in multiple collections
+    unique_book_memberships = []
+    for membership in sorted_memberships:
+        # Check if the book id has already been added to the unique book memberships
+        if not membership.book_id in [mem.book_id for mem in unique_book_memberships]:
+            unique_book_memberships.append(membership)
+
+    return [membership.book for membership in unique_book_memberships]
