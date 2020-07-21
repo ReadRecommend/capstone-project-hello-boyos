@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { getBook } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
+import { Container, Row, Media, Tabs, Tab, Image, Button } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
@@ -89,6 +89,9 @@ class BookPage extends Component {
                       notify={this.notify}
                     />
                   ) : null}
+                  <Button variant="primary">
+                    Recommend Similar
+                  </Button>
                 </p>
                 <Tabs defaultActiveKey="summary">
                   <Tab eventKey="summary" title="Summary">
