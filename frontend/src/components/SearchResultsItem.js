@@ -24,11 +24,20 @@ class SearchResultsItem extends Component {
       <div style={{ margin: "auto" }}>
         <Card style={{ width: "300px" }}>
           <a href={`/book/${book.id}`}>
-            <Card.Img variant="top" src={book.cover} height="475px" />
+            <Card.Img
+              variant="top"
+              src={book.cover}
+              height="475px"
+            />
           </a>
           <Card.Body>
             <Card.Text>
               <a href={`/book/${book.id}`}>{book.title}</a>
+              <p>
+                <small>{book.authors}</small>
+                <br></br>
+                <small>{book.publication_date}</small>
+              </p>
             </Card.Text>
             <StarRatings
               rating={book.ave_rating}
@@ -39,8 +48,9 @@ class SearchResultsItem extends Component {
             />
             <br></br>
             <small>
-              {book.ave_rating.toFixed(2)} from {book.n_ratings.toLocaleString()} reviews
-            </small>
+              {book.ave_rating} from{" "}
+              {book.n_ratings.toLocaleString()} reviews
+                        </small>
           </Card.Body>
         </Card>
       </div>

@@ -3,7 +3,6 @@ from flask import jsonify, request
 import flask_praetorian
 from backend import db
 from backend.collection import collection_bp
-from backend.collection.utils import handle_recent_10
 from backend.errors import AuthenticationError, InvalidRequest, ResourceNotFound
 from backend.model.schema import (
     Book,
@@ -96,7 +95,6 @@ def modify_collection():
         if collection.name == "Recently Read":
             return InvalidRequest("You cannot manually add books to your recently read")
         collection.books.append(book)
-        handle_recent_10(book, collection)
         db.session.add(collection)
         db.session.commit()
 

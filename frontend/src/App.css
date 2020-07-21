@@ -2,3 +2,8 @@
     border: 3px #ccc solid;
     width: 500px;
 }
+
+.navbar_role {
+    border-right: 1px solid;
+    padding-right: 15px;
+}
