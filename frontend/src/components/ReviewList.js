@@ -58,8 +58,6 @@ class ReviewList extends Component {
   };
 }
 
-ReviewList.propTypes = {
-  reviewList: PropTypes.array.isRequired,
-};
+
 
 export default ReviewList;

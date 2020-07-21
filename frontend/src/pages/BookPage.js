@@ -18,7 +18,7 @@ class BookPage extends Component {
       // TODO: Make this an input on the page
       reviewsPerPage: 2,
 
-      totalReviewPages: 1,
+      totalReviewPages: 0,
       items: []
     };
   }
@@ -83,7 +83,7 @@ class BookPage extends Component {
 
 
       }
-      if (this.state.reviewPage !== this.state.totalReviewPages) {
+      if (this.state.reviewPage !== this.state.totalReviewPages && this.state.totalReviewPages !== 0) {
         this.state.items.push(
           <Pagination.Next disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
         );

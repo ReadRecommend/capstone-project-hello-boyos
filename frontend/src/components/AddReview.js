@@ -137,8 +137,6 @@ class AddReview extends Component {
     }
 }
 
-AddReview.propTypes = {
-    initialUserInfo: PropTypes.object.isRequired,
-};
+
 
 export default AddReview;
