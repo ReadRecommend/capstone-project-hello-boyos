@@ -63,26 +63,34 @@ class BookPage extends Component {
 
   buildPageBar = (reviewPages) => {
     this.setState({ totalReviewPages: reviewPages }, () => {
-      this.state.items.push(
-        <Pagination.First disabled={this.state.reviewPage == 1} onClick={() => this.movePage(1)} />
-      );
-      this.state.items.push(
-        <Pagination.Prev disabled={this.state.reviewPage == 1} onClick={() => this.movePage(this.state.reviewPage - 1)} />
-      );
-
-      for (let number = 1; number <= this.state.totalReviewPages; number++) {
+      if (this.state.reviewPage !== 1) {
         this.state.items.push(
-          <Pagination.Item key={number} active={number === this.state.reviewPage} onClick={() => this.movePage(number)}>
-            {number}
-          </Pagination.Item >,
+          <Pagination.First disabled={this.state.reviewPage == 1} onClick={() => this.movePage(1)} />
+        );
+        this.state.items.push(
+          <Pagination.Prev disabled={this.state.reviewPage == 1} onClick={() => this.movePage(this.state.reviewPage - 1)} />
         );
       }
-      this.state.items.push(
-        <Pagination.Next disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
-      );
-      this.state.items.push(
-        <Pagination.Last disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.totalReviewPages)} />
-      );
+
+      for (let number = this.state.reviewPage - 2; number <= this.state.reviewPage + 2; number++) {
+        if (number > 0 && number <= this.state.totalReviewPages) {
+          this.state.items.push(
+            <Pagination.Item key={number} active={number === this.state.reviewPage} onClick={() => this.movePage(number)}>
+              {number}
+            </Pagination.Item >,
+          );
+        }
+
+
+      }
+      if (this.state.reviewPage !== this.state.totalReviewPages) {
+        this.state.items.push(
+          <Pagination.Next disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
+        );
+        this.state.items.push(
+          <Pagination.Last disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.totalReviewPages)} />
+        );
+      }
       this.forceUpdate()
     })
   }
