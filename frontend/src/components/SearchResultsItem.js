@@ -31,7 +31,7 @@ class SearchResultsItem extends Component {
               <a href={`/book/${book.id}`}>{book.title}</a>
             </Card.Text>
             <StarRatings
-              rating={book.ave_rating.toFixed(2)}
+              rating={book.ave_rating}
               starRatedColor="gold"
               numberOfStars={5}
               starDimension="20px"
