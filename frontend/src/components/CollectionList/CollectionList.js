@@ -13,10 +13,13 @@ class CollectionList extends Component {
                         collection={collection}
                         delCollection={this.props.delCollection}
                         selectCollection={this.props.selectCollection}
-                        editable={this.props.editable}
+                        editable={
+                            this.props.editable && collection.name != "Main"
+                        }
                         isSelected={
                             this.props.currentCollection &&
-                            collection.id === this.props.currentCollection.id
+                            collection.name ===
+                                this.props.currentCollection.name
                         }
                     />
                 ))}

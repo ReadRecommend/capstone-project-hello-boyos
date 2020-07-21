@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getUserById } from "../fetchFunctions";
+import { getUserById, getCollectionOverview } from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
 import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
@@ -67,6 +67,34 @@ class UserPage extends Component {
             });
     };
 
+    selectOverview = (overviewName) => {
+        getCollectionOverview(this.state.userPageInfo.username, overviewName)
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
+                return res.json();
+            })
+            .then((json) => {
+                this.setState({ currentCollection: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage =
+                    "Something went wrong getting this collection overview";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
+            });
+    };
+
     notify = (message) => {
         toast.info(message);
     };
@@ -110,6 +138,23 @@ class UserPage extends Component {
                                         notify={this.notify}
                                     />
                                 )}
+                                <h4>Books</h4>
+                                <CollectionList
+                                    collectionList={[
+                                        { name: "All", id: "all_books" },
+                                        {
+                                            name: "Recently Read",
+                                            id: "recently_read",
+                                        },
+                                    ]}
+                                    delCollection={null}
+                                    selectCollection={this.selectOverview}
+                                    editable={false}
+                                    currentCollection={
+                                        this.state.currentCollection
+                                    }
+                                />
+                                <br></br>
                                 <h4>Collections</h4>
                                 <CollectionList
                                     collectionList={user.collections}
