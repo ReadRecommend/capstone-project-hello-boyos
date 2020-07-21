@@ -108,7 +108,7 @@ user3 = Reader(
     username="SteveLee",
     email="steve.lee@gmail.com",
     password=guard.hash_password("stevelee123"),
-    roles="user,admin",
+    roles="admin",
 )
 user4 = Reader(
     username="SecretAdmin",
