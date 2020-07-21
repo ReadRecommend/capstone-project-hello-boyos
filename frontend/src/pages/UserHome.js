@@ -13,7 +13,8 @@ import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
 import FollowList from "../components/FollowList";
-import { unfollowUser } from "../fetchFunctions";
+import { unfollowUser, getCollectionOverview } from "../fetchFunctions";
+import { toast, ToastContainer } from "react-toastify";
 
 class UserHome extends Component {
     constructor(props) {
@@ -205,6 +206,34 @@ class UserHome extends Component {
             });
     };
 
+    selectOverview = (overviewName) => {
+        getCollectionOverview(this.state.userInfo.username, overviewName)
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
+                return res.json();
+            })
+            .then((json) => {
+                this.setState({ currentCollection: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage =
+                    "Something went wrong getting this collection overview";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
+            });
+    };
+
     addToCollection = (bookID, collectionID) => {
         fetch("http://localhost:5000/collection/modify", {
             method: "POST",
@@ -238,9 +267,12 @@ class UserHome extends Component {
                 >
                     {this.state.errorGeneralMessage}
                 </Alert>
-
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 {/* Modal for creating a new collection */}
-                <Modal show={this.state.modalShow} onHide={() => this.handleModal()}>
+                <Modal
+                    show={this.state.modalShow}
+                    onHide={() => this.handleModal()}
+                >
                     {/* Alert for problems with adding collections */}
                     <Alert
                         show={this.state.errorAddCollectionShow}
@@ -265,7 +297,10 @@ class UserHome extends Component {
                 >
                     <Modal.Header closeButton>
                         <Modal.Title>
-                            Add {this.state.libraryBook && this.state.libraryBook.title} to{" "}
+                            Add{" "}
+                            {this.state.libraryBook &&
+                                this.state.libraryBook.title}
+                            to{" "}
                             {this.state.currentCollection.name
                                 ? this.state.currentCollection.name
                                 : "<choose a collection>"}
@@ -283,7 +318,7 @@ class UserHome extends Component {
                             block
                         >
                             Add
-            </Button>
+                        </Button>
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>
                 </Modal>
@@ -299,13 +334,13 @@ class UserHome extends Component {
                                     }}
                                 >
                                     Create a collection
-                </Button>
+                                </Button>
                                 <Button href="/search" block>
                                     Search
-                </Button>
+                                </Button>
                                 <Button href="/usrsearch" block>
                                     User Search
-                </Button>
+                                </Button>
                             </p>
                             <Dropdown>
                                 <Dropdown.Toggle
@@ -314,7 +349,7 @@ class UserHome extends Component {
                                     className="btn-block"
                                 >
                                     Add a book to the current collection
-                </Dropdown.Toggle>
+                                </Dropdown.Toggle>
                                 <Dropdown.Menu style={dropdownStyle}>
                                     {this.state.library &&
                                         this.state.library.map((book) => (
@@ -332,6 +367,21 @@ class UserHome extends Component {
                                         ))}
                                 </Dropdown.Menu>
                             </Dropdown>
+                            <br></br>
+                            <h4>Your Books</h4>
+                            <CollectionList
+                                collectionList={[
+                                    { name: "All", id: "all_books" },
+                                    {
+                                        name: "Recently Read",
+                                        id: "recently_read",
+                                    },
+                                ]}
+                                delCollection={null}
+                                selectCollection={this.selectOverview}
+                                editable={false}
+                                currentCollection={this.state.currentCollection}
+                            />
                             <br></br>
                             <h4>Your Collections</h4>
                             <CollectionList
@@ -358,7 +408,13 @@ class UserHome extends Component {
                                 removeBook={this.removeBook}
                                 userCollections={this.state.collectionList}
                                 addToCollection={this.addToCollection}
-                                editable={true}
+                                editable={
+                                    true &&
+                                    this.state.currentCollection.name !=
+                                        "All" &&
+                                    this.state.currentCollection.name !=
+                                        "Recently Read"
+                                }
                             />
                         </Col>
                     </Row>

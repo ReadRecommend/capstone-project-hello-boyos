@@ -31,6 +31,7 @@ class CollectionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Collection
         include_relationships = True
+        exclude = ("book_memberships",)
 
     books = ma.Nested(BookSchema, many=True)
 

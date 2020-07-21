@@ -21,8 +21,8 @@ export function deleteBook(bookID) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ id: bookID }),
-        credentials: "include"
-    })
+        credentials: "include",
+    });
 }
 
 export function getAllBooks() {
@@ -114,4 +114,8 @@ export function followUser(followerUsername, userUsername) {
         .catch((error) => {
             console.log(error.message);
         });
+}
+
+export function getCollectionOverview(username, overviewName) {
+    return fetch(`http://localhost:5000/user/${username}/${overviewName}`);
 }
