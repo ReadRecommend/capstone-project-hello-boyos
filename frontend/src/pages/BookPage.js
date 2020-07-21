@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getBook, getReview, getReviewPages } from "../fetchFunctions";
+import { getBook, getReviewPages } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
 import { Container, Row, Media, Tabs, Tab, Image, Pagination } from "react-bootstrap";
@@ -65,10 +65,10 @@ class BookPage extends Component {
     this.setState({ totalReviewPages: reviewPages }, () => {
       if (this.state.reviewPage !== 1) {
         this.state.items.push(
-          <Pagination.First key={this.state.totalReviewPages + 1} disabled={this.state.reviewPage == 1} onClick={() => this.movePage(1)} />
+          <Pagination.First key={this.state.totalReviewPages + 1} disabled={this.state.reviewPage === 1} onClick={() => this.movePage(1)} />
         );
         this.state.items.push(
-          <Pagination.Prev key={this.state.totalReviewPages + 2} disabled={this.state.reviewPage == 1} onClick={() => this.movePage(this.state.reviewPage - 1)} />
+          <Pagination.Prev key={this.state.totalReviewPages + 2} disabled={this.state.reviewPage === 1} onClick={() => this.movePage(this.state.reviewPage - 1)} />
         );
       }
 
@@ -85,10 +85,10 @@ class BookPage extends Component {
       }
       if (this.state.reviewPage !== this.state.totalReviewPages && this.state.totalReviewPages !== 0) {
         this.state.items.push(
-          <Pagination.Next key={this.state.totalReviewPages + 3} disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
+          <Pagination.Next key={this.state.totalReviewPages + 3} disabled={this.state.reviewPage === this.state.totalReviewPages} onClick={() => this.movePage(this.state.reviewPage + 1)} />
         );
         this.state.items.push(
-          <Pagination.Last key={this.state.totalReviewPages + 4} disabled={this.state.reviewPage == this.state.totalReviewPages} onClick={() => this.movePage(this.state.totalReviewPages)} />
+          <Pagination.Last key={this.state.totalReviewPages + 4} disabled={this.state.reviewPage === this.state.totalReviewPages} onClick={() => this.movePage(this.state.totalReviewPages)} />
         );
       }
       this.forceUpdate()

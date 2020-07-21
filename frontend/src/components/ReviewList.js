@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { getReview, getReviewPages } from "../fetchFunctions";
+import { getReview } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
 
 class ReviewList extends Component {

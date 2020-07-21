@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { Alert, Form, Button, Accordion, Card } from "react-bootstrap";
 
 class AddReview extends Component {
