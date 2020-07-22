@@ -21,16 +21,39 @@ export function deleteBook(bookID) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify({ id: bookID }),
-        credentials: "include"
-    })
+        credentials: "include",
+    });
 }
 
 export function getAllBooks() {
     return fetch(`${apiUrl}/book`);
 }
 
-export function getReview(bookID) {
-    return fetch(`${apiUrl}/book/${bookID}/reviews`);
+export function getReview(bookID, reviewPage, nReviews) {
+    const data = {
+        page: reviewPage,
+        reviews_per_page: nReviews,
+    };
+    return fetch(`${apiUrl}/book/${bookID}/reviews`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+}
+
+export function getReviewPages(bookID, nReviews) {
+    const data = {
+        reviews_per_page: nReviews,
+    };
+    return fetch(`${apiUrl}/book/${bookID}/reviewpage`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
 }
 
 export function addBook(bookDetails) {
@@ -118,7 +141,7 @@ export function followUser(followerUsername, userUsername) {
 
 export function getGoals(year) {
     return fetch(`${apiUrl}/goals/${year}`, {
-        credentials: "include"
+        credentials: "include",
     });
 }
 
@@ -132,8 +155,11 @@ export function updateGoal(month, year, goal, n_read) {
             month: month,
             year: year,
             goal: goal,
-            n_read: n_read
+            n_read: n_read,
         }),
-        credentials: "include"
-    })
+        credentials: "include",
+    });
+}
+export function getCollectionOverview(username, overviewName) {
+    return fetch(`http://localhost:5000/user/${username}/${overviewName}`);
 }

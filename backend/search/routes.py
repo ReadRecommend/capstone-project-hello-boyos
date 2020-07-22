@@ -15,8 +15,8 @@ def search():
     search_term = request.json.get("search")
     rating_filter = request.json.get("filter")
 
-    if rating_filter == "5 Stars":
-        rating_filter = 5
+    if rating_filter == "No Filter":
+        rating_filter = 0
     elif rating_filter == "≥ 4 Stars":
         rating_filter = 4
     elif rating_filter == "≥ 3 Stars":
@@ -25,8 +25,6 @@ def search():
         rating_filter = 2
     elif rating_filter == "≥ 1 Stars":
         rating_filter = 1
-    elif rating_filter == "No Filter":
-        rating_filter = 0
 
     search_term = f"%{search_term}%"
 
