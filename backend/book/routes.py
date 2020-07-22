@@ -14,6 +14,7 @@ from backend.model.schema import (
     Genre,
     Author,
     Review,
+    CollectionMembership,
     review_schema,
     reviews_schema,
 )
@@ -95,6 +96,9 @@ def delete_book():
     # Check book exists
     if not (book):
         raise ResourceNotFound("Book does not exist")
+
+    # Delete the book from all the collections it is in
+    CollectionMembership.query.filter_by(book_id=book.id).delete()
 
     # Delete the book
     db.session.delete(book)
