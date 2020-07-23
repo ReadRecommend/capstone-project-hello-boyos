@@ -83,7 +83,6 @@ def add_collection():
 @collection_bp.route("/modify", methods=["POST", "DELETE"])
 @flask_praetorian.auth_required
 def modify_collection():
-    print(request.json)
     collection_id = request.json.get("collection_id")
     book_id = request.json.get("book_id")
     if not (collection_id and book_id):
@@ -93,16 +92,12 @@ def modify_collection():
     collection = Collection.query.filter_by(id=collection_id).first()
     book = Book.query.filter_by(id=book_id).first()
     user = Reader.query.filter_by(id=flask_praetorian.current_user().id).first()
-    print(user)
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:
         # Check if this book already exists in our all collection. If it doesn't, we need to update goals.
         all_books = sort_books(user)
-        print(book)
-        print(all_books)
         if not (book in all_books):
-            print("update")
             # Update goals
             year = datetime.now().year
             month = datetime.now().month
