@@ -1,4 +1,7 @@
 from flask import jsonify, request
+import flask_sqlalchemy
+import math
+
 
 import flask_praetorian
 from backend import db
@@ -11,6 +14,7 @@ from backend.model.schema import (
     Genre,
     Author,
     Review,
+    CollectionMembership,
     review_schema,
     reviews_schema,
 )
@@ -93,6 +97,9 @@ def delete_book():
     if not (book):
         raise ResourceNotFound("Book does not exist")
 
+    # Delete the book from all the collections it is in
+    CollectionMembership.query.filter_by(book_id=book.id).delete()
+
     # Delete the book
     db.session.delete(book)
     db.session.commit()
@@ -116,10 +123,27 @@ def get_book(id):
     return jsonify(book_schema.dump(book))
 
 
-@book_bp.route("/<id>/reviews")
+@book_bp.route("/<id>/reviews", methods=["POST"])
 def get_review(id):
-    review = Review.query.filter_by(book_id=id).all()
-    return jsonify(reviews_schema.dump(review))
+    request_data = request.json
+
+    page = request_data.get("page")
+    nReview = request_data.get("reviews_per_page")
+
+    review = Review.query.filter_by(book_id=id).paginate(page, nReview, True)
+    return jsonify(reviews_schema.dump(review.items))
+
+
+@book_bp.route("/<id>/reviewpage", methods=["POST"])
+def get_review_count(id):
+    request_data = request.json
+
+    nReview = request_data.get("reviews_per_page")
+
+    review = Review.query.filter_by(book_id=id).count()
+
+    pages = math.ceil(review / nReview)
+    return {"count": pages}
 
 
 @book_bp.route("/review", methods=["POST"])
@@ -138,6 +162,13 @@ def add_review():
     new_review = Review(
         reader_id=reader_id, book_id=book_id, review=review, score=score,
     )
+
+    book = Book.query.filter_by(id=book_id).first()
+
+    book.n_ratings += 1
+    book.ave_rating = (
+        (int(score) - book.ave_rating) / (book.n_ratings)
+    ) + book.ave_rating
 
     db.session.add(new_review)
     db.session.commit()

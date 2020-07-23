@@ -108,7 +108,7 @@ user3 = Reader(
     username="SteveLee",
     email="steve.lee@gmail.com",
     password=guard.hash_password("stevelee123"),
-    roles="user,admin",
+    roles="admin",
 )
 user4 = Reader(
     username="SecretAdmin",
@@ -129,10 +129,10 @@ user3.collections.append(
 user4.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
 )
-user1.collections.append(Collection(name="Recently Read",))
-user2.collections.append(Collection(name="Recently Read",))
-user3.collections.append(Collection(name="Recently Read",))
-user4.collections.append(Collection(name="Recently Read",))
+# user1.collections.append(Collection(name="Recently Read",))
+# user2.collections.append(Collection(name="Recently Read",))
+# user3.collections.append(Collection(name="Recently Read",))
+# user4.collections.append(Collection(name="Recently Read",))
 
 user1.follows.append(user2)
 user1.follows.append(user3)

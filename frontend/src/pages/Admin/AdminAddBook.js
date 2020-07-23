@@ -18,7 +18,7 @@ class AdminAddBook extends Component {
             authors: [],
             genres: [],
             publisher: "",
-            publicationDate: -1,
+            publicationDate: null,
             summary: "",
             cover: "",
             language: ""
@@ -187,6 +187,7 @@ class AdminAddBook extends Component {
                         <Form.Label>PUBLICATION DATE</Form.Label>
                         <Datetime
                             dateFormat="YYYY"
+                            input={false}
                             isValidDate={(current) => {
                                 return current.isBefore(Datetime.moment());
                             }}

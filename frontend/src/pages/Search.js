@@ -4,8 +4,6 @@ import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from 'react-bootstrap/Pagination'
 import PageItem from 'react-bootstrap/PageItem'
-import DropdownItem from "react-bootstrap/DropdownItem";
- 
 class Search extends Component {
     constructor(props) {
         super(props);
@@ -61,7 +59,6 @@ class Search extends Component {
             })
             this.refreshPageList(newPage)
         }
-        //console.log(JSON.stringify(this.state.currentDisplayList, ["title"]))
     }
 
     refreshPageList = (activePage) => {

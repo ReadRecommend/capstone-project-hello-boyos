@@ -1,8 +1,16 @@
 import React, { Component } from "react";
-import { getBook } from "../fetchFunctions";
+import { getBook, getReviewPages } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
-import { Container, Row, Media, Tabs, Tab, Image } from "react-bootstrap";
+import {
+    Container,
+    Row,
+    Media,
+    Tabs,
+    Tab,
+    Image,
+    Pagination,
+} from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
@@ -14,6 +22,12 @@ class BookPage extends Component {
         this.state = {
             book: {},
             collection: {},
+            reviewPage: 1,
+            // TODO: Make this an input on the page
+            reviewsPerPage: 2,
+
+            totalReviewPages: 0,
+            items: [],
         };
     }
 
@@ -36,7 +50,111 @@ class BookPage extends Component {
                     book: json,
                 });
             });
+
+        getReviewPages(
+            this.props.match.params.bookID,
+            this.state.reviewsPerPage
+        )
+            .then((res) => {
+                return res.json();
+            })
+            .then((json) => {
+                this.buildPageBar(json.count);
+            })
+            .then(() => {
+                this.forceUpdate();
+            });
     }
+
+    refreshPageBar() {
+        this.setState({ items: [] }, () => {
+            this.buildPageBar(this.state.totalReviewPages);
+        });
+    }
+
+    buildPageBar = (reviewPages) => {
+        this.setState({ totalReviewPages: reviewPages }, () => {
+            if (this.state.reviewPage !== 1) {
+                this.state.items.push(
+                    <Pagination.First
+                        key={this.state.totalReviewPages + 1}
+                        disabled={this.state.reviewPage === 1}
+                        onClick={() => this.movePage(1)}
+                    />
+                );
+                this.state.items.push(
+                    <Pagination.Prev
+                        key={this.state.totalReviewPages + 2}
+                        disabled={this.state.reviewPage === 1}
+                        onClick={() => this.movePage(this.state.reviewPage - 1)}
+                    />
+                );
+            }
+
+            if (this.state.reviewPage - 2 > 1) {
+                this.state.items.push(
+                    <Pagination.Ellipsis
+                        key={this.state.totalReviewPages + 5}
+                    />
+                );
+            }
+
+            for (
+                let number = this.state.reviewPage - 2;
+                number <= this.state.reviewPage + 2;
+                number++
+            ) {
+                if (number > 0 && number <= this.state.totalReviewPages) {
+                    this.state.items.push(
+                        <Pagination.Item
+                            key={number}
+                            active={number === this.state.reviewPage}
+                            onClick={() => this.movePage(number)}
+                        >
+                            {number}
+                        </Pagination.Item>
+                    );
+                }
+            }
+
+            if (this.state.reviewPage + 2 < this.state.totalReviewPages) {
+                this.state.items.push(
+                    <Pagination.Ellipsis
+                        key={this.state.totalReviewPages + 6}
+                    />
+                );
+            }
+
+            if (
+                this.state.reviewPage !== this.state.totalReviewPages &&
+                this.state.totalReviewPages !== 0
+            ) {
+                this.state.items.push(
+                    <Pagination.Next
+                        key={this.state.totalReviewPages + 3}
+                        disabled={
+                            this.state.reviewPage ===
+                            this.state.totalReviewPages
+                        }
+                        onClick={() => this.movePage(this.state.reviewPage + 1)}
+                    />
+                );
+                this.state.items.push(
+                    <Pagination.Last
+                        key={this.state.totalReviewPages + 4}
+                        disabled={
+                            this.state.reviewPage ===
+                            this.state.totalReviewPages
+                        }
+                        onClick={() =>
+                            this.movePage(this.state.totalReviewPages)
+                        }
+                    />
+                );
+            }
+            this.forceUpdate();
+        });
+    };
 
     sortAuthors = (authors) => {
         return authors.sort(function (a, b) {
@@ -52,6 +170,12 @@ class BookPage extends Component {
 
     notify = (message) => {
         toast.info(message);
+    };
+
+    movePage = (page) => {
+        this.setState({ reviewPage: page }, () => {
+            this.refreshPageBar();
+        });
     };
 
     render() {
@@ -79,8 +203,18 @@ class BookPage extends Component {
                             <Media.Body>
                                 <h1>{book.title}</h1>
                                 <h5>
-                                    <small>{this.sortAuthors(book.authors).join(", ")}</small>
+                                    <small>
+                                        {this.sortAuthors(book.authors).join(
+                                            ", "
+                                        )}
+                                    </small>
                                 </h5>
+                                <h6>
+                                    <small>
+                                        Read by {book.n_readers} user
+                                        {book.n_readers == 1 ? "" : "s"}
+                                    </small>
+                                </h6>
                                 <p>
                                     {user ? (
                                         <AddBookModal
@@ -96,13 +230,22 @@ class BookPage extends Component {
 
                                         <p>{book.summary}</p>
                                     </Tab>
-                                    <Tab eventKey="reviews" title="Reviews + Ratings">
+                                    <Tab
+                                        eventKey="reviews"
+                                        title="Reviews + Ratings"
+                                    >
                                         {this.props.initialUserInfo && (
                                             <>
                                                 <br></br>
                                                 <AddReview
-                                                    bookID={this.props.match.params.bookID}
-                                                    readerID={this.props.initialUserInfo.id}
+                                                    bookID={
+                                                        this.props.match.params
+                                                            .bookID
+                                                    }
+                                                    readerID={
+                                                        this.props
+                                                            .initialUserInfo.id
+                                                    }
                                                     notify={this.notify}
                                                 />
                                             </>
@@ -118,13 +261,30 @@ class BookPage extends Component {
                                         />
                                         <br></br>
                                         <small>
-                                            {book.ave_rating} from {book.n_ratings.toLocaleString()}{" "}
-                      reviews
-                    </small>
+                                            {book.ave_rating.toFixed(2)} from{" "}
+                                            {book.n_ratings.toLocaleString()}{" "}
+                                            reviews
+                                        </small>
 
-                                        <ReviewList bookID={this.props.match.params.bookID} />
+                                        <ReviewList
+                                            bookID={
+                                                this.props.match.params.bookID
+                                            }
+                                            reviewPage={this.state.reviewPage}
+                                            reviewsPerPage={
+                                                this.state.reviewsPerPage
+                                            }
+                                        />
+
+                                        <Pagination>
+                                            {this.state.items}
+                                        </Pagination>
+                                        <br />
                                     </Tab>
-                                    <Tab eventKey="info" title="Additional Information">
+                                    <Tab
+                                        eventKey="info"
+                                        title="Additional Information"
+                                    >
                                         <br></br>
                                         <strong>Publisher: </strong>
                                         {book.publisher}
