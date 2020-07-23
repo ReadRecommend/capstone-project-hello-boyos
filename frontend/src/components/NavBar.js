@@ -44,7 +44,7 @@ class NavigationBar extends Component {
 }
 
 NavigationBar.propTypes = {
-    loggedInRole: PropTypes.object.isRequired,
+    loggedInRole: PropTypes.string.isRequired,
 };
 
 export default NavigationBar;

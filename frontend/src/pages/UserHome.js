@@ -283,7 +283,7 @@ class UserHome extends Component {
                             block
                         >
                             Add
-            </Button>
+                        </Button>
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>
                 </Modal>
@@ -299,39 +299,15 @@ class UserHome extends Component {
                                     }}
                                 >
                                     Create a collection
-                </Button>
+                                </Button>
                                 <Button href="/search" block>
                                     Search
-                </Button>
+                                </Button>
                                 <Button href="/usrsearch" block>
                                     User Search
-                </Button>
+                                </Button>
                             </p>
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    variant="success"
-                                    id="dropdown-basic"
-                                    className="btn-block"
-                                >
-                                    Add a book to the current collection
-                </Dropdown.Toggle>
-                                <Dropdown.Menu style={dropdownStyle}>
-                                    {this.state.library &&
-                                        this.state.library.map((book) => (
-                                            <Dropdown.Item
-                                                key={book.id}
-                                                onClick={() => {
-                                                    this.setState({
-                                                        libraryBook: book,
-                                                    });
-                                                    this.handleLibraryModal();
-                                                }}
-                                            >
-                                                {book.title}
-                                            </Dropdown.Item>
-                                        ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            
                             <br></br>
                             <h4>Your Collections</h4>
                             <CollectionList

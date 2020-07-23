@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import Main from './Main'
 import NavigationBar from './components/NavBar.js'
-import {Button} from 'react-bootstrap';
 import { loginContext } from './LoginContext';
-import { Link } from 'react-router-dom';
 
 import './App.css';
 

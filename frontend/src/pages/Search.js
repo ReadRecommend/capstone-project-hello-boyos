@@ -45,8 +45,6 @@ class Search extends Component {
     };
 
     updateFilter = (event) => {
-        // When calling handleSubmit asynchronously the event will
-        // be nullified otherwise
         event.persist();
         this.setState({ filter: event.target.value }, () => {
             this.handleSubmit(event); // Call asynchronously
@@ -54,14 +52,16 @@ class Search extends Component {
     };
 
     changePage = (newPage) => {
+        console.log("changePage: " + newPage)
+        console.log("booksPerPage: " + this.state.booksPerPage)
         const {booksPerPage, currentSearchList, numberOfPages} = this.state
-        if (newPage > 0 && newPage <= numberOfPages){
-            this.setState({
+        if (newPage > 0 && newPage <= numberOfPages){this.setState({
                 currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
                 currentPage: newPage
             })
             this.refreshPageList(newPage)
         }
+        //console.log(JSON.stringify(this.state.currentDisplayList, ["title"]))
     }
 
     refreshPageList = (activePage) => {
@@ -78,8 +78,16 @@ class Search extends Component {
     }
 
     changeBooksPerPage = (newLimit) => {
+        console.log("Change books per page: " + newLimit)
         this.setState({booksPerPage:newLimit})
-        return newLimit;
+    }
+
+    getBooksPerPageDropdown = () => {
+        let DropdownItems = []
+        for(let i = 12; i < 100; i *= 2) {
+           DropdownItems.push(<Dropdown.Item key={i} id={i} onClick={(e) => {new Promise(() => {this.changeBooksPerPage(e.target.id)}).then(this.changePage(1));}}>{i}</Dropdown.Item>)
+        }
+        return (DropdownItems);
     }
 
     handleSubmit = (event) => {
@@ -111,38 +119,45 @@ class Search extends Component {
                 this.changePage(1)
             });
     };
-    // TODO: Change page occurs before changeBooksPerPage, find a way to make this happen syncronously so that the page refreshes when the limit is changed
+
+    getSearchBar = () => {
+        return (
+            <Form method="POST" onSubmit={this.handleSubmit}>
+                <InputGroup>
+                    <Form.Control
+                        type="text"
+                        placeholder="Search book"
+                        value={this.state.search}
+                        onChange={this.updateSearch}
+                    />
+
+                    <Form.Control
+                        as="select"
+                        defaultValue={"No Filter"}
+                        onChange={this.updateFilter}
+                    >
+                        <option>No Filter</option>
+                        <option>&ge; 4 Stars</option>
+                        <option>&ge; 3 Stars</option>
+                        <option>&ge; 2 Stars</option>
+                        <option>&ge; 1 Stars</option>
+                    </Form.Control>
+                    <Button variant="primary" type="submit" block value="Search">
+                        Search
+                    </Button>
+                </InputGroup>
+            </Form>
+        );
+    }
+
+    //TODO: Page reloads before booksPerPage is updated
     render() {
         const {currentPage} = this.state
         return (
             <div className="Search">
                 <Container>
                     <h1> Search Page </h1>
-                    <Form method="POST" onSubmit={this.handleSubmit}>
-                        <InputGroup>
-                            <Form.Control
-                                type="text"
-                                placeholder="Search book"
-                                value={this.state.search}
-                                onChange={this.updateSearch}
-                            />
-
-                            <Form.Control
-                                as="select"
-                                defaultValue={"No Filter"}
-                                onChange={this.updateFilter}
-                            >
-                                <option>No Filter</option>
-                                <option>&ge; 4 Stars</option>
-                                <option>&ge; 3 Stars</option>
-                                <option>&ge; 2 Stars</option>
-                                <option>&ge; 1 Stars</option>
-                            </Form.Control>
-                            <Button variant="primary" type="submit" block value="Search">
-                                Search
-                            </Button>
-                        </InputGroup>
-                    </Form>
+                    {this.getSearchBar()}
                     <br></br>
                     <SearchResults books={this.state.currentDisplayList}></SearchResults>
                     <br></br>
@@ -157,10 +172,7 @@ class Search extends Component {
                             </Col>
                             <Col className="float-right">
                                 <DropdownButton id="per-page-dropdown" title="Books Per Page" style={{float: 'right'}}>
-                                    <Dropdown.Item id="12" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>12</Dropdown.Item>
-                                    <Dropdown.Item id="24" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>24</Dropdown.Item>
-                                    <Dropdown.Item id="48" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>48</Dropdown.Item>
-                                    <Dropdown.Item id="96" onClick={(e) => {this.changeBooksPerPage(e.target.id); this.changePage(1);}}>96</Dropdown.Item>
+                                    {this.getBooksPerPageDropdown()}
                                 </DropdownButton>
                             </Col>
                         </Row>

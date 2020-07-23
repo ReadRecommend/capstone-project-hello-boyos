@@ -84,12 +84,18 @@ def modify_collection():
     print(request.json)
     collection_id = request.json.get("collection_id")
     book_id = request.json.get("book_id")
+    reader_id = request.json.get("reader_id")
+
     if not (collection_id and book_id):
         raise InvalidRequest(
             "Request should be of the form {{'collection_id': id, 'book_id': id}}",
         )
     collection = Collection.query.filter_by(id=collection_id).first()
     book = Book.query.filter_by(id=book_id).first()
+    reader_id = collection.reader_id
+
+    if reader_id != flask_praetorian.current_user().id:
+        raise AuthenticationError("You can only add/delete your own collections")
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:
