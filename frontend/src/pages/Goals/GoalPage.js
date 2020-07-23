@@ -1,14 +1,22 @@
-import React, { Component } from 'react';
-import { Button, Container } from 'react-bootstrap';
-import PropTypes from 'prop-types';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import Datetime from 'react-datetime';
-import '../YearPicker.css';
-import { getGoals } from '../../fetchFunctions';
-import { toast, ToastContainer } from 'react-toastify';
+import React, { Component } from "react";
+import { Button, Container, Spinner } from "react-bootstrap";
+import {
+    LineChart,
+    Line,
+    Legend,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+} from "recharts";
+import Datetime from "react-datetime";
+import "../YearPicker.css";
+import { getGoals } from "../../fetchFunctions";
+import { toast, ToastContainer } from "react-toastify";
+import * as moment from "moment";
 
-import AddGoalModal from '../../components/Goals/AddGoalModal';
-
+import AddGoalModal from "../../components/Goals/AddGoalModal";
 
 class GoalPage extends Component {
     constructor(props) {
@@ -27,28 +35,39 @@ class GoalPage extends Component {
                 { month: "Sep" },
                 { month: "Oct" },
                 { month: "Nov" },
-                { month: "Dec", }],
+                { month: "Dec" },
+            ],
             data: [],
             yearView: null,
+            yearPickerValue: null,
             modalShow: false,
-            loading: false
-        }
+            loading: false,
+        };
     }
 
     // Function that makes the modal show
     openModal = () => {
-        this.setState({ modalShow: true, });
-    }
+        this.setState({ modalShow: true });
+    };
 
     // Function that makes the modal close
     closeModal = () => {
-        this.setState({ modalShow: false, });
-    }
+        this.setState({ modalShow: false });
+    };
+
+    // Function that handles the changing of the yearpicker value programmatically and closes modal
+    updateGraph = (year) => {
+        // Change value of datetime/yearpicker
+        this.setState({ yearPickerValue: moment([year]) });
+        this.closeModal();
+        // Trigger the on change
+        this.onYearViewChange(moment([year]));
+    };
 
     // Function that updates the data in the state given data from a fetch
     updateData = (data) => {
-
         if (data.length === 0) {
+            this.setState({ loading: false });
             return;
         }
 
@@ -60,18 +79,17 @@ class GoalPage extends Component {
             monthDataPoint.goal = dataPoint.goal;
         }
 
-        console.log(monthsBase);
-        console.log(this.state.data);
-        this.setState({ data: monthsBase }, console.log(this.state.data));
-
-    }
+        this.setState({ data: monthsBase, loading: false });
+    };
 
     // Function that handles a change in the year picker
     onYearViewChange = (date) => {
         const year = date.toDate().getFullYear();
         this.setState({
             yearView: year,
-            data: []
+            yearPickerValue: moment([year]),
+            data: [],
+            loading: true,
         });
 
         getGoals(year)
@@ -82,10 +100,10 @@ class GoalPage extends Component {
                     });
                 }
 
-                return res.json()
+                return res.json();
             })
             .then((json) => {
-                console.log(json);
+                // Update the data in our graph
                 this.updateData(json);
             })
             .catch((error) => {
@@ -97,10 +115,10 @@ class GoalPage extends Component {
                     errorMessage = error.message;
                 } finally {
                     toast.error(errorMessage);
+                    this.setState({ loading: false });
                 }
-            })
-
-    }
+            });
+    };
 
     render() {
         return (
@@ -109,37 +127,85 @@ class GoalPage extends Component {
 
                 <h1>Goal Page</h1>
                 <h3>Select a year to view your goal progress for that year</h3>
-                <h3>{this.state.yearView || "No Year Selected"}</h3>
-                { // If we are loading, Don't show any of this
-
-                }
-                <Datetime
-                    dateFormat="YYYY"
-                    input={false}
-                    onChange={this.onYearViewChange}
-                />
+                {this.state.loading && (
+                    // If we are loading, show a spinner not the content
+                    <Spinner
+                        animation="border"
+                        style={{
+                            left: "50%",
+                            top: "50%",
+                        }}
+                    />
+                )}
+                {!this.state.loading && (
+                    // If we are loading, dont show this content
+                    <div>
+                        <Datetime
+                            dateFormat="YYYY"
+                            input={false}
+                            value={this.state.yearPickerValue}
+                            onChange={this.onYearViewChange}
+                        />
+                        <h3>{this.state.yearView || "No Year Selected"}</h3>
+                    </div>
+                )}
 
                 {this.state.data.length === 0 &&
-                    <p>No Goals found for this year...</p>
+                    !this.state.loading &&
+                    this.state.yearView && (
+                        <p>No Goals found for this year...</p>
+                    )}
+                {
+                    // Ensure we have a year selected, we are not loading, and data was returned before displaying the diagram
+                    this.state.yearView &&
+                        this.state.data.length !== 0 &&
+                        !this.state.loading && (
+                            <ResponsiveContainer width="100%" height={400}>
+                                <LineChart
+                                    width={1200}
+                                    height={400}
+                                    data={this.state.data}
+                                    margin={{
+                                        top: 5,
+                                        right: 20,
+                                        bottom: 5,
+                                        left: 0,
+                                    }}
+                                >
+                                    <Line
+                                        type="linear"
+                                        dataKey="n_read"
+                                        stroke="#8884d8"
+                                    />
+                                    <Line
+                                        type="linear"
+                                        dataKey="goal"
+                                        stroke="green"
+                                    />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <CartesianGrid
+                                        stroke="#ccc"
+                                        strokeDasharray="5 5"
+                                    />
+                                    <XAxis dataKey="month" />
+                                    <YAxis />
+                                    <Tooltip />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        )
                 }
-                { // Ensure we have a year selected, and data was returned before displaying the diagram
-                    this.state.yearView && this.state.data.length !== 0 &&
-                    < ResponsiveContainer width="100%" height={400}>
-                        <LineChart width={1200} height={400} data={this.state.data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                            <Line type="linear" dataKey="n_read" stroke="#8884d8" />
-                            <Line type="linear" dataKey="goal" stroke="green" />
-                            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                            <XAxis dataKey="month" />
-                            <YAxis />
-                            <Tooltip />
-                        </LineChart>
-                    </ResponsiveContainer>
-                }
-
-                <h1>Create/Update Goal</h1>
-                <AddGoalModal show={this.state.modalShow} closeModal={this.closeModal} />
-                <Button onClick={this.openModal}>Create/Update Goal</Button>
-            </Container >
+                <br></br>
+                <AddGoalModal
+                    show={this.state.modalShow}
+                    closeModal={this.closeModal}
+                    updateGraph={this.updateGraph}
+                />
+                <div style={{ textAlign: "center" }}>
+                    <Button onClick={this.openModal}>
+                        Create or Update a Goal
+                    </Button>
+                </div>
+            </Container>
         );
     }
 }

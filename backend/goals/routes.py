@@ -19,6 +19,7 @@ def get_goals(year):
 
         return jsonify(goals_schema.dump(reader_goals))
     except:
+        # This catches if the year is not an integer for example
         raise InvalidRequest("Invalid Request")
 
 

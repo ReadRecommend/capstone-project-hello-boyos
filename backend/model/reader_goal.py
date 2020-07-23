@@ -12,7 +12,7 @@ class ReaderGoal(db.Model):
         primary_key=True,
     )
     year = db.Column("year", db.Integer, CheckConstraint("year >= 0"), primary_key=True)
-    goal = db.Column(db.Integer, nullable=False)
+    goal = db.Column(db.Integer, nullable=True)
     n_read = db.Column(db.Integer, default=0, nullable=False)
 
     def __repr__(self):

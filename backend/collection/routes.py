@@ -4,13 +4,16 @@ import flask_praetorian
 from backend import db
 from backend.collection import collection_bp
 from backend.errors import AuthenticationError, InvalidRequest, ResourceNotFound
+from backend.user.utils import sort_books
 from backend.model.schema import (
     Book,
     Collection,
     Reader,
+    ReaderGoal,
     collection_schema,
     reader_schema,
 )
+from datetime import datetime
 
 # Get the books in a collection
 @collection_bp.route("/<collectionID>")
@@ -89,11 +92,41 @@ def modify_collection():
         )
     collection = Collection.query.filter_by(id=collection_id).first()
     book = Book.query.filter_by(id=book_id).first()
+    user = Reader.query.filter_by(id=flask_praetorian.current_user().id).first()
+    print(user)
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:
-        if collection.name == "Recently Read":
-            return InvalidRequest("You cannot manually add books to your recently read")
+        # Check if this book already exists in our all collection. If it doesn't, we need to update goals.
+        all_books = sort_books(user)
+        print(book)
+        print(all_books)
+        if not (book in all_books):
+            print("update")
+            # Update goals
+            year = datetime.now().year
+            month = datetime.now().month
+
+            goal = ReaderGoal.query.filter_by(
+                reader_id=user.id, month=month, year=year
+            ).first()
+
+            if not goal:
+                # Aren't tracking books for this month, start tracking.
+                # Note the goals attribute is set to null here
+                new_goal = ReaderGoal(
+                    month=month,
+                    year=year,
+                    reader_id=flask_praetorian.current_user().id,
+                    n_read=1,
+                )
+                db.session.add(new_goal)
+            else:
+                # Already existing goal, increase amount of books we've read this month by 1
+                goal.n_read += 1
+                db.session.add(goal)
+
+        # Add book to collection
         collection.books.append(book)
         db.session.add(collection)
         db.session.commit()
@@ -103,5 +136,30 @@ def modify_collection():
         collection.books.remove(book)
         db.session.add(collection)
         db.session.commit()
+
+        # Check if the book is still somewhere in our all collection after deletion.
+        # If it isn't, we need to update goals
+        all_books = sort_books(user)
+        if book not in all_books:
+            # Update goals
+            year = datetime.now().year
+            month = datetime.now().month
+
+            goal = ReaderGoal.query.filter_by(
+                reader_id=user.id, month=month, year=year
+            ).first()
+
+            if goal:
+                # Books are being tracked this month, subtract n_read by one
+                goal.n_read -= 1
+
+                if goal.n_read == 0:
+                    # If we have now read no books this month, stop tracking
+                    db.session.delete(goal)
+                else:
+                    # Else update the new value in the database
+                    db.session.add(goal)
+
+                db.session.commit()
 
     return jsonify(collection_schema.dump(collection))
