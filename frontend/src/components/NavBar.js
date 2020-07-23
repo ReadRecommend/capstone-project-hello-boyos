@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import Main from './Main'
 import { Navbar, Nav, Button, NavDropdown } from 'react-bootstrap';
-import { loginContext } from './LoginContext';
-import { Link } from 'react-router-dom';
+import PropTypes from "prop-types";
 
-class Navbar extends Component {
+
+class NavigationBar extends Component {
 
     render () {
         return (
@@ -14,14 +13,14 @@ class Navbar extends Component {
                     <Navbar.Text className="navbar_role">
                         You are: {this.props.loggedInRole || "Not logged in"}
                     </Navbar.Text>
-                    {this.state.loggedInRole == "Admin" &&
+                    {this.props.loggedInRole == "Admin" &&
                         // If we are an admin
                         <NavDropdown title="Admin Pages">
                             <NavDropdown.Item href="/admin/bookList">Book List</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/addBook">Add New Book</NavDropdown.Item>
                         </NavDropdown>
                     }
-                    {this.state.loggedInRole == "User" &&
+                    {this.props.loggedInRole == "User" &&
                         // If we are a user
                         <Nav>
                             <Nav.Link href="/search">Search for Books</Nav.Link>
@@ -32,9 +31,9 @@ class Navbar extends Component {
                 <Nav>
                     <Button
                         variant="outline-info"
-                        href={this.state.loggedInRole ? "/logout" : "/login"}
+                        href={this.props.loggedInRole ? "/logout" : "/login"}
                     >
-                        {this.state.loggedInRole
+                        {this.props.loggedInRole
                             ? "Logout"
                             : "Login / Signup"}
                     </Button>
@@ -44,6 +43,8 @@ class Navbar extends Component {
     }
 }
 
-Na.propTypes = {
-    currentCollection: PropTypes.object.isRequired,
+NavigationBar.propTypes = {
+    loggedInRole: PropTypes.object.isRequired,
 };
+
+export default NavigationBar;
