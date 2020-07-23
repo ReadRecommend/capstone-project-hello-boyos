@@ -25,11 +25,17 @@ class BookPage extends Component {
             reviewPage: 1,
             // TODO: Make this an input on the page
             reviewsPerPage: 2,
-
             totalReviewPages: 0,
             items: [],
+            showDetails: true,
         };
     }
+
+    toggleDetails = () => {
+        const newState = !this.state.showDetails
+        this.setState({showDetails:newState})
+    }
+
 
     componentDidMount() {
         // Fetch the book based on the url
@@ -193,13 +199,14 @@ class BookPage extends Component {
                     </Row>
                     <Row>
                         <Media>
+                            { this.state.showDetails &&
                             <Image
                                 className="mr-3"
                                 src={book.cover}
                                 alt={book.title}
                                 thumbnail
                                 width="314px"
-                            />
+                            />}
                             <Media.Body>
                                 <h1>{book.title}</h1>
                                 <h5>
@@ -230,6 +237,7 @@ class BookPage extends Component {
 
                                         <p>{book.summary}</p>
                                     </Tab>
+                                    {this.state.showDetails &&
                                     <Tab
                                         eventKey="reviews"
                                         title="Reviews + Ratings"
@@ -280,7 +288,7 @@ class BookPage extends Component {
                                             {this.state.items}
                                         </Pagination>
                                         <br />
-                                    </Tab>
+                                    </Tab>}
                                     <Tab
                                         eventKey="info"
                                         title="Additional Information"
