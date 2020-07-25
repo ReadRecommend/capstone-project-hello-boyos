@@ -50,9 +50,23 @@ def get_genre(genre):
     return jsonify(books_schema.dump(unreadBooks))
 
 
-@recommendation_bp.route("/following/<username>", methods=["GET"])
+@recommendation_bp.route("/following/<username>", methods=["POST"])
 def get_following(username):
-    # Replace
-    reader = Reader.query.filter_by(username=username).first().follows
 
-    return jsonify(readers_schema.dump(reader))
+    userID = request.json.get("userID")
+
+    reader = Reader.query.filter_by(id=userID).first().follows
+
+    followingBooks = []
+
+    for item in reader:
+        for collection in item.collections:
+            if collection.name == "Main":
+                followingBooks = followingBooks + collection.books
+
+    followingBooks = list(dict.fromkeys(followingBooks))
+    userBooks = Collection.query.filter_by(reader_id=userID, name="Main").first().books
+
+    unreadBooks = list(set(followingBooks) - set(userBooks))
+
+    return jsonify(books_schema.dump(unreadBooks))
