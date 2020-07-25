@@ -10,7 +10,7 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
-import Reviews from "./pages/Reviews";
+import GoalPage from "./pages/Goals/GoalPage";
 import AddReview from "./components/AddReview";
 
 import BookPage from "./pages/BookPage";
@@ -87,6 +87,13 @@ class Main extends Component {
                         component={UserSearch}
                         roles={["user"]}
                         key="userSearch"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/goals"
+                        component={GoalPage}
+                        roles={["user"]}
+                        key="goalPage"
                     />
                     <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>
