@@ -145,7 +145,7 @@ class Search extends Component {
                         </InputGroup>
                     </Form>
                     <br></br>
-                    <SearchResults books={this.state.currentDisplayList}></SearchResults>
+                        <SearchResults books={this.state.currentDisplayList}></SearchResults>
                     <br></br>
                     <Pagination>
                         <Pagination.Prev onClick={() => this.changePage(currentPage - 1)}/>
