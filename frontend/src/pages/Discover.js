@@ -10,7 +10,7 @@ class Discover extends Component {
         super(props);
 
         this.state = {
-            mode: "Top Rated"
+            recommendationMode: "Top Rated"
         };
     }
 
@@ -18,7 +18,7 @@ class Discover extends Component {
     // When calling handleSubmit asynchronously the event will
     // be nullified otherwise
     event.persist();
-    this.setState({ mode: event.target.value }, () => {
+    this.setState({ recommendationMode: event.target.value }, () => {
         this.handleSubmit(event); // Call asynchronously
         });
     };
@@ -48,7 +48,7 @@ class Discover extends Component {
                                 variant="primary"
                                 type="submit"
                                 block
-                                value="Search"
+                                value="Recommend"
                             >
                                 Recommend
                             </Button>
