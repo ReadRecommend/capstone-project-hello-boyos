@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Form, Container, Row, Col, Dropdown, DropdownButton } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, Dropdown, DropdownButton, Spinner } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from 'react-bootstrap/Pagination'
@@ -19,6 +19,7 @@ class Search extends Component {
             booksPerPage: 9,
             numberOfPages: 1,
             pages:[],
+            loadingResults: false,
 
         };
     }
@@ -93,29 +94,41 @@ class Search extends Component {
             search: this.state.search,
             filter: this.state.filter,
         };
-        fetch("http://localhost:5000/search", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
-            .then((res) => {
-                if (!res.ok) {
-                    return res.text().then((text) => {
-                        throw Error(text);
-                    });
-                }
-                return res.json();
+        new Promise(() => {this.setState({loadingResults:true})})
+        .then(
+            fetch("http://localhost:5000/search", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                },
             })
-            .then((books) => {
-                this.setState({
-                    currentSearchList: books,
-                    numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage)
-                });
-                this.changePage(1)
-            });
+                .then((res) => {
+                    if (!res.ok) {
+                        return res.text().then((text) => {
+                            throw Error(text);
+                        });
+                    }
+                    return res.json();
+                })
+                .then((books) => {
+                    this.setState({
+                        currentSearchList: books,
+                        numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage),
+                        loadingResults: false,
+                    });
+                    this.changePage(1)
+                })
+        );
     };
+
+    handleLoad = () => {
+        this.setState({loadingResults:false})
+    }
+
+    startLoad = () => {
+        this.setState({loadingResults:true})
+    }
 
     getSearchBar = () => {
         return (
@@ -139,9 +152,11 @@ class Search extends Component {
                         <option>&ge; 2 Stars</option>
                         <option>&ge; 1 Stars</option>
                     </Form.Control>
-                    <Button variant="primary" type="submit" block value="Search">
-                        Search
-                    </Button>
+                    {!this.state.loadingResults &&
+                        <Button variant="primary" type="submit" block value="Search" onClick={this.startLoad}>
+                            Search
+                        </Button>
+                    }
                 </InputGroup>
             </Form>
         );
@@ -156,7 +171,20 @@ class Search extends Component {
                     <h1> Search Page </h1>
                     {this.getSearchBar()}
                     <br></br>
-                    <SearchResults books={this.state.currentDisplayList}></SearchResults>
+                    {this.state.loadingResults ? 
+                    (
+                        <Spinner
+                            animation="border"
+                            style={{
+                                position: "absolute",
+                                left: "50%",
+                                top: "50%",
+                            }}
+                        />
+                    ) : (
+                        <SearchResults books={this.state.currentDisplayList} loadingResults={this.state.loadingResults} handleLoad={this.handleLoad}></SearchResults>
+                    )
+                    }
                     <br></br>
                     <Container>
                         <Row>
