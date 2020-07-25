@@ -10,10 +10,13 @@ import {
     Tab,
     Image,
     Pagination,
+    Form,
+    Spinner,
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
+import Error from "../components/Error";
 import { toast, ToastContainer } from "react-toastify";
 
 class BookPage extends Component {
@@ -49,6 +52,9 @@ class BookPage extends Component {
                 this.setState({
                     book: json,
                 });
+            })
+            .catch((error) => {
+                return this.props.history.push("/404");
             });
 
         getReviewPages(

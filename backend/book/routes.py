@@ -117,6 +117,8 @@ def get_books():
 
 @book_bp.route("/<id>")
 def get_book(id):
+    if not id.isdigit():
+        raise InvalidRequest("A book's ID should be an integer")
     book = Book.query.filter_by(id=id).first()
     if not book:
         raise ResourceNotFound("A book with this id does not exist")

@@ -5,6 +5,7 @@ import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
 import { toast, ToastContainer } from "react-toastify";
 import { Container, Col, Row, Spinner } from "react-bootstrap";
+import { Redirect } from "react-router";
 
 class UserPage extends Component {
     constructor(props) {
@@ -183,7 +184,7 @@ class UserPage extends Component {
             );
         } else {
             // Didn't find a valid user, or the user is an admin who shouldn't have a page
-            return <h1>404 User not found</h1>;
+            return <Redirect to="/404"></Redirect>;
         }
     }
 }

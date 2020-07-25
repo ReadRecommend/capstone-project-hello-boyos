@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 
 import PrivateRoute from "./components/PrivateRoute";
+import Error from "./components/Error";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
 import UserHome from "./pages/UserHome";
@@ -66,7 +67,12 @@ class Main extends Component {
                         key="createAccount"
                     />
                     <Route exact path="/login" component={Login} key="login" />
-                    <Route exact path="/logout" component={Logout} key="logout" />
+                    <Route
+                        exact
+                        path="/logout"
+                        component={Logout}
+                        key="logout"
+                    />
                     <PrivateRoute
                         exact
                         path="/book/:bookID"
@@ -98,6 +104,16 @@ class Main extends Component {
                     <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>
                     </Route>
+                    <Route
+                        path="*"
+                        key="404"
+                        component={() => (
+                            <Error
+                                errorCode="404"
+                                errorMessage="Sorry, the page you are looking for does not exist"
+                            ></Error>
+                        )}
+                    ></Route>
                 </Switch>
             </div>
         );
