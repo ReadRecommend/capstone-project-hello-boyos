@@ -50,7 +50,7 @@ def get_genre(genre):
     return jsonify(books_schema.dump(unreadBooks))
 
 
-@recommendation_bp.route("/following/<username>", methods=["POST"])
+@recommendation_bp.route("/following", methods=["POST"])
 def get_following(username):
 
     userID = request.json.get("userID")
