@@ -40,7 +40,7 @@ class AddGoalModal extends Component {
     onClose = () => {
         this.setState(
             { timePeriod: null, goal: 1, nRead: 0 },
-            this.props.closeModal()
+            this.props.closeModal
         );
     };
 
@@ -48,7 +48,7 @@ class AddGoalModal extends Component {
     closeAndSelect = (year) => {
         this.setState(
             { timePeriod: null, goal: 1, nRead: 0 },
-            this.props.updateGraph(year)
+            this.props.updateGraph.bind(this, year)
         );
     };
 
