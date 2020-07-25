@@ -101,9 +101,6 @@ class Main extends Component {
                         roles={["user"]}
                         key="goalPage"
                     />
-                    <Route exact path="*" key="404">
-                        <h1>404 Page not found</h1>
-                    </Route>
                     <Route
                         path="*"
                         key="404"
