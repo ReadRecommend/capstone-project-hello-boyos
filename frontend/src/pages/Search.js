@@ -57,7 +57,7 @@ class Search extends Component {
         if (newPage > 0 && newPage <= numberOfPages){this.setState({
                 currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
                 currentPage: newPage
-            }, this.refreshPageList(newPage))
+            }, this.refreshPageList.bind(this,newPage))
             
         }
     }
@@ -76,7 +76,11 @@ class Search extends Component {
     }
 
     changeBooksPerPage = (newLimit) => {
-        this.setState({booksPerPage:newLimit}, this.changePage(1))
+        const {currentSearchList} = this.state
+        this.setState({
+            booksPerPage:newLimit,
+            numberOfPages: Math.ceil(Object.keys(currentSearchList).length/newLimit),
+        }, this.changePage.bind(this,1))
     }
 
     getBooksPerPageDropdown = () => {
@@ -88,7 +92,7 @@ class Search extends Component {
     }
 
     handleSubmit = (event) => {
-        this.setState({loadingResults:true}, this.handleSearch(event))
+        this.setState({loadingResults:true}, this.handleSearch.bind(this,event))
     }
 
     handleSearch = (event) => {
@@ -118,7 +122,7 @@ class Search extends Component {
                     currentSearchList: books,
                     numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage),
                     loadingResults: false,
-                }, this.changePage(1));
+                }, this.changePage.bind(this,1));
                 
             })
     };
