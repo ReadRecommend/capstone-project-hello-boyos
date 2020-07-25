@@ -57,8 +57,8 @@ class Search extends Component {
         if (newPage > 0 && newPage <= numberOfPages){this.setState({
                 currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
                 currentPage: newPage
-            })
-            this.refreshPageList(newPage)
+            }, this.refreshPageList(newPage))
+            
         }
     }
 
@@ -76,59 +76,52 @@ class Search extends Component {
     }
 
     changeBooksPerPage = (newLimit) => {
-        console.log("Change books per page: " + newLimit)
-        this.setState({booksPerPage:newLimit})
+        this.setState({booksPerPage:newLimit}, this.changePage(1))
     }
 
     getBooksPerPageDropdown = () => {
         let DropdownItems = []
         for(let i = 12; i < 100; i *= 2) {
-           DropdownItems.push(<Dropdown.Item key={i} id={i} onClick={(e) => {new Promise(() => {this.changeBooksPerPage(e.target.id)}).then(this.changePage(1));}}>{i}</Dropdown.Item>)
+           DropdownItems.push(<Dropdown.Item key={i} id={i} onClick={(e) => {this.changeBooksPerPage(e.target.id)}}>{i}</Dropdown.Item>)
         }
         return (DropdownItems);
     }
 
     handleSubmit = (event) => {
+        this.setState({loadingResults:true}, this.handleSearch(event))
+    }
+
+    handleSearch = (event) => {
         event.preventDefault();
         const data = {
             search: this.state.search,
             filter: this.state.filter,
         };
-        new Promise(() => {this.setState({loadingResults:true})})
-        .then(
-            fetch("http://localhost:5000/search", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                },
-            })
-                .then((res) => {
-                    if (!res.ok) {
-                        return res.text().then((text) => {
-                            throw Error(text);
-                        });
-                    }
-                    return res.json();
-                })
-                .then((books) => {
-                    this.setState({
-                        currentSearchList: books,
-                        numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage),
-                        loadingResults: false,
+        fetch("http://localhost:5000/search", {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
                     });
-                    this.changePage(1)
-                })
-        );
+                }
+                return res.json();
+            })
+            .then((books) => {
+                console.log("Loading Complete")
+                this.setState({
+                    currentSearchList: books,
+                    numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage),
+                    loadingResults: false,
+                }, this.changePage(1));
+                
+            })
     };
-
-    handleLoad = () => {
-        this.setState({loadingResults:false})
-    }
-
-    startLoad = () => {
-        this.setState({loadingResults:true})
-    }
 
     getSearchBar = () => {
         return (
@@ -153,7 +146,7 @@ class Search extends Component {
                         <option>&ge; 1 Stars</option>
                     </Form.Control>
                     {!this.state.loadingResults &&
-                        <Button variant="primary" type="submit" block value="Search" onClick={this.startLoad}>
+                        <Button variant="primary" type="submit" block value="Search">
                             Search
                         </Button>
                     }
@@ -182,7 +175,7 @@ class Search extends Component {
                             }}
                         />
                     ) : (
-                        <SearchResults books={this.state.currentDisplayList} loadingResults={this.state.loadingResults} handleLoad={this.handleLoad}></SearchResults>
+                        <SearchResults books={this.state.currentDisplayList} loadingResults={this.state.loadingResults}></SearchResults>
                     )
                     }
                     <br></br>
