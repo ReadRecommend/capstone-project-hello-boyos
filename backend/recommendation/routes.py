@@ -24,12 +24,13 @@ from backend.model.schema import (
 )
 
 
-@recommendation_bp.route("/author/<name>", methods=["POST"])
+@recommendation_bp.route("/author", methods=["POST"])
 def get_author(name):
 
     userID = request.json.get("userID")
+    authorName = request.json.get("author")
 
-    authorBooks = Author.query.filter_by(name=name).first().books
+    authorBooks = Author.query.filter_by(name=authorName).first().books
     userBooks = Collection.query.filter_by(reader_id=userID, name="Main").first().books
 
     unreadBooks = list(set(authorBooks) - set(userBooks))
@@ -37,10 +38,11 @@ def get_author(name):
     return jsonify(books_schema.dump(unreadBooks))
 
 
-@recommendation_bp.route("/genre/<genre>", methods=["POST"])
+@recommendation_bp.route("/genre", methods=["POST"])
 def get_genre(genre):
 
     userID = request.json.get("userID")
+    genre = request.json.get("genre")
 
     genreBooks = Genre.query.filter_by(name=genre).first().books
     userBooks = Collection.query.filter_by(reader_id=userID, name="Main").first().books
