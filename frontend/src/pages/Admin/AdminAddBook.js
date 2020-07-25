@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { Button, Form, Container } from 'react-bootstrap';
-import { addBook } from '../../fetchFunctions';
-import { WithContext as ReactTags } from 'react-tag-input';
-import { Link } from 'react-router-dom';
-import Datetime from 'react-datetime';
-import { toast, ToastContainer } from 'react-toastify';
-import './AdminAddBook.css';
-import '../YearPicker.css';
+import React, { Component } from "react";
+import { Button, Form, Container } from "react-bootstrap";
+import { addBook } from "../../fetchFunctions";
+import { WithContext as ReactTags } from "react-tag-input";
+import { Link } from "react-router-dom";
+import Datetime from "react-datetime";
+import { toast, ToastContainer } from "react-toastify";
+import "./AdminAddBook.css";
+import "../YearPicker.css";
 
 class AdminAddBook extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class AdminAddBook extends Component {
             publicationDate: null,
             summary: "",
             cover: "",
-            language: ""
+            language: "",
         };
     }
 
@@ -29,7 +29,11 @@ class AdminAddBook extends Component {
     onSubmit = (e) => {
         e.preventDefault();
 
-        if (!this.state.isbn || !this.state.title || this.state.authors.length == 0) {
+        if (
+            !this.state.isbn ||
+            !this.state.title ||
+            this.state.authors.length === 0
+        ) {
             toast.error("Please provide a isbn, title and author.");
             return;
         }
@@ -68,7 +72,7 @@ class AdminAddBook extends Component {
                     });
                 }
 
-                return res.json()
+                return res.json();
             })
             .then((json) => {
                 // Redirect to new book page

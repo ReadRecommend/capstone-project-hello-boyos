@@ -31,7 +31,7 @@ class BlindCover extends Component {
                         textAlign: "left",
                         fontFamily: "Abril Fatface",
                         fontSize: 26,
-                        color: "#001942",
+                        color: "#000000",
                     }}
                 >
                     {book.genres
