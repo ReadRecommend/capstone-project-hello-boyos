@@ -33,7 +33,7 @@ def update_goal():
     n_read = goal_data.get("n_read")
 
     # Check the request has all the values we are expecting
-    if month == None or year == None or goal == None or n_read == None:
+    if month is None or year is None or goal is None or n_read is None:
         raise InvalidRequest(
             "Request should be of the form {{month: 'month', year: 'year', goal: 'goal', n_read: 'n_read'}}"
         )
