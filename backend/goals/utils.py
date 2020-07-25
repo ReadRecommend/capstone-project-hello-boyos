@@ -65,8 +65,11 @@ def validate_goal(month, year, goal, n_read):
         goal (int): The goal number of books to read for this month/year
         n_read (int): The number of books already read on this month/year
 
-    Returns:
-        None/Raises an error
+    Returns: 
+        None
+    Raises: 
+        InvalidRequest: If any of month, year, goal, or n_read are not valid integers
+
     """
     # Ensure values are integers
     try:
