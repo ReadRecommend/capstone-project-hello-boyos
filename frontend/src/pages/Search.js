@@ -51,26 +51,30 @@ class Search extends Component {
     };
 
     changePage = (newPage) => {
-        console.log("changePage: " + newPage)
-        console.log("booksPerPage: " + this.state.booksPerPage)
         const {booksPerPage, currentSearchList, numberOfPages} = this.state
+        if(numberOfPages == 0) {
+            this.setState({
+                currentPage:0,
+                currentDisplayList:[]
+            })
+            return;
+        }
         if (newPage > 0 && newPage <= numberOfPages){this.setState({
                 currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
                 currentPage: newPage
             }, this.refreshPageList.bind(this,newPage))
-            
         }
     }
 
     refreshPageList = (activePage) => {
         let list = []
+        
         for( let i = activePage-2; i <= this.state.numberOfPages &&  i <= activePage + 2; i++) {
-            if(i < 1) {
-                continue;
+            if(i >= 1) {   
+                list.push(
+                    <Pagination.Item key={i} active={i === activePage} onClick={() => this.changePage(i)}>{i}</Pagination.Item>
+                )
             }
-            list.push(
-                <Pagination.Item key={i} active={i === activePage} onClick={() => this.changePage(i)}>{i}</Pagination.Item>
-            )
         }
         this.setState({pages:list})
     }
@@ -92,6 +96,7 @@ class Search extends Component {
     }
 
     handleSubmit = (event) => {
+        event.persist()
         this.setState({loadingResults:true}, this.handleSearch.bind(this,event))
     }
 
@@ -117,13 +122,11 @@ class Search extends Component {
                 return res.json();
             })
             .then((books) => {
-                console.log("Loading Complete")
                 this.setState({
                     currentSearchList: books,
                     numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage),
                     loadingResults: false,
                 }, this.changePage.bind(this,1));
-                
             })
     };
 
@@ -188,7 +191,7 @@ class Search extends Component {
                             <Col>
                                 <Pagination>
                                     <Pagination.Prev onClick={() => this.changePage(currentPage - 1)}/>
-                                    {this.state.pages}
+                                    {!(this.state.numberOfPages == 0) && this.state.pages}
                                     <Pagination.Next onClick={() => this.changePage(currentPage + 1)}/>
                                 </Pagination>
                             </Col>
