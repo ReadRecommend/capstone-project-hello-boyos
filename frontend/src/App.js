@@ -30,7 +30,7 @@ class App extends Component {
                             You are:{" "}
                             {this.state.loggedInRole || "Not logged in"}
                         </Navbar.Text>
-                        {this.state.loggedInRole == "Admin" && (
+                        {this.state.loggedInRole === "Admin" && (
                             // If we are an admin
                             <NavDropdown title="Admin Pages">
                                 <NavDropdown.Item href="/admin/bookList">
@@ -41,7 +41,7 @@ class App extends Component {
                                 </NavDropdown.Item>
                             </NavDropdown>
                         )}
-                        {this.state.loggedInRole == "User" && (
+                        {this.state.loggedInRole === "User" && (
                             // If we are a user
                             <Nav>
                                 <Nav.Link href="/search">

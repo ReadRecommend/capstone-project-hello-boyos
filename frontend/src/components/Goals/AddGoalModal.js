@@ -102,37 +102,40 @@ class AddGoalModal extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={this.onGoalSubmit}>
-                        <InputGroup className="mb-3">
-                            <Form.Group>
-                                <Datetime
-                                    dateFormat="MMM YYYY"
-                                    input={false}
-                                    onChange={this.onDateChange}
-                                />
-                            </Form.Group>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                textAlign: "center",
+                            }}
+                        >
+                            <Datetime
+                                dateFormat="MMM YYYY"
+                                input={false}
+                                onChange={this.onDateChange}
+                            />
+                        </div>
 
-                            <InputGroup.Append>
-                                <Form.Group>
-                                    <Form.Label>Goal Books</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        name="goal"
-                                        value={this.state.goal}
-                                        onChange={this.onGenericChange}
-                                    />
-                                </Form.Group>
+                        <Form.Group>
+                            <Form.Label>Goal Books</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="goal"
+                                value={this.state.goal}
+                                onChange={this.onGenericChange}
+                            />
+                        </Form.Group>
 
-                                <Form.Group>
-                                    <Form.Label>Number Read</Form.Label>
-                                    <Form.Control
-                                        type="number"
-                                        name="nRead"
-                                        value={this.state.nRead}
-                                        onChange={this.onGenericChange}
-                                    />
-                                </Form.Group>
-                            </InputGroup.Append>
-                        </InputGroup>
+                        <Form.Group>
+                            <Form.Label>Number Read</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="nRead"
+                                value={this.state.nRead}
+                                onChange={this.onGenericChange}
+                            />
+                        </Form.Group>
 
                         <Button variant="outline-primary" type="submit">
                             Create/Update Goal

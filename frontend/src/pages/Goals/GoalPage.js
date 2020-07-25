@@ -74,6 +74,7 @@ class GoalPage extends Component {
         // Make a copy of the months array
         let monthsBase = JSON.parse(JSON.stringify(this.state.months));
         for (const dataPoint of data) {
+            // Update the data displayed in the graph
             let monthDataPoint = monthsBase[dataPoint.month - 1];
             monthDataPoint.n_read = dataPoint.n_read;
             monthDataPoint.goal = dataPoint.goal;
@@ -127,8 +128,8 @@ class GoalPage extends Component {
 
                 <h1>Goal Page</h1>
                 <h3>Select a year to view your goal progress for that year</h3>
-                {this.state.loading && (
-                    // If we are loading, show a spinner not the content
+                {this.state.loading ? (
+                    // If we are loading, show a spinner
                     <Spinner
                         animation="border"
                         style={{
@@ -136,16 +137,27 @@ class GoalPage extends Component {
                             top: "50%",
                         }}
                     />
-                )}
-                {!this.state.loading && (
-                    // If we are loading, dont show this content
-                    <div>
-                        <Datetime
-                            dateFormat="YYYY"
-                            input={false}
-                            value={this.state.yearPickerValue}
-                            onChange={this.onYearViewChange}
-                        />
+                ) : (
+                    // If we are not loading, show this content
+                    <div
+                        style={{
+                            textAlign: "center",
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Datetime
+                                dateFormat="YYYY"
+                                input={false}
+                                value={this.state.yearPickerValue}
+                                onChange={this.onYearViewChange}
+                            />
+                        </div>
                         <h3>{this.state.yearView || "No Year Selected"}</h3>
                     </div>
                 )}
@@ -155,6 +167,7 @@ class GoalPage extends Component {
                     this.state.yearView && (
                         <p>No Goals found for this year...</p>
                     )}
+
                 {
                     // Ensure we have a year selected, we are not loading, and data was returned before displaying the diagram
                     this.state.yearView &&
