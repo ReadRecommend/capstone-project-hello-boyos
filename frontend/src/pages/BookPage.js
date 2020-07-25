@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { getBook, getReviewPages } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
-
+import BlindCover from "../components/BlindCover";
 import {
     Container,
     Row,
@@ -10,6 +10,7 @@ import {
     Tab,
     Image,
     Pagination,
+    Form,
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
@@ -32,10 +33,9 @@ class BookPage extends Component {
     }
 
     toggleDetails = () => {
-        const newState = !this.state.showDetails
-        this.setState({showDetails:newState})
-    }
-
+        const newState = !this.state.showDetails;
+        this.setState({ showDetails: newState });
+    };
 
     componentDidMount() {
         // Fetch the book based on the url
@@ -199,14 +199,24 @@ class BookPage extends Component {
                     </Row>
                     <Row>
                         <Media>
-                            { this.state.showDetails &&
-                            <Image
-                                className="mr-3"
-                                src={book.cover}
-                                alt={book.title}
-                                thumbnail
-                                width="314px"
-                            />}
+                            {this.state.showDetails ? (
+                                <div
+                                    style={{
+                                        position: "relative",
+                                        width: "330px",
+                                    }}
+                                >
+                                    <Image
+                                        className="mr-3"
+                                        src={book.cover}
+                                        alt={book.title}
+                                        thumbnail
+                                        width="314px"
+                                    />
+                                </div>
+                            ) : (
+                                <BlindCover book={book}></BlindCover>
+                            )}
                             <Media.Body>
                                 <h1>{book.title}</h1>
                                 <h5>
@@ -219,9 +229,15 @@ class BookPage extends Component {
                                 <h6>
                                     <small>
                                         Read by {book.n_readers} user
-                                        {book.n_readers == 1 ? "" : "s"}
+                                        {book.n_readers === 1 ? "" : "s"}
                                     </small>
                                 </h6>
+                                <Form.Check
+                                    type="switch"
+                                    id="custom-switch"
+                                    label="Blind date!"
+                                    onChange={this.toggleDetails}
+                                />
                                 <p>
                                     {user ? (
                                         <AddBookModal
@@ -237,58 +253,64 @@ class BookPage extends Component {
 
                                         <p>{book.summary}</p>
                                     </Tab>
-                                    {this.state.showDetails &&
-                                    <Tab
-                                        eventKey="reviews"
-                                        title="Reviews + Ratings"
-                                    >
-                                        {this.props.initialUserInfo && (
-                                            <>
-                                                <br></br>
-                                                <AddReview
-                                                    bookID={
-                                                        this.props.match.params
-                                                            .bookID
-                                                    }
-                                                    readerID={
-                                                        this.props
-                                                            .initialUserInfo.id
-                                                    }
-                                                    notify={this.notify}
-                                                />
-                                            </>
-                                        )}
-                                        <br></br>
-                                        <h5>Average Rating</h5>
-                                        <StarRatings
-                                            rating={book.ave_rating}
-                                            starRatedColor="gold"
-                                            numberOfStars={5}
-                                            starDimension="30px"
-                                            name="rating"
-                                        />
-                                        <br></br>
-                                        <small>
-                                            {book.ave_rating.toFixed(2)} from{" "}
-                                            {book.n_ratings.toLocaleString()}{" "}
-                                            reviews
-                                        </small>
+                                    {this.state.showDetails && (
+                                        <Tab
+                                            eventKey="reviews"
+                                            title="Reviews + Ratings"
+                                        >
+                                            {this.props.initialUserInfo && (
+                                                <>
+                                                    <br></br>
+                                                    <AddReview
+                                                        bookID={
+                                                            this.props.match
+                                                                .params.bookID
+                                                        }
+                                                        readerID={
+                                                            this.props
+                                                                .initialUserInfo
+                                                                .id
+                                                        }
+                                                        notify={this.notify}
+                                                    />
+                                                </>
+                                            )}
+                                            <br></br>
+                                            <h5>Average Rating</h5>
+                                            <StarRatings
+                                                rating={book.ave_rating}
+                                                starRatedColor="gold"
+                                                numberOfStars={5}
+                                                starDimension="30px"
+                                                name="rating"
+                                            />
+                                            <br></br>
+                                            <small>
+                                                {book.ave_rating.toFixed(2)}{" "}
+                                                from{" "}
+                                                {book.n_ratings.toLocaleString()}{" "}
+                                                reviews
+                                            </small>
 
-                                        <ReviewList
-                                            bookID={
-                                                this.props.match.params.bookID
-                                            }
-                                            reviewPage={this.state.reviewPage}
-                                            reviewsPerPage={
-                                                this.state.reviewsPerPage
-                                            }
-                                        />
+                                            <ReviewList
+                                                bookID={
+                                                    this.props.match.params
+                                                        .bookID
+                                                }
+                                                reviewPage={
+                                                    this.state.reviewPage
+                                                }
+                                                reviewsPerPage={
+                                                    this.state.reviewsPerPage
+                                                }
+                                            />
 
-                                        <Pagination>
-                                            {this.state.items}
-                                        </Pagination>
-                                        <br />
-                                    </Tab>}
+                                            <Pagination>
+                                                {this.state.items}
+                                            </Pagination>
+                                            <br />
+                                        </Tab>
+                                    )}
                                     <Tab
                                         eventKey="info"
                                         title="Additional Information"

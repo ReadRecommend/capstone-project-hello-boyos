@@ -24,7 +24,8 @@
         "react-star-ratings": "^2.3.0",
         "react-tag-input": "^6.4.3",
         "react-toastify": "^6.0.8",
-        "typescript": "^3.9.6"
+        "typescript": "^3.9.6",
+        "webfontloader": "^1.6.28"
     },
     "scripts": {
         "start": "react-scripts start",
