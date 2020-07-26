@@ -1,6 +1,7 @@
 from flask import jsonify, request
 
 from backend.errors import InvalidRequest, ResourceNotFound
+from backend.user.utils import sort_books
 from backend.model.schema import Author, Book, Collection, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
 from backend.recommendation.content_recommender import ContentRecommender
@@ -61,6 +62,7 @@ def get_following():
 @recommendation_bp.route("/content", methods=["POST"])
 def get_content():
     book_id = request.json.get("bookID")
+    user_id = request.json.get("userID")
     if not book_id or not book_id.isdigit():
         raise InvalidRequest(
             "Request should be of the form {{bookID: 'bookID'}} where bookID is parseable as an integer"
@@ -71,4 +73,14 @@ def get_content():
 
     recommender = ContentRecommender()
     recommendations = recommender.recommend(book, n_recommend=10)
-    return jsonify(books_schema.dump(recommendations))
+
+    if not user_id.isdigit():
+        raise InvalidRequest("the userID must be parseable as an integer")
+    reader = Reader.query.filter_by(id=user_id).first()
+    if not reader:
+        raise ResourceNotFound("A user with the specified ID does not exist")
+
+    reader_books = sort_books(reader)
+    unread_recommendations = list(set(recommendations) - set(reader_books))
+
+    return jsonify(books_schema.dump(unread_recommendations))
