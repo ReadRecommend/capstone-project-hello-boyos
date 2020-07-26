@@ -18,19 +18,19 @@ def get_author():
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")
 
-    userBooks = sort_books(reader)
+    user_books = sort_books(reader)
 
     # Author NAME
-    authorName = request.json.get("author")
-    authorBooks = Author.query.filter_by(name=authorName).first()
+    author_name = request.json.get("author")
+    author_books = Author.query.filter_by(name=author_name).first()
 
-    if not authorBooks:
+    if not author_books:
         raise ResourceNotFound("An author with this name does not exist")
-    authorBooks = authorBooks.books
+    author_books = author_books.books
 
-    unreadBooks = list(set(authorBooks) - set(userBooks))
+    unread_books = list(set(author_books) - set(user_books))
 
-    return jsonify(books_schema.dump(unreadBooks))
+    return jsonify(books_schema.dump(unread_books))
 
 
 @recommendation_bp.route("/genre", methods=["POST"])
@@ -45,18 +45,18 @@ def get_genre():
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")
 
-    userBooks = sort_books(reader)
+    user_books = sort_books(reader)
 
     # Genre NAME
     genre = request.json.get("genre")
-    genreBooks = Genre.query.filter_by(name=genre).first()
-    if not genreBooks:
+    genre_books = Genre.query.filter_by(name=genre).first()
+    if not genre_books:
         raise ResourceNotFound("A genre with this name does not exist")
-    genreBooks = genreBooks.books
+    genre_books = genre_books.books
 
-    unreadBooks = list(set(genreBooks) - set(userBooks))
+    unread_books = list(set(genre_books) - set(user_books))
 
-    return jsonify(books_schema.dump(unreadBooks))
+    return jsonify(books_schema.dump(unread_books))
 
 
 @recommendation_bp.route("/following", methods=["POST"])
@@ -71,7 +71,7 @@ def get_following():
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")
 
-    userBooks = sort_books(reader)
+    user_books = sort_books(reader)
 
     reader = Reader.query.filter_by(id=user_id).first().follows
     if not reader:
@@ -79,16 +79,16 @@ def get_following():
             "The user with the specified ID does not follow any users"
         )
 
-    followingBooks = []
+    following_books = []
 
     for following in reader:
-        followingBooks = followingBooks + sort_books(following)
+        following_books = following_books + sort_books(following)
 
-    followingBooks = list(dict.fromkeys(followingBooks))
+    following_books = list(dict.fromkeys(following_books))
 
-    unreadBooks = list(set(followingBooks) - set(userBooks))
+    unread_books = list(set(following_books) - set(user_books))
 
-    return jsonify(books_schema.dump(unreadBooks))
+    return jsonify(books_schema.dump(unread_books))
 
 
 @recommendation_bp.route("/content", methods=["POST"])
