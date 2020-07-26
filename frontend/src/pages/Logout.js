@@ -6,7 +6,7 @@ class Logout extends Component {
     componentDidMount() {
         let cookie = new Cookies();
         cookie.remove("accessToken");
-        localStorage.removeItem("loggedIn");
+        localStorage.removeItem("loggedInRole");
         // Perhaps a bit hacky, but the context will be the function that tells the navbar we have logged out
         this.context();
         this.props.history.push('/login');

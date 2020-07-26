@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import StarRatings from "react-star-ratings";
-import PropTypes from "prop-types";
 
 class ReviewListItem extends Component {
     constructor(props) {
@@ -11,7 +10,6 @@ class ReviewListItem extends Component {
     }
 
     displayReview = () => {
-        const { isbn } = this.props.book;
         return this.props.user;
     };
 

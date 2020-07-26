@@ -2,15 +2,25 @@ from backend import app, db, ma
 from backend.model.author import Author
 from backend.model.book import Book
 from backend.model.collection import Collection
+from backend.model.collection_membership import CollectionMembership
 from backend.model.genre import Genre
 from backend.model.review import Review
 from backend.model.reader import Reader
+from backend.model.reader_goal import ReaderGoal
 
 
 class BookSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Book
         include_relationships = True
+
+    n_readers = ma.Function(
+        lambda book: CollectionMembership.query.filter_by(book_id=book.id)
+        .join(Collection)
+        .join(Reader)
+        .distinct(Reader.id)
+        .count()
+    )
 
 
 book_schema = BookSchema()
@@ -33,6 +43,7 @@ class CollectionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Collection
         include_relationships = True
+        exclude = ("book_memberships",)
 
     books = ma.Nested(BookSchema, many=True)
 
@@ -87,3 +98,13 @@ class ReviewSchema(ma.SQLAlchemyAutoSchema):
 
 review_schema = ReviewSchema()
 reviews_schema = ReviewSchema(many=True)
+
+
+class ReaderGoalSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = ReaderGoal
+        include_relationships = True
+
+
+goal_schema = ReaderGoalSchema()
+goals_schema = ReaderGoalSchema(many=True)

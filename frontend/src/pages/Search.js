@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import SearchResults from "../components/SearchResults.js";
+import Pagination from "react-bootstrap/Pagination";
+import PageItem from "react-bootstrap/PageItem";
 
 class Search extends Component {
     constructor(props) {
@@ -13,13 +13,19 @@ class Search extends Component {
 
         this.state = {
             search: "",
-            filter: "5 Stars",
+            filter: "No Filter",
             currentSearchList: [],
+            currentDisplayList: [],
+            currentPage: 1,
+            booksPerPage: 9,
+            numberOfPages: 1,
+            pages: [],
         };
     }
 
     componentDidMount() {
         // Get all the books in the database
+        const { booksPerPage } = this.state;
         fetch("http://localhost:5000/book")
             .then((res) => {
                 return res.json();
@@ -27,6 +33,9 @@ class Search extends Component {
             .then((books) => {
                 this.setState({
                     currentSearchList: books,
+                    numberOfPages: Math.ceil(
+                        Object.keys(books).length / booksPerPage
+                    ),
                 });
             });
     }
@@ -44,9 +53,55 @@ class Search extends Component {
         });
     };
 
+    changePage = (newPage) => {
+        const {
+            booksPerPage,
+            currentPage,
+            currentSearchList,
+            numberOfPages,
+        } = this.state;
+        if (newPage > 0 && newPage <= numberOfPages) {
+            this.setState({
+                currentDisplayList: currentSearchList.slice(
+                    (newPage - 1) * booksPerPage,
+                    newPage * booksPerPage
+                ),
+                currentPage: newPage,
+            });
+            this.refreshPageList(newPage);
+        }
+    };
+
+    refreshPageList = (activePage) => {
+        let list = [];
+        console.log("Number of Pages: " + this.state.numberOfPages);
+        console.log("Active Page: " + this.state.currentPage);
+        for (
+            let i = activePage - 2;
+            i <= this.state.numberOfPages && i <= activePage + 2;
+            i++
+        ) {
+            console.log(i);
+            if (i < 1) {
+                continue;
+            }
+
+            list.push(
+                <Pagination.Item
+                    key={i}
+                    active={i === activePage}
+                    onClick={() => this.changePage(i)}
+                >
+                    {i}
+                </Pagination.Item>
+            );
+        }
+
+        this.setState({ pages: list });
+    };
+
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state.filter);
         const data = {
             search: this.state.search,
             filter: this.state.filter,
@@ -69,11 +124,16 @@ class Search extends Component {
             .then((books) => {
                 this.setState({
                     currentSearchList: books,
+                    numberOfPages: Math.ceil(
+                        Object.keys(books).length / this.state.booksPerPage
+                    ),
                 });
+                this.changePage(1);
             });
     };
 
     render() {
+        const { currentPage } = this.state;
         return (
             <div className="Search">
                 <Container>
@@ -93,7 +153,6 @@ class Search extends Component {
                                 onChange={this.updateFilter}
                             >
                                 <option>No Filter</option>
-                                <option>5 Stars</option>
                                 <option>&ge; 4 Stars</option>
                                 <option>&ge; 3 Stars</option>
                                 <option>&ge; 2 Stars</option>
@@ -111,8 +170,18 @@ class Search extends Component {
                     </Form>
                     <br></br>
                     <SearchResults
-                        books={this.state.currentSearchList}
+                        books={this.state.currentDisplayList}
                     ></SearchResults>
+                    <br></br>
+                    <Pagination>
+                        <Pagination.Prev
+                            onClick={() => this.changePage(currentPage - 1)}
+                        />
+                        {this.state.pages}
+                        <Pagination.Next
+                            onClick={() => this.changePage(currentPage + 1)}
+                        />
+                    </Pagination>
                 </Container>
             </div>
         );
