@@ -93,7 +93,7 @@ class ReviewSchema(ma.SQLAlchemyAutoSchema):
         model = Review
         include_relationships = True
 
-    reader = ma.Nested(ReaderSchema)
+    reader = ma.Nested(SimpleReader)
 
 
 review_schema = ReviewSchema()
