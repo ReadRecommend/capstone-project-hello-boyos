@@ -1,27 +1,9 @@
 from flask import jsonify, request
 
-import flask_praetorian
-from backend import db
+from backend.errors import InvalidRequest, ResourceNotFound
+from backend.model.schema import Author, Book, Collection, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
-from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
-from backend.model.schema import (
-    Book,
-    book_schema,
-    books_schema,
-    Genre,
-    genre_schema,
-    genres_schema,
-    Author,
-    author_schema,
-    authors_schema,
-    Review,
-    Reader,
-    reader_schema,
-    readers_schema,
-    Collection,
-    collection_schema,
-    collections_schema,
-)
+from backend.recommendation.content_recommender import ContentRecommender
 
 
 @recommendation_bp.route("/author", methods=["POST"])
@@ -74,3 +56,19 @@ def get_following():
     unreadBooks = list(set(followingBooks) - set(userBooks))
 
     return jsonify(books_schema.dump(unreadBooks))
+
+
+@recommendation_bp.route("/content", methods=["POST"])
+def get_content():
+    book_id = request.json.get("bookID")
+    if not book_id or not book_id.isdigit():
+        raise InvalidRequest(
+            "Request should be of the form {{bookID: 'bookID'}} where bookID is parseable as an integer"
+        )
+    book = Book.query.filter_by(id=book_id).first()
+    if not book:
+        raise ResourceNotFound("A book with this ID does not exist")
+
+    recommender = ContentRecommender()
+    recommendations = recommender.recommend(book, n_recommend=10)
+    return jsonify(books_schema.dump(recommendations))
