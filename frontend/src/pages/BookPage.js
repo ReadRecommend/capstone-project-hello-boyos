@@ -74,10 +74,8 @@ class BookPage extends Component {
                     })
                     .then(() => {
                         this.forceUpdate();
+                        this.setState({ loading: false });
                     });
-            })
-            .then(() => {
-                this.setState({ loading: false });
             })
             .catch(() => {
                 this.setState({ book: null, loading: false });
