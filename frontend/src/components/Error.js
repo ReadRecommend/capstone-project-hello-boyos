@@ -3,7 +3,6 @@ import { Jumbotron, Button, Container, Row, Col } from "react-bootstrap";
 import { File } from "react-kawaii";
 class Error extends Component {
     render() {
-        console.log(this.props);
         const errorCode = this.props.errorCode;
         const errorMessage = this.props.errorMessage;
         return (
