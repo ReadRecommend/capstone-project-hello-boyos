@@ -1,27 +1,10 @@
 from flask import jsonify, request
 
-import flask_praetorian
-from backend import db
+from backend.errors import InvalidRequest, ResourceNotFound
+from backend.user.utils import sort_books
+from backend.model.schema import Author, Book, Collection, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
-from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
-from backend.model.schema import (
-    Book,
-    book_schema,
-    books_schema,
-    Genre,
-    genre_schema,
-    genres_schema,
-    Author,
-    author_schema,
-    authors_schema,
-    Review,
-    Reader,
-    reader_schema,
-    readers_schema,
-    Collection,
-    collection_schema,
-    collections_schema,
-)
+from backend.recommendation.content_recommender import ContentRecommender
 
 
 @recommendation_bp.route("/author", methods=["POST"])
@@ -74,3 +57,30 @@ def get_following():
     unreadBooks = list(set(followingBooks) - set(userBooks))
 
     return jsonify(books_schema.dump(unreadBooks))
+
+
+@recommendation_bp.route("/content", methods=["POST"])
+def get_content():
+    book_id = request.json.get("bookID")
+    user_id = request.json.get("userID")
+    if not book_id or not book_id.isdigit():
+        raise InvalidRequest(
+            "Request should be of the form {{bookID: 'bookID'}} where bookID is parseable as an integer"
+        )
+    book = Book.query.filter_by(id=book_id).first()
+    if not book:
+        raise ResourceNotFound("A book with this ID does not exist")
+
+    recommender = ContentRecommender()
+    recommendations = recommender.recommend(book, n_recommend=10)
+
+    if not user_id.isdigit():
+        raise InvalidRequest("the userID must be parseable as an integer")
+    reader = Reader.query.filter_by(id=user_id).first()
+    if not reader:
+        raise ResourceNotFound("A user with the specified ID does not exist")
+
+    reader_books = sort_books(reader)
+    unread_recommendations = list(set(recommendations) - set(reader_books))
+
+    return jsonify(books_schema.dump(unread_recommendations))
