@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { getReview } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
-import { toast, ToastContainer } from "react-toastify";
 
 class ReviewList extends Component {
     constructor(props) {
@@ -31,17 +30,6 @@ class ReviewList extends Component {
             })
             .then((json) => {
                 this.setState({ reviewList: json });
-            })
-            .catch((error) => {
-                // An error occurred
-                let errorMessage = "Something went wrong...";
-                try {
-                    errorMessage = JSON.parse(error.message).message;
-                } catch {
-                    errorMessage = error.message;
-                } finally {
-                    toast.error(errorMessage);
-                }
             });
     }
 

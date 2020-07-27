@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import UserSearchResults from "../components/UserSearchResults.js";
+import { toast, ToastContainer } from "react-toastify";
+
+import { getAllUsers, searchUsers } from "../fetchFunctions";
 
 class Search extends Component {
     constructor(props) {
@@ -14,14 +17,31 @@ class Search extends Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:5000/user")
+        getAllUsers()
             .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
                 return res.json();
             })
             .then((users) => {
                 this.setState({
                     currentSearchList: users,
                 });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     }
 
@@ -31,16 +51,8 @@ class Search extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const data = {
-            search: this.state.search,
-        };
-        fetch("http://localhost:5000/search/users", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+
+        searchUsers(this.state.search)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -53,6 +65,17 @@ class Search extends Component {
                 this.setState({
                     currentSearchList: users,
                 });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -60,6 +83,11 @@ class Search extends Component {
         return (
             <div className="Search">
                 <Container>
+                    <ToastContainer
+                        autoClose={4000}
+                        pauseOnHover
+                        closeOnClick
+                    />
                     <h1> User Search Page </h1>
                     <Form method="POST" onSubmit={this.handleSubmit}>
                         <InputGroup>
