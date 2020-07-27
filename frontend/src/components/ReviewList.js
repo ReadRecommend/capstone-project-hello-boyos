@@ -1,62 +1,71 @@
 import React, { Component } from "react";
 import { getReview } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
+import { toast, ToastContainer } from "react-toastify";
 
 class ReviewList extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      reviewList: [],
-      reviewPage: this.props.reviewPage,
-      nReviews: this.props.reviewsPerPage,
-    };
-  }
-
-  componentDidMount() {
-    this.updateReviews()
-  }
-
-
-
-  updateReviews() {
-    getReview(this.props.bookID, this.state.reviewPage, this.state.nReviews)
-      .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        this.setState({ reviewList: json });
-      });
-  }
-
-  componentDidUpdate(previousProps) {
-
-    if (previousProps.reviewPage !== this.props.reviewPage) {
-      this.setState({ reviewPage: this.props.reviewPage }, () => {
-        this.updateReviews();
-      })
-      this.forceUpdate()
+        this.state = {
+            reviewList: [],
+            reviewPage: this.props.reviewPage,
+            nReviews: this.props.reviewsPerPage,
+        };
     }
-  }
 
+    componentDidMount() {
+        this.updateReviews();
+    }
 
-  render() {
-    return (
-      this.state.reviewList.map((review) => (
-        <ReviewListItem
-          key={review.reader.id}
-          book_id={review.book_id}
-          creation_date={review.creation_date}
-          reader={review.reader.username}
-          score={review.score}
-          review={review.review}
-        />
-      )
-      )
-    )
-  };
+    updateReviews() {
+        getReview(this.props.bookID, this.state.reviewPage, this.state.nReviews)
+            .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
+                return res.json();
+            })
+            .then((json) => {
+                this.setState({ reviewList: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
+            });
+    }
+
+    componentDidUpdate(previousProps) {
+        if (previousProps.reviewPage !== this.props.reviewPage) {
+            this.setState({ reviewPage: this.props.reviewPage }, () => {
+                this.updateReviews();
+            });
+            this.forceUpdate();
+        }
+    }
+
+    render() {
+        return this.state.reviewList.map((review) => (
+            <ReviewListItem
+                key={review.reader.id}
+                book_id={review.book_id}
+                creation_date={review.creation_date}
+                reader={review.reader.username}
+                score={review.score}
+                review={review.review}
+            />
+        ));
+    }
 }
-
-
 
 export default ReviewList;

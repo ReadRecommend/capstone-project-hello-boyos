@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import Main from "./Main";
 import { Navbar, Nav, Button, NavDropdown } from "react-bootstrap";
 import { loginContext } from "./LoginContext";
-import { Link } from "react-router-dom";
 
 import "./App.css";
 

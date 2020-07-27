@@ -413,9 +413,9 @@ class UserHome extends Component {
                                 addToCollection={this.addToCollection}
                                 editable={
                                     true &&
-                                    this.state.currentCollection.name !=
+                                    this.state.currentCollection.name !==
                                         "All" &&
-                                    this.state.currentCollection.name !=
+                                    this.state.currentCollection.name !==
                                         "Recently Read"
                                 }
                             />

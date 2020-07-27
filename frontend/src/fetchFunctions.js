@@ -10,6 +10,35 @@ export function verifyUser() {
     });
 }
 
+export function createAccount(username, email, password) {
+    const data = {
+        username: username,
+        email: email,
+        password: password,
+    };
+    return fetch(`${apiUrl}/auth/signup`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        },
+    });
+}
+
+export function logIn(username, password) {
+    const data = {
+        username: username,
+        password: password,
+    };
+    return fetch(`${apiUrl}/auth/login`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        },
+    });
+}
+
 export function getBook(bookID) {
     return fetch(`${apiUrl}/book/${bookID}`);
 }
@@ -40,6 +69,22 @@ export function getReview(bookID, reviewPage, nReviews) {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+    });
+}
+
+export function addReview(readerId, bookId, score, review) {
+    const data = {
+        reader_id: readerId,
+        book_id: bookId,
+        score: score,
+        review: review,
+    };
+    return fetch(`${apiUrl}/book/review`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        },
     });
 }
 

@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import UserSearchResults from "../components/UserSearchResults.js";
 
 class Search extends Component {
@@ -72,9 +70,14 @@ class Search extends Component {
                                 onChange={this.updateSearch}
                             />
 
-                            <Button variant="primary" type="submit" block value="Search">
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                block
+                                value="Search"
+                            >
                                 Search
-              </Button>
+                            </Button>
                         </InputGroup>
                     </Form>
                 </Container>
