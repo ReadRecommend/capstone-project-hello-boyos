@@ -104,7 +104,10 @@ class CollectionItem extends Component {
         return (
             <div>
                 {this.props.editable === true && (
-                    <Modal show={this.state.modalShow} onHide={this.handleModal}>
+                    <Modal
+                        show={this.state.modalShow}
+                        onHide={this.handleModal}
+                    >
                         <Modal.Header closeButton>
                             <Modal.Title>Add to a Collection</Modal.Title>
                         </Modal.Header>
@@ -119,11 +122,10 @@ class CollectionItem extends Component {
                     <Card.Body>
                         <Card.Text>
                             <a href={`/book/${bookID}`}>{title}</a>
-                            <p>
-                                <small>{book.authors}</small>
-                                <br></br>
-                                <small>{book.publication_date}</small>
-                            </p>
+                            <br></br>
+                            <small>{book.authors}</small>
+                            <br></br>
+                            <small>{book.publication_date}</small>
                         </Card.Text>
                         <StarRatings
                             rating={book.ave_rating}
