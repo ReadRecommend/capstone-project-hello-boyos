@@ -1,9 +1,57 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, Button, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Button, NavDropdown, Form, Row, Col } from 'react-bootstrap';
+import InputGroup from "react-bootstrap/InputGroup"; 
 import PropTypes from "prop-types";
+import { Router, Route, Redirect} from 'react-router';
 
 
 class NavigationBar extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            search: "",
+            type: "book",
+
+        };
+    }
+
+    updateSearch = (event) => {
+        event.persist();
+        this.setState({ search: event.target.value });
+    }
+
+    changeSearchType = (event) => {
+        event.persist();
+        this.setState({ type: event.target.value }, () => {
+            this.handleSubmit(event); // Call asynchronously
+        });
+    }
+
+    renderRedirect = () => {
+        const {type, search} = this.state
+        if(type === "book") {
+            return(
+                <Redirect
+                    to={{
+                        pathname:'/search',
+                        state: {navSearch:search}
+                    }}
+                />
+            );
+        } else if (type === "user") {
+            return (
+                <Redirect
+                    to={{
+                        pathname:'/search/user',
+                        state: {navSearch:search}
+                    }}
+                />
+            );
+        }
+
+    }
 
     render () {
         return (
@@ -28,6 +76,32 @@ class NavigationBar extends Component {
                         </Nav>
                     }      
                 </Nav>
+                {<Nav className="mr-auto">
+                    <Form inline method="POST" onSubmit={this.handleSubmit}>
+                        <InputGroup>
+                            <Form.Control
+                                type="text"
+                                placeholder="Search"
+                                value={this.state.search}
+                                onChange={this.updateSearch}
+                            />
+                            <Form.Control
+                                as="select"
+                                defaultValue={"Books"}
+                                onChange={this.changeSearchType}
+                            >
+                                <option>Books</option>
+                                <option>Users</option>
+                            </Form.Control>
+                            <InputGroup.Append>
+                                <Button variant="primary" type="submit" block value="Search">
+                                    Search
+                                </Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </Form>
+                </Nav>}
+                {this.state.search.length > 0 && this.renderRedirect}
                 <Nav>
                     <Button
                         variant="outline-info"

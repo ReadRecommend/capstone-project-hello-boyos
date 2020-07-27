@@ -3,7 +3,6 @@ import { Button, Form, Container, Row, Col, Dropdown, DropdownButton, Spinner } 
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from 'react-bootstrap/Pagination'
-import PageItem from 'react-bootstrap/PageItem'
 class Search extends Component {
     constructor(props) {
         super(props);
@@ -27,6 +26,11 @@ class Search extends Component {
     componentDidMount() {
         // Get all the books in the database
         const {booksPerPage} = this.state
+        let navSearch = this.props.location.state.navSearch
+        if(navSearch.length > 0) {
+            this.setState({search:navSearch}, this.handleSubmit.bind(this))
+        }
+
         fetch("http://localhost:5000/book")
             .then((res) => {
                 return res.json();
