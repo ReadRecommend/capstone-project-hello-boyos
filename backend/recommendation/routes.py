@@ -46,7 +46,9 @@ def get_author():
         if book in author_books:
             author_books.remove(book)
 
-    return_books = sorted(author_books, key=lambda book: book.ave_rating)[:n_recommend]
+    return_books = sorted(list(set(author_books)), key=weighted_rating, reverse=True)[
+        :n_recommend
+    ]
 
     if request.json.get("userID"):
         user_id = validate_integer(request.json.get("userID"), "userID")
@@ -55,7 +57,7 @@ def get_author():
             raise ResourceNotFound("A user with the specified ID does not exist")
         user_books = sort_books(reader)
         return_books = sorted(
-            list(set(return_books) - set(user_books)), key=lambda book: book.ave_rating
+            list(set(return_books) - set(user_books)), key=weighted_rating, reverse=True
         )[:n_recommend]
 
     return jsonify(books_schema.dump(return_books))
@@ -100,7 +102,9 @@ def get_genre():
         if book in genre_books:
             genre_books.remove(book)
 
-    return_books = sorted(genre_books, key=lambda book: book.ave_rating)[:n_recommend]
+    return_books = sorted(list(set(genre_books)), key=weighted_rating, reverse=True)[
+        :n_recommend
+    ]
 
     if request.json.get("userID"):
         user_id = validate_integer(request.json.get("userID"), "userID")
@@ -109,7 +113,7 @@ def get_genre():
             raise ResourceNotFound("A user with the specified ID does not exist")
         user_books = sort_books(reader)
         return_books = sorted(
-            list(set(return_books) - set(user_books)), key=lambda book: book.ave_rating
+            list(set(return_books) - set(user_books)), key=weighted_rating, reverse=True
         )[:n_recommend]
 
     return jsonify(books_schema.dump(return_books))
@@ -141,9 +145,7 @@ def get_following():
     following_books = list(dict.fromkeys(following_books))
 
     unread_books = sorted(
-        list(set(following_books) - set(user_books)),
-        key=lambda book: book.ave_rating,
-        reverse=True,
+        list(set(following_books) - set(user_books)), key=weighted_rating, reverse=True,
     )[:n_recommend]
 
     return jsonify(books_schema.dump(unread_books))
@@ -152,7 +154,6 @@ def get_following():
 @recommendation_bp.route("/content", methods=["POST"])
 def get_content():
     book_id = request.json.get("bookID")
-    user_id = request.json.get("userID")
 
     book_id = validate_integer(book_id, "bookID")
 
@@ -165,16 +166,15 @@ def get_content():
     recommender = ContentRecommender(ngram_range=(1, 1))
     recommendations = recommender.recommend(book, n_recommend=n_recommend)
 
-    user_id = validate_integer(user_id, "userID")
+    if request.json.get("userID"):
+        user_id = validate_integer(request.json.get("userID"), "userID")
+        reader = Reader.query.filter_by(id=user_id).first()
+        if not reader:
+            raise ResourceNotFound("A user with the specified ID does not exist")
+        reader_books = sort_books(reader)
+        recommendations = list(set(recommendations) - set(reader_books))
 
-    reader = Reader.query.filter_by(id=user_id).first()
-    if not reader:
-        raise ResourceNotFound("A user with the specified ID does not exist")
-
-    reader_books = sort_books(reader)
-    unread_recommendations = list(set(recommendations) - set(reader_books))
-
-    return jsonify(books_schema.dump(unread_recommendations))
+    return jsonify(books_schema.dump(recommendations))
 
 
 @recommendation_bp.route("/top_rated", methods=["POST"])

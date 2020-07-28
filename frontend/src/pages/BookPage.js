@@ -92,10 +92,10 @@ class BookPage extends Component {
             case "Author":
                 getRecommendations(
                     "author",
-                    user ? user.id : -1,
+                    user ? user.id : null,
                     book.id,
-                    6,
-                    book.authors[0]
+                    6
+                    // book.authors[0]
                 )
                     .then((res) => {
                         if (!res.ok) {
@@ -129,11 +129,11 @@ class BookPage extends Component {
             case "Genre":
                 getRecommendations(
                     "genre",
-                    user ? user.id : -1,
+                    user ? user.id : null,
                     book.id,
-                    6,
-                    null,
-                    book.genres[0]
+                    6
+                    // null,
+                    // book.genres[0]
                 )
                     .then((res) => {
                         if (!res.ok) {
@@ -163,8 +163,9 @@ class BookPage extends Component {
                             this.setState({ loadingRecommendations: false });
                         }
                     });
+                break;
             case "Editor's Choice":
-                getRecommendations("content", user ? user.id : -1, book.id, 6)
+                getRecommendations("content", user ? user.id : null, book.id, 6)
                     .then((res) => {
                         if (!res.ok) {
                             return res.text().then((text) => {
