@@ -4,8 +4,10 @@ from backend.errors import InvalidRequest, ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
 from backend.recommendation.content_recommender import ContentRecommender
-from backend.recommendation.utils import validate_integer
+from backend.recommendation.utils import validate_integer, weighted_rating
 from backend.user.utils import sort_books
+
+# TODO make reader ID optional
 
 
 @recommendation_bp.route("/author", methods=["POST"])
@@ -30,7 +32,9 @@ def get_author():
     author_books = author_books.books
 
     unread_books = sorted(
-        list(set(author_books) - set(user_books)), key=lambda book: book.ave_rating
+        list(set(author_books) - set(user_books)),
+        key=lambda book: book.ave_rating,
+        reverse=True,
     )[:n_recommend]
 
     return jsonify(books_schema.dump(unread_books))
@@ -57,7 +61,9 @@ def get_genre():
     genre_books = genre_books.books
 
     unread_books = sorted(
-        list(set(genre_books) - set(user_books)), key=lambda book: book.ave_rating
+        list(set(genre_books) - set(user_books)),
+        key=lambda book: book.ave_rating,
+        reverse=True,
     )[:n_recommend]
 
     return jsonify(books_schema.dump(unread_books))
@@ -89,7 +95,9 @@ def get_following():
     following_books = list(dict.fromkeys(following_books))
 
     unread_books = sorted(
-        list(set(following_books) - set(user_books)), key=lambda book: book.ave_rating
+        list(set(following_books) - set(user_books)),
+        key=lambda book: book.ave_rating,
+        reverse=True,
     )[:n_recommend]
 
     return jsonify(books_schema.dump(unread_books))
@@ -122,9 +130,10 @@ def get_content():
 
     return jsonify(books_schema.dump(unread_recommendations))
 
-@recommendation_bp.route("/toprated", methods=["GET"])
+
+@recommendation_bp.route("/top_rated", methods=["POST"])
 def get_top():
-    
     n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
-    books = Book.query.order_by(Book.ave_rating.desc()).limit(n_recommend).all()
+    books = Book.query.filter(Book.ave_rating > 3).all()
+    books = sorted(books, key=weighted_rating, reverse=True)[:n_recommend]
     return jsonify(books_schema.dump(books))
