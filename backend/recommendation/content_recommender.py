@@ -114,13 +114,10 @@ class ContentRecommender:
         ).all()
 
         # weight similarity score by the books rating to order the recommendations
-        print(recommended_books)
-        print(top_similarities)
         weights = {
             book.title: top_similarities[i] * (book.ave_rating / 5)
             for i, book in enumerate(recommended_books)
         }
-        print(weights)
         recommendations = sorted(
             recommended_books, key=lambda book: weights[book.title], reverse=True
         )

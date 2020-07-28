@@ -2,9 +2,11 @@ from flask import jsonify, request
 
 from backend.errors import InvalidRequest, ResourceNotFound
 from backend.user.utils import sort_books
-from backend.model.schema import Author, Book, Collection, Genre, Reader, books_schema
+from backend.model.schema import Author, Book, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
 from backend.recommendation.content_recommender import ContentRecommender
+
+# TODO refactor all shared validation to helper function
 
 
 @recommendation_bp.route("/author", methods=["POST"])
@@ -95,19 +97,33 @@ def get_following():
 def get_content():
     book_id = request.json.get("bookID")
     user_id = request.json.get("userID")
-    if not book_id or not book_id.isdigit():
+    if not book_id:
         raise InvalidRequest(
-            "Request should be of the form {{bookID: 'bookID'}} where bookID is parseable as an integer"
+            "Request should be of the form {{bookID: 'bookID', userID: 'userID'}}"
         )
+    try:
+        book_id = int(book_id)
+    except:
+        raise InvalidRequest("book_id should be parseable as an integer")
+
     book = Book.query.filter_by(id=book_id).first()
     if not book:
         raise ResourceNotFound("A book with this ID does not exist")
 
-    recommender = ContentRecommender()
-    recommendations = recommender.recommend(book, n_recommend=10)
+    n_recommend = request.json.get("nRecommend", 10)
 
-    if not user_id.isdigit():
-        raise InvalidRequest("the userID must be parseable as an integer")
+    recommender = ContentRecommender(ngram_range=(1, 1))
+    recommendations = recommender.recommend(book, n_recommend=n_recommend)
+
+    if not user_id:
+        raise InvalidRequest(
+            "Request should be of the form {{bookID: 'bookID', userID: 'userID'}}"
+        )
+
+    try:
+        user_id = int(user_id)
+    except:
+        raise InvalidRequest("user_IDd should be parseable as an integer")
     reader = Reader.query.filter_by(id=user_id).first()
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")

@@ -314,7 +314,7 @@ class BookPage extends Component {
                                             method="POST"
                                             onSubmit={this.handleSubmit}
                                         >
-                                            <InputGroup>
+                                            <Form.Group>
                                                 <Form.Control
                                                     as="select"
                                                     defaultValue={"Author"}
@@ -322,16 +322,19 @@ class BookPage extends Component {
                                                 >
                                                     <option>Author</option>
                                                     <option>Genre</option>
+                                                    <option>
+                                                        Editor's Choice
+                                                    </option>
                                                 </Form.Control>
-                                                <Button
-                                                    variant="primary"
-                                                    type="submit"
-                                                    block
-                                                    value="Recommend"
-                                                >
-                                                    Recommend
-                                                </Button>
-                                            </InputGroup>
+                                            </Form.Group>
+                                            <Button
+                                                variant="primary"
+                                                type="submit"
+                                                block
+                                                value="Recommend"
+                                            >
+                                                Recommend
+                                            </Button>
                                         </Form>
                                     </Tab>
                                 </Tabs>

@@ -1,60 +1,145 @@
 import React, { Component } from "react";
-import { Button, Form, Container } from "react-bootstrap";
-import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import { Form, Container, Spinner } from "react-bootstrap";
 import SearchResults from "../components/SearchResults.js";
-
+import { getRecommendations, getCollectionOverview } from "../fetchFunctions";
+import { toast, ToastContainer } from "react-toastify";
 class Discover extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            recommendationMode: "Top Rated"
+            recommendationMode: "Top Rated",
+            currentRecommendations: [],
+            loading: true,
         };
     }
 
-    updateFilter = (event) => {
-    // When calling handleSubmit asynchronously the event will
-    // be nullified otherwise
-    event.persist();
-    this.setState({ recommendationMode: event.target.value }, () => {
-        this.handleSubmit(event); // Call asynchronously
+    componentDidMount() {
+        this.handleSubmit();
+    }
+
+    updateMode = (event) => {
+        // When calling handleSubmit asynchronously the event will
+        // be nullified otherwise
+        event.persist();
+        this.setState({ recommendationMode: event.target.value }, () => {
+            this.handleSubmit(event); // Call asynchronously
         });
     };
 
+    getRecentlyReadRecommendations = (books, user) => {
+        let promiseArray = [];
+        books.forEach((book) => {
+            promiseArray = promiseArray.concat(
+                getRecommendations("content", user.id, book.id, 2).then((res) =>
+                    res.json()
+                )
+            );
+        });
+        return Promise.all(promiseArray);
+    };
+
     handleSubmit = (event) => {
-        // IMPLEMENT LATER
-    }
+        const user = this.props.initialUserInfo;
+        this.setState({ loading: true });
+        switch (this.state.recommendationMode) {
+            case "Top Rated":
+                return null;
+            case "People You Follow":
+                return null;
+            case "Recently Read":
+                getCollectionOverview(user.username, "recently_read")
+                    .then((res) => {
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+
+                        return res.json();
+                    })
+                    .then((json) => {
+                        return this.getRecentlyReadRecommendations(
+                            json.books,
+                            user
+                        );
+                    })
+                    .then((recommendations) => {
+                        recommendations = recommendations.flat();
+                        this.setState({
+                            currentRecommendations: recommendations,
+                            loading: false,
+                        });
+                        console.log(recommendations);
+                    })
+                    .catch((error) => {
+                        // An error occurred
+                        let errorMessage = "Something went wrong...";
+                        try {
+                            errorMessage = JSON.parse(error.message).message;
+                        } catch {
+                            errorMessage = error.message;
+                        } finally {
+                            toast.error(errorMessage);
+                            this.setState({ loading: false });
+                        }
+                    });
+            // return null;
+        }
+        // console.log(this.state.recommendationMode);
+    };
 
     render() {
         return (
             <div className="Search">
                 <Container>
+                    <ToastContainer
+                        autoClose={4000}
+                        pauseOnHover
+                        closeOnClick
+                    />
                     <h1> Discover </h1>
                     <br></br>
                     <Form method="POST" onSubmit={this.handleSubmit}>
-                        <InputGroup>
+                        <Form.Group>
                             <Form.Control
                                 as="select"
                                 defaultValue={"Top Rated"}
-                                onChange={this.updateFilter}
+                                onChange={this.updateMode}
                             >
                                 <option>Top Rated</option>
-                                <option>People You Follow</option>
-                                <option>Recently Read</option>
+                                {this.props.initialUserInfo && (
+                                    <>
+                                        <option>People You Follow</option>
+                                        <option>Recently Read</option>
+                                    </>
+                                )}
                             </Form.Control>
-                            <Button
+                            {/* <Button
                                 variant="primary"
                                 type="submit"
                                 block
                                 value="Recommend"
                             >
                                 Recommend
-                            </Button>
-                        </InputGroup>
+                            </Button> */}
+                        </Form.Group>
                     </Form>
-                    {/*<SearchResults books={this.state.currentSearchList}></SearchResults>*/}
+                    <br></br>
+                    {this.state.loading ? (
+                        <Spinner
+                            animation="border"
+                            style={{
+                                position: "absolute",
+                                left: "50%",
+                                top: "50%",
+                            }}
+                        />
+                    ) : (
+                        <SearchResults
+                            books={this.state.currentRecommendations}
+                        ></SearchResults>
+                    )}
                 </Container>
             </div>
         );

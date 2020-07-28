@@ -104,7 +104,10 @@ class CollectionItem extends Component {
         return (
             <div>
                 {this.props.editable === true && (
-                    <Modal show={this.state.modalShow} onHide={this.handleModal}>
+                    <Modal
+                        show={this.state.modalShow}
+                        onHide={this.handleModal}
+                    >
                         <Modal.Header closeButton>
                             <Modal.Title>Add to a Collection</Modal.Title>
                         </Modal.Header>
