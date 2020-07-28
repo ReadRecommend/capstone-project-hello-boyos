@@ -336,10 +336,10 @@ class UserHome extends Component {
                                     Create a collection
                                 </Button>
                                 <Button href="/search" block>
-                                    Search
+                                    Search Books
                                 </Button>
                                 <Button href="/usrsearch" block>
-                                    User Search
+                                    Search Users
                                 </Button>
                                 <Button href="/goals" block>
                                     My Goals

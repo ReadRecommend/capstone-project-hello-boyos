@@ -50,6 +50,9 @@ class App extends Component {
                                 <Nav.Link href="/usrsearch">
                                     Search for Users
                                 </Nav.Link>
+                                 <Nav.Link href="/discover">
+                                    Discover
+                                </Nav.Link>
                                 <Nav.Link href="/goals">My Goals</Nav.Link>
                             </Nav>
                         )}
