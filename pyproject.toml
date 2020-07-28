@@ -24,6 +24,11 @@ pylint-flask = "^0.6"
 flask-buzz = "^0.1.15"
 pendulum = "2.0.5"
 flask-praetorian = {git = "https://github.com/dusktreader/flask-praetorian"}
+pandas = "^1.0.5"
+numpy = "^1.19.1"
+scikit-learn = "^0.23.1"
+nltk = "^3.5"
+pyarrow = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

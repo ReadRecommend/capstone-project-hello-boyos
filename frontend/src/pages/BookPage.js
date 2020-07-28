@@ -9,6 +9,9 @@ import {
     Tabs,
     Tab,
     Image,
+    Button,
+    Form,
+    InputGroup,
     Pagination,
     Form,
 } from "react-bootstrap";
@@ -23,6 +26,7 @@ class BookPage extends Component {
         this.state = {
             book: {},
             collection: {},
+            recommendationMode: "Author",
             reviewPage: 1,
             // TODO: Make this an input on the page
             reviewsPerPage: 2,
@@ -331,6 +335,38 @@ class BookPage extends Component {
                                         <strong>ISBN: </strong>
                                         {book.isbn}
                                         <br></br>
+                                    </Tab>
+                                    <Tab
+                                        eventKey="recommend"
+                                        title="Recommend Similar"
+                                    >
+                                        <br></br>
+                                        <Form
+                                            method="POST"
+                                            onSubmit={this.handleSubmit}
+                                        >
+                                            <Form.Group>
+                                                <Form.Control
+                                                    as="select"
+                                                    defaultValue={"Author"}
+                                                    onChange={this.updateFilter}
+                                                >
+                                                    <option>Author</option>
+                                                    <option>Genre</option>
+                                                    <option>
+                                                        Editor's Choice
+                                                    </option>
+                                                </Form.Control>
+                                            </Form.Group>
+                                            <Button
+                                                variant="primary"
+                                                type="submit"
+                                                block
+                                                value="Recommend"
+                                            >
+                                                Recommend
+                                            </Button>
+                                        </Form>
                                     </Tab>
                                 </Tabs>
                             </Media.Body>

@@ -114,7 +114,6 @@ def get_books():
     books = Book.query.all()
     return jsonify(books_schema.dump(books))
 
-
 @book_bp.route("/<id>")
 def get_book(id):
     book = Book.query.filter_by(id=id).first()
@@ -157,7 +156,7 @@ def add_review():
     if Review.query.filter(
         (Review.reader_id == reader_id) & (Review.book_id == book_id)
     ).first():
-        raise ResourceExists("User has already reviewed this book")
+        raise ResourceExists("You have already reviewed this book")
 
     new_review = Review(
         reader_id=reader_id, book_id=book_id, review=review, score=score,

@@ -10,12 +10,14 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
-import Reviews from "./pages/Reviews";
+import GoalPage from "./pages/Goals/GoalPage";
 import AddReview from "./components/AddReview";
 
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
+import Recommend from "./pages/Recommend";
+import Discover from "./pages/Discover";
 
 class Main extends Component {
     render() {
@@ -66,7 +68,12 @@ class Main extends Component {
                         key="createAccount"
                     />
                     <Route exact path="/login" component={Login} key="login" />
-                    <Route exact path="/logout" component={Logout} key="logout" />
+                    <Route
+                        exact
+                        path="/logout"
+                        component={Logout}
+                        key="logout"
+                    />
                     <PrivateRoute
                         exact
                         path="/book/:bookID"
@@ -87,6 +94,27 @@ class Main extends Component {
                         component={UserSearch}
                         roles={["user"]}
                         key="userSearch"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/goals"
+                        component={GoalPage}
+                        roles={["user"]}
+                        key="goalPage"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/recommend"
+                        component={Recommend}
+                        roles={["user"]}
+                        key="recommend"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/discover"
+                        component={Discover}
+                        roles={["user"]}
+                        key="discover"
                     />
                     <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>

@@ -71,7 +71,7 @@ class AdminBookList extends Component {
             dataField: "id",
             text: "ID",
             style: { wordWrap: "break-word" },
-            sort:  true
+            sort: true
         }, {
             dataField: "title",
             text: "Title",
