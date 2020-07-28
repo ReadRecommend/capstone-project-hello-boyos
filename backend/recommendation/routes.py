@@ -4,20 +4,20 @@ from backend.errors import InvalidRequest, ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
 from backend.recommendation.content_recommender import ContentRecommender
-from backend.recommendation.utils import validate_id
+from backend.recommendation.utils import validate_integer
 from backend.user.utils import sort_books
 
 
 @recommendation_bp.route("/author", methods=["POST"])
 def get_author():
 
-    user_id = validate_id(request.json.get("userID"), "userID")
+    user_id = validate_integer(request.json.get("userID"), "userID")
 
     reader = Reader.query.filter_by(id=user_id).first()
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")
 
-    n_recommend = request.json.get("nRecommend", 10)
+    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
 
     user_books = sort_books(reader)
 
@@ -39,13 +39,13 @@ def get_author():
 @recommendation_bp.route("/genre", methods=["POST"])
 def get_genre():
 
-    user_id = validate_id(request.json.get("userID"), "userID")
+    user_id = validate_integer(request.json.get("userID"), "userID")
 
     reader = Reader.query.filter_by(id=user_id).first()
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")
 
-    n_recommend = request.json.get("nRecommend", 10)
+    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
 
     user_books = sort_books(reader)
 
@@ -65,7 +65,7 @@ def get_genre():
 
 @recommendation_bp.route("/following", methods=["POST"])
 def get_following():
-    user_id = validate_id(request.json.get("userID"), "userID")
+    user_id = validate_integer(request.json.get("userID"), "userID")
 
     reader = Reader.query.filter_by(id=user_id).first()
     if not reader:
@@ -79,7 +79,7 @@ def get_following():
             "The user with the specified ID does not follow any users"
         )
 
-    n_recommend = request.json.get("nRecommend", 10)
+    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
 
     following_books = []
 
@@ -100,18 +100,18 @@ def get_content():
     book_id = request.json.get("bookID")
     user_id = request.json.get("userID")
 
-    book_id = validate_id(book_id, "bookID")
+    book_id = validate_integer(book_id, "bookID")
 
     book = Book.query.filter_by(id=book_id).first()
     if not book:
         raise ResourceNotFound("A book with this ID does not exist")
 
-    n_recommend = request.json.get("nRecommend", 10)
+    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
 
     recommender = ContentRecommender(ngram_range=(1, 1))
     recommendations = recommender.recommend(book, n_recommend=n_recommend)
 
-    user_id = validate_id(user_id, "userID")
+    user_id = validate_integer(user_id, "userID")
 
     reader = Reader.query.filter_by(id=user_id).first()
     if not reader:
