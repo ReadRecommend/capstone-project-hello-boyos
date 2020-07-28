@@ -7,8 +7,6 @@ from backend.recommendation.content_recommender import ContentRecommender
 from backend.recommendation.utils import validate_id
 from backend.user.utils import sort_books
 
-# TODO refactor all shared validation to helper function
-
 
 @recommendation_bp.route("/author", methods=["POST"])
 def get_author():
