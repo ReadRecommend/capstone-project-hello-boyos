@@ -45,9 +45,39 @@ class Discover extends Component {
         switch (this.state.recommendationMode) {
             case "Top Rated":
                 return null;
+                break;
             case "People You Follow":
-                return null;
-            case "Recently Read":
+                getRecommendations("following", user.id, null, 20)
+                    .then((res) => {
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then((recommendations) => {
+                        recommendations = recommendations.flat();
+                        this.setState({
+                            currentRecommendations: recommendations,
+                            loading: false,
+                        });
+                        console.log(recommendations);
+                    })
+                    .catch((error) => {
+                        // An error occurred
+                        let errorMessage = "Something went wrong...";
+                        try {
+                            errorMessage = JSON.parse(error.message).message;
+                        } catch {
+                            errorMessage = error.message;
+                        } finally {
+                            toast.error(errorMessage);
+                            this.setState({ loading: false });
+                        }
+                    });
+                break;
+            case "Suggested For You":
                 getCollectionOverview(user.username, "recently_read")
                     .then((res) => {
                         if (!res.ok) {
@@ -84,9 +114,7 @@ class Discover extends Component {
                             this.setState({ loading: false });
                         }
                     });
-            // return null;
         }
-        // console.log(this.state.recommendationMode);
     };
 
     render() {
@@ -111,7 +139,7 @@ class Discover extends Component {
                                 {this.props.initialUserInfo && (
                                     <>
                                         <option>People You Follow</option>
-                                        <option>Recently Read</option>
+                                        <option>Suggested For You</option>
                                     </>
                                 )}
                             </Form.Control>
