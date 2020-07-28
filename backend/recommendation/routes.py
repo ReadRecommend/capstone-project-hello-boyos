@@ -125,6 +125,6 @@ def get_content():
 @recommendation_bp.route("/toprated", methods=["GET"])
 def get_top():
     
-    n_recommend = request.json.get("nRecommend", 10)
+    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
     books = Book.query.order_by(Book.ave_rating.desc()).limit(n_recommend).all()
     return jsonify(books_schema.dump(books))
