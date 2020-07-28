@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getBook, getReviewPages } from "../fetchFunctions";
+import { getBook, getReviewPages, getRecommendations } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
 
 import {
@@ -9,6 +9,8 @@ import {
     Tabs,
     Tab,
     Image,
+    Button,
+    Form,
     Pagination,
     Spinner,
 } from "react-bootstrap";
@@ -17,6 +19,7 @@ import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
 import Error from "../components/Error";
 import { toast, ToastContainer } from "react-toastify";
+import SearchResults from "../components/SearchResults.js";
 
 class BookPage extends Component {
     constructor(props) {
@@ -25,12 +28,13 @@ class BookPage extends Component {
             loading: true,
             book: null,
             collection: {},
+            recommendationMode: "Author",
             reviewPage: 1,
             // TODO: Make this an input on the page
             reviewsPerPage: 2,
-
             totalReviewPages: 0,
             items: [],
+            loadingRecommendations: true,
         };
     }
 
@@ -49,9 +53,23 @@ class BookPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({
-                    book: json,
-                });
+                this.setState(
+                    {
+                        book: json,
+                    },
+                    this.handleRecommendation
+                );
+            });
+
+        getReviewPages(
+            this.props.match.params.bookID,
+            this.state.reviewsPerPage
+        )
+            .then((res) => {
+                return res.json();
+            })
+            .then((json) => {
+                this.buildPageBar(json.count);
             })
             .then(() => {
                 getReviewPages(
@@ -81,6 +99,130 @@ class BookPage extends Component {
                 this.setState({ book: null, loading: false });
             });
     }
+
+    updateMode = (event) => {
+        // When calling handleSubmit asynchronously the event will
+        // be nullified otherwise
+        event.persist();
+        this.setState({ recommendationMode: event.target.value }, () => {
+            this.handleRecommendation(event); // Call asynchronously
+        });
+    };
+
+    handleRecommendation = (event) => {
+        const user = this.props.initialUserInfo;
+        const book = this.state.book;
+        console.log(book);
+        this.setState({ loadingRecommendations: true });
+        switch (this.state.recommendationMode) {
+            case "Author":
+                getRecommendations(
+                    "author",
+                    user ? user.id : null,
+                    book.id,
+                    6
+                    // book.authors[0]
+                )
+                    .then((res) => {
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then((recommendations) => {
+                        recommendations = recommendations.flat();
+                        this.setState({
+                            currentRecommendations: recommendations,
+                            loadingRecommendations: false,
+                        });
+                        console.log(recommendations);
+                    })
+                    .catch((error) => {
+                        // An error occurred
+                        let errorMessage = "Something went wrong...";
+                        try {
+                            errorMessage = JSON.parse(error.message).message;
+                        } catch {
+                            errorMessage = error.message;
+                        } finally {
+                            toast.error(errorMessage);
+                            this.setState({ loadingRecommendations: false });
+                        }
+                    });
+                break;
+            case "Genre":
+                getRecommendations(
+                    "genre",
+                    user ? user.id : null,
+                    book.id,
+                    6
+                    // null,
+                    // book.genres[0]
+                )
+                    .then((res) => {
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then((recommendations) => {
+                        recommendations = recommendations.flat();
+                        this.setState({
+                            currentRecommendations: recommendations,
+                            loadingRecommendations: false,
+                        });
+                        console.log(recommendations);
+                    })
+                    .catch((error) => {
+                        // An error occurred
+                        let errorMessage = "Something went wrong...";
+                        try {
+                            errorMessage = JSON.parse(error.message).message;
+                        } catch {
+                            errorMessage = error.message;
+                        } finally {
+                            toast.error(errorMessage);
+                            this.setState({ loadingRecommendations: false });
+                        }
+                    });
+                break;
+            case "Editor's Choice":
+                getRecommendations("content", user ? user.id : null, book.id, 6)
+                    .then((res) => {
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then((recommendations) => {
+                        recommendations = recommendations.flat();
+                        this.setState({
+                            currentRecommendations: recommendations,
+                            loadingRecommendations: false,
+                        });
+                        console.log(recommendations);
+                    })
+                    .catch((error) => {
+                        // An error occurred
+                        let errorMessage = "Something went wrong...";
+                        try {
+                            errorMessage = JSON.parse(error.message).message;
+                        } catch {
+                            errorMessage = error.message;
+                        } finally {
+                            toast.error(errorMessage);
+                            this.setState({ loadingRecommendations: false });
+                        }
+                    });
+                break;
+        }
+    };
 
     refreshPageBar() {
         this.setState({ items: [] }, () => {
@@ -334,6 +476,48 @@ class BookPage extends Component {
                                         <strong>ISBN: </strong>
                                         {book.isbn}
                                         <br></br>
+                                    </Tab>
+                                    <Tab
+                                        eventKey="recommend"
+                                        title="Recommend Similar"
+                                    >
+                                        <br></br>
+                                        <Form
+                                            method="POST"
+                                            onSubmit={this.handleSubmit}
+                                        >
+                                            <Form.Group>
+                                                <Form.Control
+                                                    as="select"
+                                                    defaultValue={"Author"}
+                                                    onChange={this.updateMode}
+                                                >
+                                                    <option>Author</option>
+                                                    <option>Genre</option>
+                                                    <option>
+                                                        Editor's Choice
+                                                    </option>
+                                                </Form.Control>
+                                            </Form.Group>
+                                            {this.state
+                                                .loadingRecommendations ? (
+                                                <Spinner
+                                                    animation="border"
+                                                    style={{
+                                                        position: "absolute",
+                                                        left: "50%",
+                                                        top: "50%",
+                                                    }}
+                                                />
+                                            ) : (
+                                                <SearchResults
+                                                    books={
+                                                        this.state
+                                                            .currentRecommendations
+                                                    }
+                                                ></SearchResults>
+                                            )}
+                                        </Form>
                                     </Tab>
                                 </Tabs>
                             </Media.Body>

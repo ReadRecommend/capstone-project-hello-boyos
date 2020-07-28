@@ -160,6 +160,31 @@ export function updateGoal(month, year, goal, n_read) {
         credentials: "include",
     });
 }
+
 export function getCollectionOverview(username, overviewName) {
     return fetch(`http://localhost:5000/user/${username}/${overviewName}`);
+}
+
+export function getRecommendations(
+    mode,
+    userID,
+    bookID,
+    nRecommend = 10,
+    author = null,
+    genre = null
+) {
+    return fetch(`http://localhost:5000/recommendations/${mode}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            userID: userID,
+            bookID: bookID,
+            nRecommend: nRecommend,
+            author: author,
+            genre: genre,
+        }),
+        credentials: "include",
+    });
 }

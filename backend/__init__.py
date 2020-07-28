@@ -23,6 +23,7 @@ from backend.book import book_bp
 from backend.user import user_bp
 from backend.collection import collection_bp
 from backend.search import search_bp
+from backend.recommendation import recommendation_bp
 from backend.goals import goals_bp
 
 app.register_blueprint(auth_bp)
@@ -30,6 +31,7 @@ app.register_blueprint(book_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(collection_bp)
 app.register_blueprint(search_bp)
+app.register_blueprint(recommendation_bp)
 app.register_blueprint(goals_bp)
 
 from backend import routes

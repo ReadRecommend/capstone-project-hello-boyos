@@ -17,6 +17,8 @@ import AddReview from "./components/AddReview";
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
+import Recommend from "./pages/Recommend";
+import Discover from "./pages/Discover";
 
 class Main extends Component {
     render() {
@@ -100,6 +102,13 @@ class Main extends Component {
                         component={GoalPage}
                         roles={["user"]}
                         key="goalPage"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/discover"
+                        component={Discover}
+                        roles={["user"]}
+                        key="discover"
                     />
                     <Route
                         path="*"
