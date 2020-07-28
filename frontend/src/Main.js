@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 
 import PrivateRoute from "./components/PrivateRoute";
+import Error from "./components/Error";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
 import UserHome from "./pages/UserHome";
@@ -10,7 +11,7 @@ import Login from "./pages/Login";
 import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
-import Reviews from "./pages/Reviews";
+import GoalPage from "./pages/Goals/GoalPage";
 import AddReview from "./components/AddReview";
 
 import BookPage from "./pages/BookPage";
@@ -66,7 +67,12 @@ class Main extends Component {
                         key="createAccount"
                     />
                     <Route exact path="/login" component={Login} key="login" />
-                    <Route exact path="/logout" component={Logout} key="logout" />
+                    <Route
+                        exact
+                        path="/logout"
+                        component={Logout}
+                        key="logout"
+                    />
                     <PrivateRoute
                         exact
                         path="/book/:bookID"
@@ -88,9 +94,23 @@ class Main extends Component {
                         roles={["user"]}
                         key="userSearch"
                     />
-                    <Route exact path="*" key="404">
-                        <h1>404 Page not found</h1>
-                    </Route>
+                    <PrivateRoute
+                        exact
+                        path="/goals"
+                        component={GoalPage}
+                        roles={["user"]}
+                        key="goalPage"
+                    />
+                    <Route
+                        path="*"
+                        key="404"
+                        component={() => (
+                            <Error
+                                errorCode="404"
+                                errorMessage="Sorry, the page you are looking for does not exist"
+                            ></Error>
+                        )}
+                    ></Route>
                 </Switch>
             </div>
         );

@@ -341,6 +341,9 @@ class UserHome extends Component {
                                 <Button href="/usrsearch" block>
                                     User Search
                                 </Button>
+                                <Button href="/goals" block>
+                                    My Goals
+                                </Button>
                             </p>
                             
                             <br></br>

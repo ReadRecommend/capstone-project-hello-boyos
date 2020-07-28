@@ -1,24 +1,24 @@
-import React, { Component } from 'react';
-import Main from './Main'
+import React, { Component } from "react";
+import Main from "./Main";
 import NavigationBar from './components/NavBar.js'
-import { loginContext } from './LoginContext';
+import { loginContext } from "./LoginContext";
+import { Link } from "react-router-dom";
 
-import './App.css';
-
+import "./App.css";
 
 class App extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            loggedInRole: localStorage.getItem("loggedInRole")
+            loggedInRole: localStorage.getItem("loggedInRole"),
         };
     }
 
     // We need to call this function to rerender the navbar properly
     updateLogin = () => {
-        this.setState({ loggedInRole: localStorage.getItem("loggedInRole") })
-    }
+        this.setState({ loggedInRole: localStorage.getItem("loggedInRole") });
+    };
 
     render() {
         return (
