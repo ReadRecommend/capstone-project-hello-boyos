@@ -16,15 +16,10 @@ class Search extends Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:5000/user")
-            .then((res) => {
-                return res.json();
-            })
-            .then((users) => {
-                this.setState({
-                    currentSearchList: users,
-                });
-            });
+        const {location} = this.props
+        if(location.state && location.state.navSearch.length > 0) {
+            this.setState({search:location.state.navSearch}, this.handleSubmit.bind(this))
+        }
     }
 
     updateSearch = (event) => {
@@ -32,7 +27,7 @@ class Search extends Component {
     };
 
     handleSubmit = (event) => {
-        event.preventDefault();
+        if(event) event.preventDefault();
         const data = {
             search: this.state.search,
         };

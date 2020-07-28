@@ -58,10 +58,6 @@ export function getReviewPages(bookID, nReviews) {
     );
 }
 
-
-
-
-
 export function addBook(bookDetails) {
     return fetch(`${apiUrl}/book`, {
         method: "POST",

@@ -26,21 +26,10 @@ class Search extends Component {
     componentDidMount() {
         // Get all the books in the database
         const {booksPerPage} = this.state
-        let navSearch = this.props.location.state.navSearch
-        if(navSearch.length > 0) {
-            this.setState({search:navSearch}, this.handleSubmit.bind(this))
+        const {location} = this.props
+        if(location.state && location.state.navSearch.length > 0) {
+            this.setState({search:location.state.navSearch}, this.handleSubmit.bind(this))
         }
-
-        fetch("http://localhost:5000/book")
-            .then((res) => {
-                return res.json();
-            })
-            .then((books) => {
-                this.setState({
-                    currentSearchList: books,
-                    numberOfPages: Math.ceil(Object.keys(books).length/booksPerPage)
-                });
-            });
     }
 
     updateSearch = (event) => {
@@ -48,7 +37,6 @@ class Search extends Component {
     };
 
     updateFilter = (event) => {
-        event.persist();
         this.setState({ filter: event.target.value }, () => {
             this.handleSubmit(event); // Call asynchronously
         });
@@ -100,12 +88,13 @@ class Search extends Component {
     }
 
     handleSubmit = (event) => {
-        event.persist()
+
+        if(event) event.persist();
         this.setState({loadingResults:true}, this.handleSearch.bind(this,event))
     }
 
     handleSearch = (event) => {
-        event.preventDefault();
+        if(event) event.preventDefault();
         const data = {
             search: this.state.search,
             filter: this.state.filter,
