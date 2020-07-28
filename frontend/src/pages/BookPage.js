@@ -13,7 +13,6 @@ import {
     Form,
     InputGroup,
     Pagination,
-    Form,
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
