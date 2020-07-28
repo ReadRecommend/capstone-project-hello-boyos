@@ -114,13 +114,6 @@ def get_books():
     books = Book.query.all()
     return jsonify(books_schema.dump(books))
 
-@book_bp.route("/toprated", methods=["GET"])
-def get_top_books():
-    
-    n_recommend = request.json.get("nRecommend", 10)
-    books = Book.query.order_by(Book.ave_rating.desc()).limit(n_recommend).all()
-    return jsonify(books_schema.dump(books))
-
 @book_bp.route("/<id>")
 def get_book(id):
     book = Book.query.filter_by(id=id).first()

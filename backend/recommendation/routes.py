@@ -121,3 +121,10 @@ def get_content():
     unread_recommendations = list(set(recommendations) - set(reader_books))
 
     return jsonify(books_schema.dump(unread_recommendations))
+
+@recommendation_bp.route("/toprated", methods=["GET"])
+def get_top():
+    
+    n_recommend = request.json.get("nRecommend", 10)
+    books = Book.query.order_by(Book.ave_rating.desc()).limit(n_recommend).all()
+    return jsonify(books_schema.dump(books))
