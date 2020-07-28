@@ -16,8 +16,10 @@ def validate_integer(variable, variable_name):
         [type]: [description]
     """
     if not variable:
-        raise InvalidRequest(f"{variable_name} is a required field")
+        message = f"{variable_name} is a required field"
+        raise InvalidRequest(message)
     try:
         return int(variable)
     except:
-        raise InvalidRequest(f"{variable_name} should be parseable as an integer")
+        message = f"{variable_name} should be parseable as an integer"
+        raise InvalidRequest(message)

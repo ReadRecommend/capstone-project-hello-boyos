@@ -62,7 +62,6 @@ class Discover extends Component {
                             currentRecommendations: recommendations,
                             loading: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -100,7 +99,6 @@ class Discover extends Component {
                             currentRecommendations: recommendations,
                             loading: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -114,6 +112,7 @@ class Discover extends Component {
                             this.setState({ loading: false });
                         }
                     });
+                break;
         }
     };
 
@@ -143,14 +142,6 @@ class Discover extends Component {
                                     </>
                                 )}
                             </Form.Control>
-                            {/* <Button
-                                variant="primary"
-                                type="submit"
-                                block
-                                value="Recommend"
-                            >
-                                Recommend
-                            </Button> */}
                         </Form.Group>
                     </Form>
                     <br></br>
