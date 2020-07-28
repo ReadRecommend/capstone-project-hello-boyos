@@ -44,7 +44,34 @@ class Discover extends Component {
         this.setState({ loading: true });
         switch (this.state.recommendationMode) {
             case "Top Rated":
-                return null;
+                getRecommendations("top_rated", user.id, null, 20)
+                    .then((res) => {
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+                        return res.json();
+                    })
+                    .then((recommendations) => {
+                        recommendations = recommendations.flat();
+                        this.setState({
+                            currentRecommendations: recommendations,
+                            loading: false,
+                        });
+                    })
+                    .catch((error) => {
+                        // An error occurred
+                        let errorMessage = "Something went wrong...";
+                        try {
+                            errorMessage = JSON.parse(error.message).message;
+                        } catch {
+                            errorMessage = error.message;
+                        } finally {
+                            toast.error(errorMessage);
+                            this.setState({ loading: false });
+                        }
+                    });
                 break;
             case "People You Follow":
                 getRecommendations("following", user.id, null, 20)

@@ -4,7 +4,7 @@ from backend.errors import InvalidRequest, ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
 from backend.recommendation.content_recommender import ContentRecommender
-from backend.recommendation.utils import validate_integer
+from backend.recommendation.utils import validate_integer, weighted_rating
 from backend.user.utils import sort_books
 
 # TODO make reader ID optional
@@ -130,9 +130,10 @@ def get_content():
 
     return jsonify(books_schema.dump(unread_recommendations))
 
-@recommendation_bp.route("/toprated", methods=["GET"])
+
+@recommendation_bp.route("/top_rated", methods=["POST"])
 def get_top():
-    
     n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
-    books = Book.query.order_by(Book.ave_rating.desc()).limit(n_recommend).all()
+    books = Book.query.filter(Book.ave_rating > 3).all()
+    books = sorted(books, key=weighted_rating, reverse=True)[:n_recommend]
     return jsonify(books_schema.dump(books))
