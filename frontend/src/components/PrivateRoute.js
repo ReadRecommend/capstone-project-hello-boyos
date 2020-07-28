@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import { verifyUser } from "../fetchFunctions";
+import Error from "./Error";
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated.
 class PrivateRoute extends Component {
@@ -84,7 +85,7 @@ class PrivateRoute extends Component {
                         style={{
                             position: "absolute",
                             left: "50%",
-                            top: "50%"
+                            top: "50%",
                         }}
                     />
                     {/* </Container> */}
@@ -111,7 +112,12 @@ class PrivateRoute extends Component {
             return <Redirect to="/logout" />;
         } else if (!this.state.haveAccess) {
             // If we don't have access display 403
-            return <h1>403 Forbidden</h1>;
+            return (
+                <Error
+                    errorCode={403}
+                    errorMessage="Sorry, it looks like you don't have the correct authorisation to access this page"
+                ></Error>
+            );
         } else {
             return (
                 <Route

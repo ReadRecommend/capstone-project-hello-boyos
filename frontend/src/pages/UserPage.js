@@ -5,6 +5,7 @@ import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
 import { toast, ToastContainer } from "react-toastify";
 import { Container, Col, Row, Spinner } from "react-bootstrap";
+import Error from "../components/Error";
 
 class UserPage extends Component {
     constructor(props) {
@@ -183,7 +184,12 @@ class UserPage extends Component {
             );
         } else {
             // Didn't find a valid user, or the user is an admin who shouldn't have a page
-            return <h1>404 User not found</h1>;
+            return (
+                <Error
+                    errorCode="404"
+                    errorMessage="The user you're looking for does not exist"
+                ></Error>
+            );
         }
     }
 }

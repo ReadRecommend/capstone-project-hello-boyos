@@ -345,31 +345,7 @@ class UserHome extends Component {
                                     My Goals
                                 </Button>
                             </p>
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    variant="success"
-                                    id="dropdown-basic"
-                                    className="btn-block"
-                                >
-                                    Add a book to the current collection
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu style={dropdownStyle}>
-                                    {this.state.library &&
-                                        this.state.library.map((book) => (
-                                            <Dropdown.Item
-                                                key={book.id}
-                                                onClick={() => {
-                                                    this.setState({
-                                                        libraryBook: book,
-                                                    });
-                                                    this.handleLibraryModal();
-                                                }}
-                                            >
-                                                {book.title}
-                                            </Dropdown.Item>
-                                        ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            
                             <br></br>
                             <h4>Your Books</h4>
                             <CollectionList

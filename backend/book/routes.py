@@ -116,6 +116,8 @@ def get_books():
 
 @book_bp.route("/<id>")
 def get_book(id):
+    if not id.isdigit():
+        raise InvalidRequest("A book's ID should be a positive integer")
     book = Book.query.filter_by(id=id).first()
     if not book:
         raise ResourceNotFound("A book with this id does not exist")
@@ -124,6 +126,9 @@ def get_book(id):
 
 @book_bp.route("/<id>/reviews", methods=["POST"])
 def get_review(id):
+    if not id.isdigit():
+        raise InvalidRequest("A book's ID should be a positive integer")
+
     request_data = request.json
 
     page = request_data.get("page")
@@ -135,6 +140,9 @@ def get_review(id):
 
 @book_bp.route("/<id>/reviewpage", methods=["POST"])
 def get_review_count(id):
+    if not id.isdigit():
+        raise InvalidRequest("A book's ID should be a positive integer")
+
     request_data = request.json
 
     nReview = request_data.get("reviews_per_page")

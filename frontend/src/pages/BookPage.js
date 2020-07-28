@@ -17,6 +17,7 @@ import {
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
+import Error from "../components/Error";
 import { toast, ToastContainer } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
 
@@ -24,7 +25,8 @@ class BookPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            book: {},
+            loading: true,
+            book: null,
             collection: {},
             recommendationMode: "Author",
             reviewPage: 1,
@@ -76,7 +78,31 @@ class BookPage extends Component {
                 this.buildPageBar(json.count);
             })
             .then(() => {
-                this.forceUpdate();
+                getReviewPages(
+                    this.props.match.params.bookID,
+                    this.state.reviewsPerPage
+                )
+                    .then((res) => {
+                        if (!res.ok) {
+                            // Something went wrong, likely there is no book with the id specified in the url
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+
+                        // Found a valid book
+                        return res.json();
+                    })
+                    .then((json) => {
+                        this.buildPageBar(json.count);
+                    })
+                    .then(() => {
+                        this.forceUpdate();
+                        this.setState({ loading: false });
+                    });
+            })
+            .catch(() => {
+                this.setState({ book: null, loading: false });
             });
     }
 
@@ -318,8 +344,25 @@ class BookPage extends Component {
     render() {
         const book = this.state.book;
         const user = this.props.initialUserInfo;
-        if (!book.authors) {
-            return null;
+        if (this.state.loading) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        }
+        if (!book) {
+            return (
+                <Error
+                    errorCode={404}
+                    errorMessage="The book you are looking for doesn't exist"
+                ></Error>
+            );
         }
         return (
             <div>

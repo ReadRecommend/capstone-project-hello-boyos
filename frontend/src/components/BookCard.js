@@ -122,11 +122,10 @@ class CollectionItem extends Component {
                     <Card.Body>
                         <Card.Text>
                             <a href={`/book/${bookID}`}>{title}</a>
-                            <p>
-                                <small>{book.authors}</small>
-                                <br></br>
-                                <small>{book.publication_date}</small>
-                            </p>
+                            <br></br>
+                            <small>{book.authors}</small>
+                            <br></br>
+                            <small>{book.publication_date}</small>
                         </Card.Text>
                         <StarRatings
                             rating={book.ave_rating}
