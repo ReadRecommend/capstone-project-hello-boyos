@@ -13,6 +13,7 @@ import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
 import GoalPage from "./pages/Goals/GoalPage";
 import AddReview from "./components/AddReview";
+import { bookDetailsContext } from "./BookDetailsContext";
 
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";

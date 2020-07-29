@@ -20,6 +20,7 @@ import AddReview from "../components/AddReview";
 import Error from "../components/Error";
 import { toast, ToastContainer } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
+import { bookDetailsContext } from "../BookDetailsContext";
 
 class BookPage extends Component {
     constructor(props) {
@@ -34,15 +35,9 @@ class BookPage extends Component {
             reviewsPerPage: 2,
             totalReviewPages: 0,
             items: [],
-            showDetails: true,
             loadingRecommendations: true,
         };
     }
-
-    toggleDetails = () => {
-        const newState = !this.state.showDetails;
-        this.setState({ showDetails: newState });
-    };
 
     componentDidMount() {
         // Fetch the book based on the url
@@ -373,7 +368,7 @@ class BookPage extends Component {
                     </Row>
                     <Row>
                         <Media>
-                            {this.state.showDetails ? (
+                            {!this.context ? (
                                 <div
                                     style={{
                                         position: "relative",
@@ -392,26 +387,22 @@ class BookPage extends Component {
                                 <BlindCover book={book}></BlindCover>
                             )}
                             <Media.Body>
-                                <h1>{book.title}</h1>
-                                <h5>
-                                    <small>
-                                        {this.sortAuthors(book.authors).join(
-                                            ", "
-                                        )}
-                                    </small>
-                                </h5>
+                                {!this.context && <>
+                                    <h1>{book.title}</h1>
+                                    <h5>
+                                        <small>
+                                            {this.sortAuthors(book.authors).join(
+                                                ", "
+                                            )}
+                                        </small>
+                                    </h5> </>
+                                }
                                 <h6>
                                     <small>
                                         Read by {book.n_readers} user
                                         {book.n_readers === 1 ? "" : "s"}
                                     </small>
                                 </h6>
-                                <Form.Check
-                                    type="switch"
-                                    id="custom-switch"
-                                    label="Blind date!"
-                                    onChange={this.toggleDetails}
-                                />
                                 <p>
                                     {user ? (
                                         <AddBookModal
@@ -427,7 +418,7 @@ class BookPage extends Component {
 
                                         <p>{book.summary}</p>
                                     </Tab>
-                                    {this.state.showDetails && (
+                                    {!this.context && (
                                         <Tab
                                             eventKey="reviews"
                                             title="Reviews + Ratings"
@@ -490,9 +481,11 @@ class BookPage extends Component {
                                         title="Additional Information"
                                     >
                                         <br></br>
-                                        <strong>Publisher: </strong>
-                                        {book.publisher}
-                                        <br></br>
+                                        {!this.context && <>
+                                            <strong>Publisher: </strong>
+                                            {book.publisher}
+                                            <br></br>
+                                        </>}                                        
                                         <strong>Publication Year: </strong>
                                         {book.publication_date}
                                         <br></br>
@@ -502,9 +495,11 @@ class BookPage extends Component {
                                         <strong>Language: </strong>
                                         {book.language}
                                         <br></br>
-                                        <strong>ISBN: </strong>
-                                        {book.isbn}
-                                        <br></br>
+                                        {!this.context && <>
+                                            <strong>ISBN: </strong>
+                                            {book.isbn}
+                                            <br></br>
+                                        </>}                                        
                                     </Tab>
                                     <Tab
                                         eventKey="recommend"
@@ -559,4 +554,5 @@ class BookPage extends Component {
     }
 }
 
+BookPage.contextType = bookDetailsContext;
 export default BookPage;

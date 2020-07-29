@@ -13,7 +13,7 @@ class App extends Component {
 
         this.state = {
             loggedInRole: localStorage.getItem("loggedInRole"),
-            hideBook: false
+            hideBookDetails: JSON.parse(localStorage.getItem("hideBookDetails"))
         };
     }
 
@@ -22,15 +22,21 @@ class App extends Component {
         this.setState({ loggedInRole: localStorage.getItem("loggedInRole") });
     };
 
-    toggleBookDetails = () => {
-        this.setState({ book})
+    toggleBookDetails = (e) => {
+        //e.persist();
+        const{hideBookDetails} = this.state
+        this.setState({hideBookDetails:!hideBookDetails}, this.setBookDetails.bind(this))
+    }
+
+    setBookDetails = () => {
+        localStorage.setItem("hideBookDetails", this.state.hideBookDetails)
     }
 
     render() {
         return (
             <div className="App" >
-                <bookDetailsContext.Provider value={}>
-                    <NavigationBar loggedInRole={this.state.loggedInRole} />
+                <bookDetailsContext.Provider value={this.state.hideBookDetails}>
+                    <NavigationBar loggedInRole={this.state.loggedInRole} toggleBookDetails={this.toggleBookDetails}/>
                     <loginContext.Provider value={this.updateLogin}>
                         <Main />
                     </loginContext.Provider>

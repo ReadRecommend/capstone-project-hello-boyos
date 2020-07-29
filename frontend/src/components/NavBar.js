@@ -4,6 +4,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import PropTypes from "prop-types";
 import { Router, Route, Redirect, useLocation} from 'react-router';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
+import { bookDetailsContext } from "../BookDetailsContext";
 
 
 
@@ -42,6 +43,11 @@ class NavigationBar extends Component {
         if(e.key === 'Enter') {
             this.handleSubmit()
         }
+    }
+
+    handleToggle = (e) => {
+        console.log("butt")
+
     }
 
     renderRedirect = () => {
@@ -128,7 +134,7 @@ class NavigationBar extends Component {
                 {this.renderSearchBar()}
                 {this.renderRedirect()}
                 <Nav className="mr-auto">
-                    <BootstrapSwitchButton checked={false} onstyle="primary" onClick={this.}/>
+                    <BootstrapSwitchButton checked={this.context} onstyle="primary" onChange={this.props.toggleBookDetails}/>
                 </Nav>
                 <Nav>
                     <Button
@@ -148,5 +154,7 @@ class NavigationBar extends Component {
 NavigationBar.propTypes = {
     loggedInRole: PropTypes.string.isRequired,
 };
+
+NavigationBar.contextType = bookDetailsContext;
 
 export default NavigationBar;
