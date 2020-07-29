@@ -140,8 +140,6 @@ class Discover extends Component {
                         }
                     });
                 break;
-            default:
-                return null;
         }
     };
 

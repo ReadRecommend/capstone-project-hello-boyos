@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { Modal, Alert, Button, Container, Col, Row } from "react-bootstrap";
+import {
+    Modal,
+    Alert,
+    Dropdown,
+    Button,
+    Container,
+    Col,
+    Row,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
@@ -301,7 +309,7 @@ class UserHome extends Component {
                                     My Goals
                                 </Button>
                             </p>
-
+                            
                             <br></br>
                             <h4>Your Books</h4>
                             <CollectionList
@@ -345,9 +353,9 @@ class UserHome extends Component {
                                 addToCollection={this.addToCollection}
                                 editable={
                                     true &&
-                                    this.state.currentCollection.name !==
+                                    this.state.currentCollection.name !=
                                         "All" &&
-                                    this.state.currentCollection.name !==
+                                    this.state.currentCollection.name !=
                                         "Recently Read"
                                 }
                             />
@@ -361,6 +369,11 @@ class UserHome extends Component {
 
 UserHome.propTypes = {
     initialUserInfo: PropTypes.object.isRequired,
+};
+
+const dropdownStyle = {
+    maxHeight: "512px",
+    overflowY: "scroll",
 };
 
 export default UserHome;

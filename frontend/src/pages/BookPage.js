@@ -9,6 +9,7 @@ import {
     Tabs,
     Tab,
     Image,
+    Button,
     Form,
     Pagination,
     Spinner,
@@ -220,8 +221,6 @@ class BookPage extends Component {
                         }
                     });
                 break;
-            default:
-                return null;
         }
     };
 

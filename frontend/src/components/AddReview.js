@@ -71,12 +71,12 @@ class AddReview extends Component {
             })
             .then(() => {
                 this.props.notify("Review successfully published!");
-                window.location.reload();
+                window.location.reload()
                 return this.props.history.push(
                     "/book/" + this.state.book_id + "/reviews"
                 );
             })
-            .catch(() => {});
+            .catch((e) => { });
     };
 
     render() {
@@ -92,20 +92,16 @@ class AddReview extends Component {
                 </Alert>
                 <Accordion>
                     <Card>
-                        <Accordion.Toggle
-                            as={Card.Header}
-                            variant="link"
-                            eventKey="0"
-                            style={{ cursor: "pointer" }}
-                        >
-                            <h5>Leave a review</h5>
+                        {/* <Card.Header> */}
+                        <Accordion.Toggle as={Card.Header} variant="link" eventKey="0">
+                            <a href="#">
+                                <h5>Leave a review</h5>
+                            </a>
                         </Accordion.Toggle>
+                        {/* </Card.Header> */}
                         <Accordion.Collapse eventKey="0">
                             <Card.Body>
-                                <Form
-                                    method="POST"
-                                    onSubmit={this.handleSubmit}
-                                >
+                                <Form method="POST" onSubmit={this.handleSubmit}>
                                     <Form.Group>
                                         <Form.Control
                                             type="number"
@@ -129,7 +125,7 @@ class AddReview extends Component {
                                     </Form.Group>
                                     <Button variant="primary" type="submit">
                                         Submit
-                                    </Button>
+                  </Button>
                                 </Form>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -139,5 +135,7 @@ class AddReview extends Component {
         );
     }
 }
+
+
 
 export default AddReview;
