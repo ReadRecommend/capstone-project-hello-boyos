@@ -12,7 +12,6 @@ class Login extends Component {
         this.state = {
             username: "",
             password: "",
-            access_token: "",
         };
     }
 

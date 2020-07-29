@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import { Image } from "react-bootstrap";
 
 class BlindCover extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const book = this.props.book;
         return (

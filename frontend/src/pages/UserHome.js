@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Dropdown, Button, Container, Col, Row } from "react-bootstrap";
+import { Modal, Button, Container, Col, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
@@ -8,7 +8,6 @@ import FollowList from "../components/FollowList";
 import {
     unfollowUser,
     getCollectionOverview,
-    getAllBooks,
     deleteCollection,
     addCollection,
     removeFromCollection,
@@ -357,11 +356,6 @@ class UserHome extends Component {
 
 UserHome.propTypes = {
     initialUserInfo: PropTypes.object.isRequired,
-};
-
-const dropdownStyle = {
-    maxHeight: "512px",
-    overflowY: "scroll",
 };
 
 export default UserHome;

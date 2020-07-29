@@ -4,7 +4,7 @@ import InputGroup from "react-bootstrap/InputGroup";
 import UserSearchResults from "../components/UserSearchResults.js";
 import { toast, ToastContainer } from "react-toastify";
 
-import { getAllUsers, searchUsers } from "../fetchFunctions";
+import { searchUsers } from "../fetchFunctions";
 
 class Search extends Component {
     constructor(props) {
