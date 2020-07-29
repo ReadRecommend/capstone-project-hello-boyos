@@ -39,11 +39,8 @@ def search():
     return jsonify(books_schema.dump(books))
 
 
-@search_bp.route("/<searchTerm>", methods=["POST"])
-def navSearch(searchTerm):
-    search_term = searchTerm
-    print(search_term)
-
+@search_bp.route("/<search_term>", methods=["POST"])
+def navSearch(search_term):
     search_term = f"%{search_term}%"
 
     books = Book.query.filter(
@@ -59,8 +56,6 @@ def navSearch(searchTerm):
 @search_bp.route("/users", methods=["POST"])
 def usersearch():
     search_term = request.json.get("search")
-    print(search_term)
-
     search_term = f"%{search_term}%"
 
     users = Reader.query.filter(
@@ -70,11 +65,8 @@ def usersearch():
     return jsonify(readers_schema.dump(users))
 
 
-@search_bp.route("/users/<searchTerm>", methods=["POST"])
-def navUsersearch(searchTerm):
-    search_term = searchTerm
-    print(search_term)
-
+@search_bp.route("/users/<search_term>", methods=["POST"])
+def navUsersearch(search_term):
     search_term = f"%{search_term}%"
 
     users = Reader.query.filter(

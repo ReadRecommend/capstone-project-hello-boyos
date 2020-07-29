@@ -12,7 +12,6 @@ class Reviews extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.match.params);
         this.selectReview(this.props.match.params.bookID);
     }
 

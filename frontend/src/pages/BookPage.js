@@ -112,7 +112,6 @@ class BookPage extends Component {
     handleRecommendation = (event) => {
         const user = this.props.initialUserInfo;
         const book = this.state.book;
-        console.log(book);
         this.setState({ loadingRecommendations: true });
         switch (this.state.recommendationMode) {
             case "Author":
@@ -137,7 +136,6 @@ class BookPage extends Component {
                             currentRecommendations: recommendations,
                             loadingRecommendations: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -175,7 +173,6 @@ class BookPage extends Component {
                             currentRecommendations: recommendations,
                             loadingRecommendations: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -206,7 +203,6 @@ class BookPage extends Component {
                             currentRecommendations: recommendations,
                             loadingRecommendations: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred

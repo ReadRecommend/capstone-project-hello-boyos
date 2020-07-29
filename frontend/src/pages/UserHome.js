@@ -115,7 +115,6 @@ class UserHome extends Component {
                 toast.success(`Sucessfully deleted the collection '${name}'`);
             })
             .catch((error) => {
-                console.log(error.message);
                 this.setState({
                     errorGeneralShow: true,
                     errorGeneralMessage: error.message,
@@ -153,7 +152,6 @@ class UserHome extends Component {
                 this.handleModal();
             })
             .catch((error) => {
-                console.log(error.message);
                 this.setState({
                     errorAddCollectionShow: true,
                     errorAddCollectionMessage: error.message,
@@ -309,7 +307,7 @@ class UserHome extends Component {
                                     My Goals
                                 </Button>
                             </p>
-                            
+
                             <br></br>
                             <h4>Your Books</h4>
                             <CollectionList

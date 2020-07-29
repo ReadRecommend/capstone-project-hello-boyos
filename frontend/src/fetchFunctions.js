@@ -108,9 +108,7 @@ export function unfollowUser(followerUsername, userUsername) {
 
             return res.json();
         })
-        .catch((error) => {
-            console.log(error.message);
-        });
+        .catch((error) => {});
 }
 
 export function followUser(followerUsername, userUsername) {
@@ -134,9 +132,7 @@ export function followUser(followerUsername, userUsername) {
 
             return res.json();
         })
-        .catch((error) => {
-            console.log(error.message);
-        });
+        .catch((error) => {});
 }
 
 export function getGoals(year) {

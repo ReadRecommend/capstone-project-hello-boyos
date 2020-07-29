@@ -27,7 +27,6 @@ class NavigationBar extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log("Handle submit");
         this.setState({ Redirect: true });
     };
 
@@ -41,7 +40,6 @@ class NavigationBar extends Component {
     renderRedirect = () => {
         const { type, search } = this.state;
         if (this.state.Redirect) {
-            console.log("rendering now");
             if (type === "Books") {
                 return (
                     <Redirect
