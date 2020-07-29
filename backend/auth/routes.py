@@ -55,8 +55,6 @@ def signup():
     # Add the new user's Main collection
     main_collection = Collection(name="Main")
     new_reader.collections.append(main_collection)
-    recently_read = Collection(name="Recently Read")
-    new_reader.collections.append(recently_read)
 
     db.session.add(new_reader)
     db.session.commit()
