@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { Navbar, Nav, Button, NavDropdown, Form } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import PropTypes from "prop-types";
-import { Redirect } from "react-router";
+import { Router, Route, Redirect, useLocation} from 'react-router';
+import BootstrapSwitchButton from 'bootstrap-switch-button-react';
+import { bookDetailsContext } from "../BookDetailsContext";
+
+
 
 class NavigationBar extends Component {
     constructor(props) {
@@ -37,6 +41,11 @@ class NavigationBar extends Component {
         }
     };
 
+    handleToggle = (e) => {
+        console.log("butt")
+
+    }
+
     renderRedirect = () => {
         const { type, search } = this.state;
         if (this.state.Redirect) {
@@ -63,8 +72,8 @@ class NavigationBar extends Component {
     };
 
     renderSearchBar = () => {
-        return (
-            <Nav className="mr-auto">
+        return(
+            <Nav style={{marginRight:'10px'}}>
                 <Form inline onSubmit={this.handleSubmit}>
                     <InputGroup>
                         <Form.Control
@@ -72,11 +81,13 @@ class NavigationBar extends Component {
                             placeholder="Search"
                             value={this.state.search}
                             onChange={this.updateSearch}
+                            style={{width:'200px'}}
                         />
                         <Form.Control
                             as="select"
                             defaultValue={"Books"}
                             onChange={this.changeSearchType}
+                            style={{width:'91px'}}
                         >
                             <option>Books</option>
                             <option>Users</option>
@@ -101,11 +112,8 @@ class NavigationBar extends Component {
         return (
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/">ReadRecommend</Navbar.Brand>
-                <Nav className="mr-auto">
-                    <Navbar.Text className="navbar_role">
-                        You are: {this.props.loggedInRole || "Not logged in"}
-                    </Navbar.Text>
-                    {this.props.loggedInRole === "Admin" && (
+                <Nav className="mr-auto">                    
+                    {this.props.loggedInRole == "Admin" &&
                         // If we are an admin
                         <NavDropdown title="Admin Pages">
                             <NavDropdown.Item href="/admin/bookList">
@@ -115,17 +123,21 @@ class NavigationBar extends Component {
                                 Add New Book
                             </NavDropdown.Item>
                         </NavDropdown>
-                    )}
-                    {this.state.loggedInRole === "User" && (
-                        // If we are a user
-                        <Nav>
-                            <Nav.Link href="/discover">Discover</Nav.Link>
-                            <Nav.Link href="/goals">My Goals</Nav.Link>
-                        </Nav>
-                    )}
+                    }  
+                    {this.props.loggedInRole == "User" &&
+                    <>
+                        <Nav.Link href="/discover">
+                            Discover
+                        </Nav.Link>
+                        <Nav.Link href="/goals">My Goals</Nav.Link>
+                    </>
+                    }
                 </Nav>
                 {this.renderSearchBar()}
                 {this.renderRedirect()}
+                <Nav style={{marginRight:'10px'}}>
+                    <BootstrapSwitchButton checked={this.context} width="100" onlabel="Mystery" offlabel="Certainty" onstyle="primary" onChange={this.props.toggleBookDetails}/>
+                </Nav>
                 <Nav>
                     <Button
                         variant="outline-info"
@@ -142,5 +154,7 @@ class NavigationBar extends Component {
 NavigationBar.propTypes = {
     loggedInRole: PropTypes.string.isRequired,
 };
+
+NavigationBar.contextType = bookDetailsContext;
 
 export default NavigationBar;
