@@ -102,6 +102,10 @@ class UserHome extends Component {
                     collectionList: json.collections,
                 });
             })
+            .then(() => {
+                this.selectOverview("all_books");
+                toast.success(`Sucessfully deleted the collection '${name}'`);
+            })
             .catch((error) => {
                 console.log(error.message);
                 this.setState({
