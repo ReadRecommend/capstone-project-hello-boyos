@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { getBook, getReviewPages, getRecommendations } from "../fetchFunctions";
 import AddBookModal from "../components/AddBookModal";
-
+import BlindCover from "../components/BlindCover";
 import {
     Container,
     Row,
@@ -20,6 +20,7 @@ import AddReview from "../components/AddReview";
 import Error from "../components/Error";
 import { toast, ToastContainer } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
+import { bookDetailsContext } from "../BookDetailsContext";
 
 class BookPage extends Component {
     constructor(props) {
@@ -112,7 +113,6 @@ class BookPage extends Component {
     handleRecommendation = (event) => {
         const user = this.props.initialUserInfo;
         const book = this.state.book;
-        console.log(book);
         this.setState({ loadingRecommendations: true });
         switch (this.state.recommendationMode) {
             case "Author":
@@ -137,7 +137,6 @@ class BookPage extends Component {
                             currentRecommendations: recommendations,
                             loadingRecommendations: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -175,7 +174,6 @@ class BookPage extends Component {
                             currentRecommendations: recommendations,
                             loadingRecommendations: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -206,7 +204,6 @@ class BookPage extends Component {
                             currentRecommendations: recommendations,
                             loadingRecommendations: false,
                         });
-                        console.log(recommendations);
                     })
                     .catch((error) => {
                         // An error occurred
@@ -368,22 +365,35 @@ class BookPage extends Component {
                     </Row>
                     <Row>
                         <Media>
-                            <Image
-                                className="mr-3"
-                                src={book.cover}
-                                alt={book.title}
-                                thumbnail
-                                width="314px"
-                            />
+                            {!this.context ? (
+                                <div
+                                    style={{
+                                        position: "relative",
+                                        width: "330px",
+                                    }}
+                                >
+                                    <Image
+                                        className="mr-3"
+                                        src={book.cover}
+                                        alt={book.title}
+                                        thumbnail
+                                        width="314px"
+                                    />
+                                </div>
+                            ) : (
+                                <BlindCover book={book}></BlindCover>
+                            )}
                             <Media.Body>
-                                <h1>{book.title}</h1>
-                                <h5>
-                                    <small>
-                                        {this.sortAuthors(book.authors).join(
-                                            ", "
-                                        )}
-                                    </small>
-                                </h5>
+                                {!this.context && <>
+                                    <h1>{book.title}</h1>
+                                    <h5>
+                                        <small>
+                                            {this.sortAuthors(book.authors).join(
+                                                ", "
+                                            )}
+                                        </small>
+                                    </h5> </>
+                                }
                                 <h6>
                                     <small>
                                         Read by {book.n_readers} user
@@ -405,65 +415,74 @@ class BookPage extends Component {
 
                                         <p>{book.summary}</p>
                                     </Tab>
-                                    <Tab
-                                        eventKey="reviews"
-                                        title="Reviews + Ratings"
-                                    >
-                                        {this.props.initialUserInfo && (
-                                            <>
-                                                <br></br>
-                                                <AddReview
-                                                    bookID={
-                                                        this.props.match.params
-                                                            .bookID
-                                                    }
-                                                    readerID={
-                                                        this.props
-                                                            .initialUserInfo.id
-                                                    }
-                                                    notify={this.notify}
-                                                />
-                                            </>
-                                        )}
-                                        <br></br>
-                                        <h5>Average Rating</h5>
-                                        <StarRatings
-                                            rating={book.ave_rating}
-                                            starRatedColor="gold"
-                                            numberOfStars={5}
-                                            starDimension="30px"
-                                            name="rating"
-                                        />
-                                        <br></br>
-                                        <small>
-                                            {book.ave_rating.toFixed(2)} from{" "}
-                                            {book.n_ratings.toLocaleString()}{" "}
-                                            reviews
-                                        </small>
+                                    {!this.context && (
+                                        <Tab
+                                            eventKey="reviews"
+                                            title="Reviews + Ratings"
+                                        >
+                                            {this.props.initialUserInfo && (
+                                                <>
+                                                    <br></br>
+                                                    <AddReview
+                                                        bookID={
+                                                            this.props.match
+                                                                .params.bookID
+                                                        }
+                                                        readerID={
+                                                            this.props
+                                                                .initialUserInfo
+                                                                .id
+                                                        }
+                                                        notify={this.notify}
+                                                    />
+                                                </>
+                                            )}
+                                            <br></br>
+                                            <h5>Average Rating</h5>
+                                            <StarRatings
+                                                rating={book.ave_rating}
+                                                starRatedColor="gold"
+                                                numberOfStars={5}
+                                                starDimension="30px"
+                                                name="rating"
+                                            />
+                                            <br></br>
+                                            <small>
+                                                {book.ave_rating.toFixed(2)}{" "}
+                                                from{" "}
+                                                {book.n_ratings.toLocaleString()}{" "}
+                                                reviews
+                                            </small>
 
-                                        <ReviewList
-                                            bookID={
-                                                this.props.match.params.bookID
-                                            }
-                                            reviewPage={this.state.reviewPage}
-                                            reviewsPerPage={
-                                                this.state.reviewsPerPage
-                                            }
-                                        />
+                                            <ReviewList
+                                                bookID={
+                                                    this.props.match.params
+                                                        .bookID
+                                                }
+                                                reviewPage={
+                                                    this.state.reviewPage
+                                                }
+                                                reviewsPerPage={
+                                                    this.state.reviewsPerPage
+                                                }
+                                            />
 
-                                        <Pagination>
-                                            {this.state.items}
-                                        </Pagination>
-                                        <br />
-                                    </Tab>
+                                            <Pagination>
+                                                {this.state.items}
+                                            </Pagination>
+                                            <br />
+                                        </Tab>
+                                    )}
                                     <Tab
                                         eventKey="info"
                                         title="Additional Information"
                                     >
                                         <br></br>
-                                        <strong>Publisher: </strong>
-                                        {book.publisher}
-                                        <br></br>
+                                        {!this.context && <>
+                                            <strong>Publisher: </strong>
+                                            {book.publisher}
+                                            <br></br>
+                                        </>}                                        
                                         <strong>Publication Year: </strong>
                                         {book.publication_date}
                                         <br></br>
@@ -473,9 +492,11 @@ class BookPage extends Component {
                                         <strong>Language: </strong>
                                         {book.language}
                                         <br></br>
-                                        <strong>ISBN: </strong>
-                                        {book.isbn}
-                                        <br></br>
+                                        {!this.context && <>
+                                            <strong>ISBN: </strong>
+                                            {book.isbn}
+                                            <br></br>
+                                        </>}                                        
                                     </Tab>
                                     <Tab
                                         eventKey="recommend"
@@ -530,4 +551,5 @@ class BookPage extends Component {
     }
 }
 
+BookPage.contextType = bookDetailsContext;
 export default BookPage;

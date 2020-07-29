@@ -1,6 +1,6 @@
 from flask import jsonify, request
 
-from backend.errors import InvalidRequest, ResourceNotFound
+from backend.errors import ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
 from backend.recommendation import recommendation_bp
 from backend.recommendation.content_recommender import ContentRecommender

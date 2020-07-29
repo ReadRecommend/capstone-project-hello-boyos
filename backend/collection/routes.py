@@ -10,7 +10,6 @@ from backend.model.schema import (
     Book,
     Collection,
     Reader,
-    ReaderGoal,
     collection_schema,
     reader_schema,
 )
@@ -86,6 +85,7 @@ def add_collection():
 def modify_collection():
     collection_id = request.json.get("collection_id")
     book_id = request.json.get("book_id")
+
     if not (collection_id and book_id):
         raise InvalidRequest(
             "Request should be of the form {{'collection_id': id, 'book_id': id}}",

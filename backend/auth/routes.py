@@ -18,7 +18,12 @@ def login():
         )
 
     reader = guard.authenticate(username, password)
-    return jsonify({"access_token": guard.encode_jwt_token(reader), "roles": reader.roles}), 200
+    return (
+        jsonify(
+            {"access_token": guard.encode_jwt_token(reader), "roles": reader.roles}
+        ),
+        200,
+    )
 
 
 @auth_bp.route("/signup", methods=["POST"])
@@ -50,8 +55,6 @@ def signup():
     # Add the new user's Main collection
     main_collection = Collection(name="Main")
     new_reader.collections.append(main_collection)
-    recently_read = Collection(name="Recently Read")
-    new_reader.collections.append(recently_read)
 
     db.session.add(new_reader)
     db.session.commit()

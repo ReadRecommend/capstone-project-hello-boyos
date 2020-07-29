@@ -69,4 +69,3 @@ def update_goal():
         db.session.commit()
 
         return jsonify(goal_schema.dump(new_goal))
-

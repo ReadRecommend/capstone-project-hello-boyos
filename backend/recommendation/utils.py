@@ -37,4 +37,3 @@ def weighted_rating(book, Q=3000):
     """
     score = (book.ave_rating / 2) + (5 / 2) * (1 - np.exp(-book.n_ratings / Q))
     return score
-

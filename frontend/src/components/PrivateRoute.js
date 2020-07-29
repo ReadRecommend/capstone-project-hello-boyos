@@ -62,7 +62,6 @@ class PrivateRoute extends Component {
                 }
             })
             .catch((error) => {
-                console.log(error.message);
                 // Something wrong with the cookie/it's missing, logout
                 this.setState({
                     loading: false,

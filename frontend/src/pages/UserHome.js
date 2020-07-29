@@ -1,19 +1,20 @@
 import React, { Component } from "react";
-import {
-    Modal,
-    Alert,
-    Dropdown,
-    Button,
-    Container,
-    Col,
-    Row,
-} from "react-bootstrap";
+import { Modal, Dropdown, Button, Container, Col, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
 import AddCollection from "../components/CollectionList/AddCollection";
 import FollowList from "../components/FollowList";
-import { unfollowUser, getCollectionOverview } from "../fetchFunctions";
+import {
+    unfollowUser,
+    getCollectionOverview,
+    getAllBooks,
+    deleteCollection,
+    addCollection,
+    removeFromCollection,
+    getCollection,
+    addToCollection,
+} from "../fetchFunctions";
 import { toast, ToastContainer } from "react-toastify";
 
 class UserHome extends Component {
@@ -24,13 +25,7 @@ class UserHome extends Component {
             userInfo: this.props.initialUserInfo,
             collectionList: this.props.initialUserInfo.collections,
             currentCollection: {},
-            modalShow: false,
-            libraryModalShow: false,
-            errorGeneralShow: false,
-            errorGeneralMessage: "",
-            errorAddCollectionShow: false,
-            errorAddCollectionMessage: "",
-            libraryBook: {},
+            addCollectionModalShow: false,
         };
     }
 
@@ -42,44 +37,12 @@ class UserHome extends Component {
 
         // Select the initial collection
         this.selectCollection(this.state.collectionList[0]["id"]);
-
-        // Get all the books in the database
-        fetch("http://localhost:5000/book")
-            .then((res) => {
-                return res.json();
-            })
-            .then((books) => {
-                this.setState({
-                    library: books,
-                });
-            });
     }
 
-    // Function that makes the modal show/not show
-    handleModal() {
+    // Function that makes the add collection modal show/not show
+    handleAddCollectionModal() {
         this.setState({
-            modalShow: !this.state.modalShow,
-            errorAddCollectionShow: false,
-        });
-    }
-
-    handleLibraryModal() {
-        this.setState({
-            libraryModalShow: !this.state.libraryModalShow,
-            errorAddCollectionShow: false,
-        });
-    }
-
-    // Function that makes the general error not show
-    handleGeneralError() {
-        this.setState({ errorGeneralShow: false, errorGeneralMessage: "" });
-    }
-
-    // Function that makes the add collection error not show
-    handleAddCollectionError() {
-        this.setState({
-            errorAddCollectionShow: false,
-            errorAddCollectionMessage: "",
+            addCollectionModalShow: !this.state.addCollectionModalShow,
         });
     }
 
@@ -93,17 +56,8 @@ class UserHome extends Component {
 
     // Function that deletes a collection in a user's collection list
     delCollection = (name) => {
-        const data = { reader_id: this.state.userInfo.id, name: name };
-
         // We will let the backend do the checking for us
-        fetch("http://localhost:5000/collection", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-            credentials: "include",
-        })
+        deleteCollection(this.state.userInfo.id, name)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -114,33 +68,33 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
+                toast.success(`Successfully deleted collection ${name}!`);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
                 });
             })
+            .then(() => {
+                this.selectOverview("all_books");
+                toast.success(`Sucessfully deleted the collection '${name}'`);
+            })
             .catch((error) => {
-                console.log(error.message);
-                this.setState({
-                    errorGeneralShow: true,
-                    errorGeneralMessage: error.message,
-                });
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
-        const data = { reader_id: this.state.userInfo.id, name: name };
-
         // We will let the backend do the checking for us
-        fetch("http://localhost:5000/collection", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-            credentials: "include",
-        })
+        addCollection(this.state.userInfo.id, name)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -151,18 +105,23 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
+                toast.success(`Successfully created new collection '${name}'!`);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
                 });
-                this.handleModal();
+                this.handleAddCollectionModal();
             })
             .catch((error) => {
-                console.log(error.message);
-                this.setState({
-                    errorAddCollectionShow: true,
-                    errorAddCollectionMessage: error.message,
-                });
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -172,22 +131,35 @@ class UserHome extends Component {
       is returned and set as the current collection.
       */
     removeBook = (bookID) => {
-        fetch("http://localhost:5000/collection/modify", {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                book_id: bookID,
-                collection_id: this.state.currentCollection.id,
-            }),
-            credentials: "include",
-        })
+        const book = this.state.currentCollection.books.find((book) => {
+            return book.id === bookID;
+        });
+        removeFromCollection(bookID, this.state.currentCollection.id)
             .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
                 return res.json();
             })
             .then((json) => {
+                toast.success(
+                    `Successfully removed book ${book.title} from collection ${json.name}!`
+                );
                 this.setState({ currentCollection: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -197,12 +169,29 @@ class UserHome extends Component {
       selected collection can then be displayed.
       */
     selectCollection = (id) => {
-        fetch(`http://localhost:5000/collection/${id}`)
+        getCollection(id)
             .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
                 return res.json();
             })
             .then((json) => {
                 this.setState({ currentCollection: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -234,23 +223,36 @@ class UserHome extends Component {
             });
     };
 
-    addToCollection = (bookID, collectionID) => {
-        fetch("http://localhost:5000/collection/modify", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                book_id: bookID,
-                collection_id: collectionID,
-            }),
-            credentials: "include",
-        })
+    addBookToCollection = (bookID, collectionID) => {
+        addToCollection(bookID, collectionID)
             .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
                 return res.json();
             })
             .then((json) => {
+                const book = json.books.find((book) => {
+                    return book.id === bookID;
+                });
+                toast.success(
+                    `Successfully added book ${book.title} to collection ${json.name}`
+                );
                 this.setState({ currentCollection: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -258,31 +260,12 @@ class UserHome extends Component {
         return (
             <div className="UserHome">
                 <br></br>
-                {/* Alert for general problems */}
-                <Alert
-                    show={this.state.errorGeneralShow}
-                    onClose={() => this.handleGeneralError()}
-                    variant="danger"
-                    dismissible
-                >
-                    {this.state.errorGeneralMessage}
-                </Alert>
                 <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 {/* Modal for creating a new collection */}
                 <Modal
-                    show={this.state.modalShow}
-                    onHide={() => this.handleModal()}
+                    show={this.state.addCollectionModalShow}
+                    onHide={() => this.handleAddCollectionModal()}
                 >
-                    {/* Alert for problems with adding collections */}
-                    <Alert
-                        show={this.state.errorAddCollectionShow}
-                        onClose={() => this.handleAddCollectionError()}
-                        variant="danger"
-                        dismissible
-                    >
-                        {this.state.errorAddCollectionMessage}
-                    </Alert>
-
                     <Modal.Header closeButton>
                         <Modal.Title>Create New Collection</Modal.Title>
                     </Modal.Header>
@@ -291,37 +274,6 @@ class UserHome extends Component {
                     </Modal.Body>
                 </Modal>
 
-                <Modal
-                    show={this.state.libraryModalShow}
-                    onHide={() => this.handleLibraryModal()}
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>
-                            Add{" "}
-                            {this.state.libraryBook &&
-                                this.state.libraryBook.title}
-                            to{" "}
-                            {this.state.currentCollection.name
-                                ? this.state.currentCollection.name
-                                : "<choose a collection>"}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Button
-                            onClick={() => {
-                                this.addToCollection(
-                                    this.state.libraryBook.id,
-                                    this.state.currentCollection.id
-                                );
-                                this.handleLibraryModal();
-                            }}
-                            block
-                        >
-                            Add
-                        </Button>
-                    </Modal.Body>
-                    <Modal.Footer></Modal.Footer>
-                </Modal>
                 <Container fluid>
                     <h2>Welcome {this.state.userInfo.username} </h2>
                     <Row>
@@ -330,7 +282,7 @@ class UserHome extends Component {
                                 <Button
                                     block
                                     onClick={() => {
-                                        this.handleModal();
+                                        this.handleAddCollectionModal();
                                     }}
                                 >
                                     Create a collection
@@ -345,31 +297,7 @@ class UserHome extends Component {
                                     My Goals
                                 </Button>
                             </p>
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    variant="success"
-                                    id="dropdown-basic"
-                                    className="btn-block"
-                                >
-                                    Add a book to the current collection
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu style={dropdownStyle}>
-                                    {this.state.library &&
-                                        this.state.library.map((book) => (
-                                            <Dropdown.Item
-                                                key={book.id}
-                                                onClick={() => {
-                                                    this.setState({
-                                                        libraryBook: book,
-                                                    });
-                                                    this.handleLibraryModal();
-                                                }}
-                                            >
-                                                {book.title}
-                                            </Dropdown.Item>
-                                        ))}
-                                </Dropdown.Menu>
-                            </Dropdown>
+
                             <br></br>
                             <h4>Your Books</h4>
                             <CollectionList
@@ -410,12 +338,12 @@ class UserHome extends Component {
                                 currentCollection={this.state.currentCollection}
                                 removeBook={this.removeBook}
                                 userCollections={this.state.collectionList}
-                                addToCollection={this.addToCollection}
+                                addToCollection={this.addBookToCollection}
                                 editable={
                                     true &&
-                                    this.state.currentCollection.name !=
+                                    this.state.currentCollection.name !==
                                         "All" &&
-                                    this.state.currentCollection.name !=
+                                    this.state.currentCollection.name !==
                                         "Recently Read"
                                 }
                             />

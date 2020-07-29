@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import Main from "./Main";
-import { Navbar, Nav, Button, NavDropdown } from "react-bootstrap";
+import NavigationBar from "./components/NavBar.js";
 import { loginContext } from "./LoginContext";
-import { Link } from "react-router-dom";
+import { bookDetailsContext } from "./BookDetailsContext";
 
 import "./App.css";
 
@@ -12,6 +12,9 @@ class App extends Component {
 
         this.state = {
             loggedInRole: localStorage.getItem("loggedInRole"),
+            hideBookDetails: JSON.parse(
+                localStorage.getItem("hideBookDetails")
+            ),
         };
     }
 
@@ -20,59 +23,31 @@ class App extends Component {
         this.setState({ loggedInRole: localStorage.getItem("loggedInRole") });
     };
 
+    toggleBookDetails = (e) => {
+        //e.persist();
+        const { hideBookDetails } = this.state;
+        this.setState(
+            { hideBookDetails: !hideBookDetails },
+            this.setBookDetails.bind(this)
+        );
+    };
+
+    setBookDetails = () => {
+        localStorage.setItem("hideBookDetails", this.state.hideBookDetails);
+    };
+
     render() {
         return (
             <div className="App">
-                <Navbar bg="dark" variant="dark">
-                    <Navbar.Brand href="/">ReadRecommend</Navbar.Brand>
-                    <Nav className="mr-auto">
-                        <Navbar.Text className="navbar_role">
-                            You are:{" "}
-                            {this.state.loggedInRole || "Not logged in"}
-                        </Navbar.Text>
-                        {this.state.loggedInRole === "Admin" && (
-                            // If we are an admin
-                            <NavDropdown title="Admin Pages">
-                                <NavDropdown.Item href="/admin/bookList">
-                                    Book List
-                                </NavDropdown.Item>
-                                <NavDropdown.Item href="/admin/addBook">
-                                    Add New Book
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                        )}
-                        {this.state.loggedInRole === "User" && (
-                            // If we are a user
-                            <Nav>
-                                <Nav.Link href="/search">
-                                    Search for Books
-                                </Nav.Link>
-                                <Nav.Link href="/usrsearch">
-                                    Search for Users
-                                </Nav.Link>
-                                 <Nav.Link href="/discover">
-                                    Discover
-                                </Nav.Link>
-                                <Nav.Link href="/goals">My Goals</Nav.Link>
-                            </Nav>
-                        )}
-                    </Nav>
-                    <Nav>
-                        <Button
-                            variant="outline-info"
-                            href={
-                                this.state.loggedInRole ? "/logout" : "/login"
-                            }
-                        >
-                            {this.state.loggedInRole
-                                ? "Logout"
-                                : "Login / Signup"}
-                        </Button>
-                    </Nav>
-                </Navbar>
-                <loginContext.Provider value={this.updateLogin}>
-                    <Main />
-                </loginContext.Provider>
+                <bookDetailsContext.Provider value={this.state.hideBookDetails}>
+                    <NavigationBar
+                        loggedInRole={this.state.loggedInRole}
+                        toggleBookDetails={this.toggleBookDetails}
+                    />
+                    <loginContext.Provider value={this.updateLogin}>
+                        <Main />
+                    </loginContext.Provider>
+                </bookDetailsContext.Provider>
             </div>
         );
     }
