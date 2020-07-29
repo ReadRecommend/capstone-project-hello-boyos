@@ -12,12 +12,10 @@ import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
 import GoalPage from "./pages/Goals/GoalPage";
-import AddReview from "./components/AddReview";
 
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
-import Recommend from "./pages/Recommend";
 import Discover from "./pages/Discover";
 
 class Main extends Component {
