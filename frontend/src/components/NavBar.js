@@ -87,11 +87,13 @@ class NavigationBar extends Component {
                             placeholder="Search"
                             value={this.state.search}
                             onChange={this.updateSearch}
+                            style={{width:'200px'}}
                         />
                         <Form.Control
                             as="select"
                             defaultValue={"Books"}
                             onChange={this.changeSearchType}
+                            style={{width:'91px'}}
                         >
                             <option>Books</option>
                             <option>Users</option>
@@ -111,10 +113,7 @@ class NavigationBar extends Component {
         return (
             <Navbar bg="dark" variant="dark" >
                 <Navbar.Brand href="/">ReadRecommend</Navbar.Brand>
-                <Nav className="mr-auto">
-                    <Navbar.Text className="navbar_role">
-                        You are: {this.props.loggedInRole || "Not logged in"}
-                    </Navbar.Text>
+                <Nav className="mr-auto">                    
                     {this.props.loggedInRole == "Admin" &&
                         // If we are an admin
                         <NavDropdown title="Admin Pages">
