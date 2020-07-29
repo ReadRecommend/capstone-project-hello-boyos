@@ -16,9 +16,12 @@ class Search extends Component {
     }
 
     componentDidMount() {
-        const {location} = this.props
-        if(location.state && location.state.navSearch.length > 0) {
-            this.setState({search:location.state.navSearch}, this.handleSubmit.bind(this))
+        const { location } = this.props;
+        if (location.state && location.state.navSearch.length > 0) {
+            this.setState(
+                { search: location.state.navSearch },
+                this.handleSubmit.bind(this)
+            );
         }
     }
 
@@ -27,7 +30,7 @@ class Search extends Component {
     };
 
     handleSubmit = (event) => {
-        if(event) event.preventDefault();
+        if (event) event.preventDefault();
         const data = {
             search: this.state.search,
         };
@@ -67,15 +70,19 @@ class Search extends Component {
                                 onChange={this.updateSearch}
                             />
 
-                            <Button variant="primary" type="submit" block value="Search">
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                block
+                                value="Search"
+                            >
                                 Search
-              </Button>
+                            </Button>
                         </InputGroup>
                     </Form>
+                    <br></br>
+                    <UserSearchResults users={this.state.currentSearchList} />
                 </Container>
-                <UserSearchResults users={this.state.currentSearchList}>
-                    {" "}
-                </UserSearchResults>
             </div>
         );
     }

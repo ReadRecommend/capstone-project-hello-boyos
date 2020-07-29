@@ -55,6 +55,7 @@ def navSearch(searchTerm):
 
     return jsonify(books_schema.dump(books))
 
+
 @search_bp.route("/users", methods=["POST"])
 def usersearch():
     search_term = request.json.get("search")
@@ -67,6 +68,7 @@ def usersearch():
     ).all()
 
     return jsonify(readers_schema.dump(users))
+
 
 @search_bp.route("/users/<searchTerm>", methods=["POST"])
 def navUsersearch(searchTerm):

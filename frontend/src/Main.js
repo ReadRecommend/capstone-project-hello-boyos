@@ -18,7 +18,6 @@ import { bookDetailsContext } from "./BookDetailsContext";
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
-import Recommend from "./pages/Recommend";
 import Discover from "./pages/Discover";
 
 class Main extends Component {
@@ -103,13 +102,6 @@ class Main extends Component {
                         component={GoalPage}
                         roles={["user"]}
                         key="goalPage"
-                    />
-                    <PrivateRoute
-                        exact
-                        path="/recommend"
-                        component={Recommend}
-                        roles={["user"]}
-                        key="recommend"
                     />
                     <PrivateRoute
                         exact

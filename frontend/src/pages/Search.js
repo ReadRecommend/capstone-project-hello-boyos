@@ -1,9 +1,17 @@
 import React, { Component } from "react";
-import { Button, Form, Container, Row, Col, Dropdown, DropdownButton, Spinner } from "react-bootstrap";
+import {
+    Button,
+    Form,
+    Container,
+    Row,
+    Col,
+    Dropdown,
+    DropdownButton,
+    Spinner,
+} from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from "react-bootstrap/Pagination";
-import PageItem from "react-bootstrap/PageItem";
 
 class Search extends Component {
     constructor(props) {
@@ -19,9 +27,8 @@ class Search extends Component {
             currentPage: 1,
             booksPerPage: 9,
             numberOfPages: 1,
-            pages:[],
+            pages: [],
             loadingResults: false,
-
         };
     }
 
@@ -44,58 +51,92 @@ class Search extends Component {
     };
 
     changePage = (newPage) => {
-        const {booksPerPage, currentSearchList, numberOfPages} = this.state
-        if(numberOfPages == 0) {
+        const { booksPerPage, currentSearchList, numberOfPages } = this.state;
+        if (numberOfPages === 0) {
             this.setState({
-                currentPage:0,
-                currentDisplayList:[]
-            })
+                currentPage: 0,
+                currentDisplayList: [],
+            });
             return;
         }
-        if (newPage > 0 && newPage <= numberOfPages){this.setState({
-                currentDisplayList: currentSearchList.slice((newPage-1)*booksPerPage,newPage*booksPerPage),
-                currentPage: newPage
-            }, this.refreshPageList.bind(this,newPage))
+        if (newPage > 0 && newPage <= numberOfPages) {
+            this.setState(
+                {
+                    currentDisplayList: currentSearchList.slice(
+                        (newPage - 1) * booksPerPage,
+                        newPage * booksPerPage
+                    ),
+                    currentPage: newPage,
+                },
+                this.refreshPageList.bind(this, newPage)
+            );
         }
     };
 
     refreshPageList = (activePage) => {
-        let list = []
-        
-        for( let i = activePage-2; i <= this.state.numberOfPages &&  i <= activePage + 2; i++) {
-            if(i >= 1) {   
+        let list = [];
+
+        for (
+            let i = activePage - 2;
+            i <= this.state.numberOfPages && i <= activePage + 2;
+            i++
+        ) {
+            if (i >= 1) {
                 list.push(
-                    <Pagination.Item key={i} active={i === activePage} onClick={() => this.changePage(i)}>{i}</Pagination.Item>
-                )
+                    <Pagination.Item
+                        key={i}
+                        active={i === activePage}
+                        onClick={() => this.changePage(i)}
+                    >
+                        {i}
+                    </Pagination.Item>
+                );
             }
         }
-        this.setState({pages:list})
-    }
+        this.setState({ pages: list });
+    };
 
     changeBooksPerPage = (newLimit) => {
-        const {currentSearchList} = this.state
-        this.setState({
-            booksPerPage:newLimit,
-            numberOfPages: Math.ceil(Object.keys(currentSearchList).length/newLimit),
-        }, this.changePage.bind(this,1))
-    }
+        const { currentSearchList } = this.state;
+        this.setState(
+            {
+                booksPerPage: newLimit,
+                numberOfPages: Math.ceil(
+                    Object.keys(currentSearchList).length / newLimit
+                ),
+            },
+            this.changePage.bind(this, 1)
+        );
+    };
 
     getBooksPerPageDropdown = () => {
-        let DropdownItems = []
-        for(let i = 12; i < 100; i *= 2) {
-           DropdownItems.push(<Dropdown.Item key={i} id={i} onClick={(e) => {this.changeBooksPerPage(e.target.id)}}>{i}</Dropdown.Item>)
+        let DropdownItems = [];
+        for (let i = 12; i < 100; i *= 2) {
+            DropdownItems.push(
+                <Dropdown.Item
+                    key={i}
+                    id={i}
+                    onClick={(e) => {
+                        this.changeBooksPerPage(e.target.id);
+                    }}
+                >
+                    {i}
+                </Dropdown.Item>
+            );
         }
-        return (DropdownItems);
-    }
+        return DropdownItems;
+    };
 
     handleSubmit = (event) => {
-
-        if(event) event.persist();
-        this.setState({loadingResults:true}, this.handleSearch.bind(this,event))
-    }
+        if (event) event.persist();
+        this.setState(
+            { loadingResults: true },
+            this.handleSearch.bind(this, event)
+        );
+    };
 
     handleSearch = (event) => {
-        if(event) event.preventDefault();
+        if (event) event.preventDefault();
         const data = {
             search: this.state.search,
             filter: this.state.filter,
@@ -116,12 +157,17 @@ class Search extends Component {
                 return res.json();
             })
             .then((books) => {
-                this.setState({
-                    currentSearchList: books,
-                    numberOfPages: Math.ceil(Object.keys(books).length/this.state.booksPerPage),
-                    loadingResults: false,
-                }, this.changePage.bind(this,1));
-            })
+                this.setState(
+                    {
+                        currentSearchList: books,
+                        numberOfPages: Math.ceil(
+                            Object.keys(books).length / this.state.booksPerPage
+                        ),
+                        loadingResults: false,
+                    },
+                    this.changePage.bind(this, 1)
+                );
+            });
     };
 
     getSearchBar = () => {
@@ -146,15 +192,20 @@ class Search extends Component {
                         <option>&ge; 2 Stars</option>
                         <option>&ge; 1 Stars</option>
                     </Form.Control>
-                    {!this.state.loadingResults &&
-                        <Button variant="primary" type="submit" block value="Search">
+                    {!this.state.loadingResults && (
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            block
+                            value="Search"
+                        >
                             Search
                         </Button>
-                    }
+                    )}
                 </InputGroup>
             </Form>
         );
-    }
+    };
 
     //TODO: Page reloads before booksPerPage is updated
     render() {
@@ -165,8 +216,7 @@ class Search extends Component {
                     <h1> Search Page </h1>
                     {this.getSearchBar()}
                     <br></br>
-                    {this.state.loadingResults ? 
-                    (
+                    {this.state.loadingResults ? (
                         <Spinner
                             animation="border"
                             style={{
@@ -176,26 +226,40 @@ class Search extends Component {
                             }}
                         />
                     ) : (
-                        <SearchResults books={this.state.currentDisplayList} loadingResults={this.state.loadingResults}></SearchResults>
-                    )
-                    }
+                        <SearchResults
+                            books={this.state.currentDisplayList}
+                            loadingResults={this.state.loadingResults}
+                        ></SearchResults>
+                    )}
                     <br></br>
                     <Container>
                         <Row>
                             <Col>
                                 <Pagination>
-                                    <Pagination.Prev onClick={() => this.changePage(currentPage - 1)}/>
-                                    {!(this.state.numberOfPages == 0) && this.state.pages}
-                                    <Pagination.Next onClick={() => this.changePage(currentPage + 1)}/>
+                                    <Pagination.Prev
+                                        onClick={() =>
+                                            this.changePage(currentPage - 1)
+                                        }
+                                    />
+                                    {!(this.state.numberOfPages === 0) &&
+                                        this.state.pages}
+                                    <Pagination.Next
+                                        onClick={() =>
+                                            this.changePage(currentPage + 1)
+                                        }
+                                    />
                                 </Pagination>
                             </Col>
                             <Col className="float-right">
-                                <DropdownButton id="per-page-dropdown" title="Books Per Page" style={{float: 'right'}}>
+                                <DropdownButton
+                                    id="per-page-dropdown"
+                                    title="Books Per Page"
+                                    style={{ float: "right" }}
+                                >
                                     {this.getBooksPerPageDropdown()}
                                 </DropdownButton>
                             </Col>
                         </Row>
-                        
                     </Container>
                 </Container>
             </div>

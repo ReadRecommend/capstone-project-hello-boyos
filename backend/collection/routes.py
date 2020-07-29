@@ -10,7 +10,6 @@ from backend.model.schema import (
     Book,
     Collection,
     Reader,
-    ReaderGoal,
     collection_schema,
     reader_schema,
 )
