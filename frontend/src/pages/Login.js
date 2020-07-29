@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, Button, Form, Container } from "react-bootstrap";
+import { Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
 import { loginContext } from "../LoginContext";
 import { toast, ToastContainer } from "react-toastify";

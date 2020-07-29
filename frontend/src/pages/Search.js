@@ -12,7 +12,6 @@ import {
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from "react-bootstrap/Pagination";
-import PageItem from "react-bootstrap/PageItem";
 
 class Search extends Component {
     constructor(props) {

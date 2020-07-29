@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import { addBook } from "../../fetchFunctions";
 import { WithContext as ReactTags } from "react-tag-input";
-import { Link } from "react-router-dom";
 import Datetime from "react-datetime";
 import { toast, ToastContainer } from "react-toastify";
 import "./AdminAddBook.css";

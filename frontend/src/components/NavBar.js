@@ -1,16 +1,8 @@
 import React, { Component } from "react";
-import {
-    Navbar,
-    Nav,
-    Button,
-    NavDropdown,
-    Form,
-    Row,
-    Col,
-} from "react-bootstrap";
+import { Navbar, Nav, Button, NavDropdown, Form } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import PropTypes from "prop-types";
-import { Router, Route, Redirect, useLocation } from "react-router";
+import { Redirect } from "react-router";
 
 class NavigationBar extends Component {
     constructor(props) {
