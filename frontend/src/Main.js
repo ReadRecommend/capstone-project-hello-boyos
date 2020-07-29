@@ -5,6 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Error from "./components/Error";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
+import AdminUserList from "./pages/Admin/AdminUserList";
 import UserHome from "./pages/UserHome";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -52,6 +53,13 @@ class Main extends Component {
                         component={AdminBookList}
                         roles={["admin"]}
                         key="adminBookList"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/admin/userList"
+                        component={AdminUserList}
+                        roles={["admin"]}
+                        key="adminUserList"
                     />
                     <PrivateRoute
                         exact

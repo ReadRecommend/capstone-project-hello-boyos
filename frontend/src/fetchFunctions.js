@@ -1,5 +1,20 @@
 const apiUrl = "http://localhost:5000";
 
+export function getAllUsers() {
+    return fetch(`${apiUrl}/user`);
+}
+
+export function deleteUser(userID) {
+    return fetch(`${apiUrl}/user/${userID}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: userID }),
+        credentials: "include",
+    });
+}
+
 export function getUserById(userId) {
     return fetch(`${apiUrl}/user/id/${userId}`);
 }
