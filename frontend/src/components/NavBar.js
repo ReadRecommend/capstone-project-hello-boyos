@@ -79,7 +79,7 @@ class NavigationBar extends Component {
 
     renderSearchBar = () => {
         return(
-            <Nav className="mr-auto">
+            <Nav style={{marginRight:'10px'}}>
                 <Form inline onSubmit={this.handleSubmit}>
                     <InputGroup>
                         <Form.Control
@@ -133,8 +133,8 @@ class NavigationBar extends Component {
                 </Nav>
                 {this.renderSearchBar()}
                 {this.renderRedirect()}
-                <Nav className="mr-auto">
-                    <BootstrapSwitchButton checked={this.context} onstyle="primary" onChange={this.props.toggleBookDetails}/>
+                <Nav style={{marginRight:'10px'}}>
+                    <BootstrapSwitchButton checked={this.context} width="100" onlabel="Mystery" offlabel="Certainty" onstyle="primary" onChange={this.props.toggleBookDetails}/>
                 </Nav>
                 <Nav>
                     <Button
