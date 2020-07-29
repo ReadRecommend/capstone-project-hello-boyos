@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "bootstrap": "^4.5.0",
+        "bootstrap-switch-button-react": "^1.2.0",
         "jquery": "^3.5.1",
         "moment": "^2.27.0",
         "popper.js": "^1.16.1",
@@ -25,8 +26,8 @@
         "react-star-ratings": "^2.3.0",
         "react-tag-input": "^6.4.3",
         "react-toastify": "^6.0.8",
-        "typescript": "^3.9.6",
         "recharts": "^1.8.5",
+        "typescript": "^3.9.6",
         "webfontloader": "^1.6.28"
     },
     "scripts": {

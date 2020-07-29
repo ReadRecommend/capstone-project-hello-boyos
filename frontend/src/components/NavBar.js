@@ -3,6 +3,8 @@ import { Navbar, Nav, Button, NavDropdown, Form, Row, Col } from 'react-bootstra
 import InputGroup from "react-bootstrap/InputGroup"; 
 import PropTypes from "prop-types";
 import { Router, Route, Redirect, useLocation} from 'react-router';
+import BootstrapSwitchButton from 'bootstrap-switch-button-react';
+
 
 
 class NavigationBar extends Component {
@@ -113,10 +115,21 @@ class NavigationBar extends Component {
                             <NavDropdown.Item href="/admin/bookList">Book List</NavDropdown.Item>
                             <NavDropdown.Item href="/admin/addBook">Add New Book</NavDropdown.Item>
                         </NavDropdown>
-                    }   
+                    }  
+                    {this.props.loggedInRole == "User" &&
+                    <>
+                        <Nav.Link href="/discover">
+                            Discover
+                        </Nav.Link>
+                        <Nav.Link href="/goals">My Goals</Nav.Link>
+                    </>
+                    }
                 </Nav>
                 {this.renderSearchBar()}
                 {this.renderRedirect()}
+                <Nav className="mr-auto">
+                    <BootstrapSwitchButton checked={false} onstyle="primary" onClick={this.}/>
+                </Nav>
                 <Nav>
                     <Button
                         variant="outline-info"
