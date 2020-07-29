@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import Main from "./Main";
-import NavigationBar from './components/NavBar.js'
+import NavigationBar from "./components/NavBar.js";
 import { loginContext } from "./LoginContext";
-import { Link } from "react-router-dom";
 
 import "./App.css";
 
@@ -22,7 +21,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App" >
+            <div className="App">
                 <NavigationBar loggedInRole={this.state.loggedInRole} />
                 <loginContext.Provider value={this.updateLogin}>
                     <Main />

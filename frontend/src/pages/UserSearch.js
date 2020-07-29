@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import UserSearchResults from "../components/UserSearchResults.js";
 
 class Search extends Component {
@@ -16,9 +14,12 @@ class Search extends Component {
     }
 
     componentDidMount() {
-        const {location} = this.props
-        if(location.state && location.state.navSearch.length > 0) {
-            this.setState({search:location.state.navSearch}, this.handleSubmit.bind(this))
+        const { location } = this.props;
+        if (location.state && location.state.navSearch.length > 0) {
+            this.setState(
+                { search: location.state.navSearch },
+                this.handleSubmit.bind(this)
+            );
         }
     }
 
@@ -27,7 +28,7 @@ class Search extends Component {
     };
 
     handleSubmit = (event) => {
-        if(event) event.preventDefault();
+        if (event) event.preventDefault();
         const data = {
             search: this.state.search,
         };
@@ -67,9 +68,14 @@ class Search extends Component {
                                 onChange={this.updateSearch}
                             />
 
-                            <Button variant="primary" type="submit" block value="Search">
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                block
+                                value="Search"
+                            >
                                 Search
-              </Button>
+                            </Button>
                         </InputGroup>
                     </Form>
                 </Container>
