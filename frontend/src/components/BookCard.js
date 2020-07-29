@@ -123,7 +123,7 @@ class CollectionItem extends Component {
                         <Card.Text>
                             <a href={`/book/${bookID}`}>{title}</a>
                             <br></br>
-                            <small>{book.authors}</small>
+                            <small>{book.authors.join(", ")}</small>
                             <br></br>
                             <small>{book.publication_date}</small>
                         </Card.Text>
