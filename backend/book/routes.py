@@ -1,20 +1,19 @@
-from flask import jsonify, request
-import flask_sqlalchemy
 import math
 
+from flask import jsonify, request
 
 import flask_praetorian
 from backend import db
 from backend.book import book_bp
 from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
 from backend.model.schema import (
+    Author,
     Book,
+    CollectionMembership,
+    Genre,
+    Review,
     book_schema,
     books_schema,
-    Genre,
-    Author,
-    Review,
-    CollectionMembership,
     review_schema,
     reviews_schema,
 )
@@ -113,6 +112,7 @@ def delete_book():
 def get_books():
     books = Book.query.all()
     return jsonify(books_schema.dump(books))
+
 
 @book_bp.route("/<id>")
 def get_book(id):

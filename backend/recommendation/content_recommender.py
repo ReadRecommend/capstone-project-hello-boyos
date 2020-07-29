@@ -1,4 +1,3 @@
-from backend import recommendation
 import os
 import pickle
 import re

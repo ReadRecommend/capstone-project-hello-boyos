@@ -18,7 +18,12 @@ def login():
         )
 
     reader = guard.authenticate(username, password)
-    return jsonify({"access_token": guard.encode_jwt_token(reader), "roles": reader.roles}), 200
+    return (
+        jsonify(
+            {"access_token": guard.encode_jwt_token(reader), "roles": reader.roles}
+        ),
+        200,
+    )
 
 
 @auth_bp.route("/signup", methods=["POST"])
