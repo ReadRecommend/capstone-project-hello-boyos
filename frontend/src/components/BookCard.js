@@ -102,7 +102,7 @@ class CollectionItem extends Component {
         const bookID = book.id;
 
         return (
-            <div>
+            <div style={{ margin: "auto" }}>
                 {this.props.editable === true && (
                     <Modal
                         show={this.state.modalShow}
