@@ -92,6 +92,20 @@ export function addBook(bookDetails) {
     });
 }
 
+export function bookSearch(searchQuery, filter) {
+    const data = {
+        search: searchQuery,
+        filter: filter,
+    };
+    return fetch(`${apiUrl}/search`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+        },
+    });
+}
+
 // ===== REVIEWS =====
 
 export function getReview(bookID, reviewPage, nReviews) {

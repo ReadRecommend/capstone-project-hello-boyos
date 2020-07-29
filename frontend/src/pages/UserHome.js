@@ -273,7 +273,7 @@ class UserHome extends Component {
                         <AddCollection addCollection={this.addCollection} />
                     </Modal.Body>
                 </Modal>
-                >
+
                 <Container fluid>
                     <h2>Welcome {this.state.userInfo.username} </h2>
                     <Row>

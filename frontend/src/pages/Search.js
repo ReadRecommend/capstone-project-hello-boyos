@@ -12,6 +12,9 @@ import {
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from "react-bootstrap/Pagination";
+import { toast, ToastContainer } from "react-toastify";
+
+import { bookSearch } from "../fetchFunctions";
 
 class Search extends Component {
     constructor(props) {
@@ -140,17 +143,8 @@ class Search extends Component {
 
     handleSearch = (event) => {
         if (event) event.preventDefault();
-        const data = {
-            search: this.state.search,
-            filter: this.state.filter,
-        };
-        fetch("http://localhost:5000/search", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+
+        bookSearch(this.state.search, this.state.filter)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -170,6 +164,17 @@ class Search extends Component {
                     },
                     this.changePage.bind(this, 1)
                 );
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -215,6 +220,8 @@ class Search extends Component {
         const { currentPage } = this.state;
         return (
             <div className="Search">
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
+
                 <Container>
                     <h1> Search Page </h1>
                     {this.getSearchBar()}
