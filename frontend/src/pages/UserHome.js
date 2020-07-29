@@ -17,12 +17,10 @@ class UserHome extends Component {
             collectionList: this.props.initialUserInfo.collections,
             currentCollection: {},
             modalShow: false,
-            libraryModalShow: false,
             errorGeneralShow: false,
             errorGeneralMessage: "",
             errorAddCollectionShow: false,
             errorAddCollectionMessage: "",
-            libraryBook: {},
         };
     }
 
@@ -51,13 +49,6 @@ class UserHome extends Component {
     handleModal() {
         this.setState({
             modalShow: !this.state.modalShow,
-            errorAddCollectionShow: false,
-        });
-    }
-
-    handleLibraryModal() {
-        this.setState({
-            libraryModalShow: !this.state.libraryModalShow,
             errorAddCollectionShow: false,
         });
     }
@@ -283,37 +274,6 @@ class UserHome extends Component {
                     </Modal.Body>
                 </Modal>
 
-                <Modal
-                    show={this.state.libraryModalShow}
-                    onHide={() => this.handleLibraryModal()}
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>
-                            Add{" "}
-                            {this.state.libraryBook &&
-                                this.state.libraryBook.title}
-                            to{" "}
-                            {this.state.currentCollection.name
-                                ? this.state.currentCollection.name
-                                : "<choose a collection>"}
-                        </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Button
-                            onClick={() => {
-                                this.addToCollection(
-                                    this.state.libraryBook.id,
-                                    this.state.currentCollection.id
-                                );
-                                this.handleLibraryModal();
-                            }}
-                            block
-                        >
-                            Add
-                        </Button>
-                    </Modal.Body>
-                    <Modal.Footer></Modal.Footer>
-                </Modal>
                 <Container fluid>
                     <h2>Welcome {this.state.userInfo.username} </h2>
                     <Row>
