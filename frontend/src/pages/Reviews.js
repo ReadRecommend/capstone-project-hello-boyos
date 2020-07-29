@@ -18,6 +18,12 @@ class Reviews extends Component {
     selectReview = (bookID) => {
         fetch(`http://localhost:5000/book/${bookID}/reviews`)
             .then((res) => {
+                if (!res.ok) {
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
+
                 return res.json();
             })
             .then((json) => {

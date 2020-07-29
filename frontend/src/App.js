@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import Main from "./Main";
-import NavigationBar from './components/NavBar.js'
+import NavigationBar from "./components/NavBar.js";
 import { loginContext } from "./LoginContext";
 import { bookDetailsContext } from "./BookDetailsContext";
-import { Link } from "react-router-dom";
 
 import "./App.css";
 
@@ -13,7 +12,9 @@ class App extends Component {
 
         this.state = {
             loggedInRole: localStorage.getItem("loggedInRole"),
-            hideBookDetails: JSON.parse(localStorage.getItem("hideBookDetails"))
+            hideBookDetails: JSON.parse(
+                localStorage.getItem("hideBookDetails")
+            ),
         };
     }
 
@@ -24,24 +25,29 @@ class App extends Component {
 
     toggleBookDetails = (e) => {
         //e.persist();
-        const{hideBookDetails} = this.state
-        this.setState({hideBookDetails:!hideBookDetails}, this.setBookDetails.bind(this))
-    }
+        const { hideBookDetails } = this.state;
+        this.setState(
+            { hideBookDetails: !hideBookDetails },
+            this.setBookDetails.bind(this)
+        );
+    };
 
     setBookDetails = () => {
-        localStorage.setItem("hideBookDetails", this.state.hideBookDetails)
-    }
+        localStorage.setItem("hideBookDetails", this.state.hideBookDetails);
+    };
 
     render() {
         return (
-            <div className="App" >
+            <div className="App">
                 <bookDetailsContext.Provider value={this.state.hideBookDetails}>
-                    <NavigationBar loggedInRole={this.state.loggedInRole} toggleBookDetails={this.toggleBookDetails}/>
+                    <NavigationBar
+                        loggedInRole={this.state.loggedInRole}
+                        toggleBookDetails={this.toggleBookDetails}
+                    />
                     <loginContext.Provider value={this.updateLogin}>
                         <Main />
                     </loginContext.Provider>
                 </bookDetailsContext.Provider>
-                
             </div>
         );
     }

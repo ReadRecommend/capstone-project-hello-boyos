@@ -34,9 +34,12 @@ class Search extends Component {
 
     componentDidMount() {
         // Get all the books in the database
-        const {location} = this.props
-        if(location.state && location.state.navSearch.length > 0) {
-            this.setState({search:location.state.navSearch}, this.handleSubmit.bind(this))
+        const { location } = this.props;
+        if (location.state && location.state.navSearch.length > 0) {
+            this.setState(
+                { search: location.state.navSearch },
+                this.handleSubmit.bind(this)
+            );
         }
     }
 

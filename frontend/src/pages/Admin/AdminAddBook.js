@@ -27,6 +27,7 @@ class AdminAddBook extends Component {
     // On form submission
     onSubmit = (e) => {
         e.preventDefault();
+
         if (
             !this.state.isbn ||
             !this.state.title ||
