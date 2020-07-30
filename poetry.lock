@@ -283,6 +283,14 @@ version = "0.3.1"
 
 [[package]]
 category = "main"
+description = "Extract, clean, transform, hyphenate and metadata for ISBNs (International Standard Book Number)."
+name = "isbnlib"
+optional = false
+python-versions = "*"
+version = "3.10.3"
+
+[[package]]
+category = "main"
 description = "A Python utility / library to sort Python imports."
 name = "isort"
 optional = false
@@ -816,7 +824,7 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "6c91ac891a9d1175ba3bc3e741d223ea3575e5af30278671c11239d921ec223f"
+content-hash = "71f5c53f8e4699778b47b13ac43e69288550402c671b7c8bdc615cd9f1fbf7ce"
 python-versions = "3.8.3"
 
 [metadata.files]
@@ -906,6 +914,10 @@ idna = [
 ]
 inflection = [
     {file = "inflection-0.3.1.tar.gz", hash = "sha256:18ea7fb7a7d152853386523def08736aa8c32636b047ade55f7578c4edeb16ca"},
+]
+isbnlib = [
+    {file = "isbnlib-3.10.3-py2.py3-none-any.whl", hash = "sha256:55a0f8d2070ce366fd4d03b4f30fe6caf9d0cadb4ae107676980570473e41178"},
+    {file = "isbnlib-3.10.3.tar.gz", hash = "sha256:2295c01465fe19776b1f9432fd99fd24e61230d146ded2752e0d980ef6f4101f"},
 ]
 isort = [
     {file = "isort-4.3.21-py2.py3-none-any.whl", hash = "sha256:6e811fcb295968434526407adb8796944f1988c5b65e8139058f2014cbe100fd"},
