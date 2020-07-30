@@ -7,7 +7,7 @@ import {
 import CollectionList from "../components/CollectionList/CollectionList";
 import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Container, Col, Row, Spinner } from "react-bootstrap";
 import Error from "../components/Error";
 
@@ -145,11 +145,6 @@ class UserPage extends Component {
             const user = this.state.userPageInfo;
             return (
                 <div className="UserPage">
-                    <ToastContainer
-                        autoClose={4000}
-                        pauseOnHover
-                        closeOnClick
-                    />
                     <br></br>
                     <Container fluid>
                         <h2>{user.username}'s Profile</h2>

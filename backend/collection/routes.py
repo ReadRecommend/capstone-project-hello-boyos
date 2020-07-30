@@ -33,7 +33,7 @@ def add_collection():
     # Check proper fields exist
     if not (reader_id and collection_name):
         raise InvalidRequest(
-            "Request should be of the form {reader_id: 'user_id', name: 'collection_name'}",
+            "Request should be of the form {{reader_id: 'user_id', name: 'collection_name'}}"
         )
 
     # Ensure we are not trying to delete or create main

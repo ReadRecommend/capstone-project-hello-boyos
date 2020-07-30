@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
 import { loginContext } from "../LoginContext";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { logIn } from "../fetchFunctions";
 
@@ -13,6 +13,17 @@ class Login extends Component {
             username: "",
             password: "",
         };
+    }
+
+    componentDidMount() {
+        if (
+            this.props.location.state &&
+            this.props.location.state.newAccount === true
+        ) {
+            toast.success(
+                "Successfully created your account! Please try to login now"
+            );
+        }
     }
 
     updateUsername = (event) => {
@@ -75,8 +86,6 @@ class Login extends Component {
     render() {
         return (
             <div className="Login">
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
-
                 <Container>
                     <br></br>
                     <h1>Login</h1>

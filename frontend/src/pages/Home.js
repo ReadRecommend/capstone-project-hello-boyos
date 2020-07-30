@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import PropTypes from "prop-types";
 
 class Home extends Component {
     render() {
@@ -13,9 +12,5 @@ class Home extends Component {
         }
     }
 }
-
-Home.propTypes = {
-    initialUserInfo: PropTypes.object.isRequired,
-};
 
 export default Home;

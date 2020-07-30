@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Button, Container, Col, Row } from "react-bootstrap";
+import { Modal, Button, Container, Col, Row, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Collection from "../components/Collection";
 import CollectionList from "../components/CollectionList/CollectionList";
@@ -14,7 +14,7 @@ import {
     getCollection,
     addToCollection,
 } from "../fetchFunctions";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 class UserHome extends Component {
     constructor(props) {
@@ -25,6 +25,7 @@ class UserHome extends Component {
             collectionList: this.props.initialUserInfo.collections,
             currentCollection: {},
             addCollectionModalShow: false,
+            loading: false,
         };
     }
 
@@ -92,6 +93,11 @@ class UserHome extends Component {
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
+        if (!name) {
+            toast.error("Please provide a collection name");
+            return;
+        }
+
         // We will let the backend do the checking for us
         addCollection(this.state.userInfo.id, name)
             .then((res) => {
@@ -168,6 +174,8 @@ class UserHome extends Component {
       selected collection can then be displayed.
       */
     selectCollection = (id) => {
+        this.setState({ loading: true });
+
         getCollection(id)
             .then((res) => {
                 if (!res.ok) {
@@ -179,7 +187,7 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ currentCollection: json });
+                this.setState({ currentCollection: json, loading: false });
             })
             .catch((error) => {
                 // An error occurred
@@ -195,6 +203,7 @@ class UserHome extends Component {
     };
 
     selectOverview = (overviewName) => {
+        this.setState({ loading: true });
         getCollectionOverview(this.state.userInfo.username, overviewName)
             .then((res) => {
                 if (!res.ok) {
@@ -206,7 +215,7 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ currentCollection: json });
+                this.setState({ currentCollection: json, loading: false });
             })
             .catch((error) => {
                 // An error occurred
@@ -257,22 +266,30 @@ class UserHome extends Component {
 
     renderCollection = () => {
         const currentCollection = this.state.currentCollection;
-        if (!currentCollection.books) {
+        if (this.state.loading === true) {
             return (
-                <p>
-                    <h3
-                        style={{
-                            textAlign: "center",
-                            color: "grey",
-                        }}
-                    >
-                        No collection is currently selected
-                    </h3>
-                </p>
+                <Spinner
+                    animation="border"
+                    style={{
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else if (!currentCollection.books) {
+            return (
+                <h3
+                    style={{
+                        textAlign: "center",
+                        color: "grey",
+                    }}
+                >
+                    No collection is currently selected
+                </h3>
             );
         } else if (currentCollection && currentCollection.books.length === 0) {
             return (
-                <p>
+                <>
                     <h3
                         style={{
                             textAlign: "center",
@@ -285,10 +302,9 @@ class UserHome extends Component {
                     <center>
                         <Button href="/search">Search</Button>
                     </center>
-                </p>
+                </>
             );
         } else {
-            console.log(this.addToCollection);
             return (
                 <Collection
                     key={this.state.currentCollection.id}
@@ -310,7 +326,6 @@ class UserHome extends Component {
         return (
             <div className="UserHome">
                 <br></br>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 {/* Modal for creating a new collection */}
                 <Modal
                     show={this.state.addCollectionModalShow}

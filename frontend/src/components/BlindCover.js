@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import { Image } from "react-bootstrap";
 
 class BlindCover extends Component {
-    getGenres = (book) => {
-        let shortGenres = [];
+    getTags = (book) => {
+        let shortTags = [book.publication_date];
         book.genres.forEach((genre) => {
             if (!genre.length < 13) {
-                shortGenres.push(genre);
+                shortTags.push(genre);
             }
         });
-        return shortGenres;
+        return shortTags;
     };
 
     render() {
@@ -40,7 +40,7 @@ class BlindCover extends Component {
                         color: "#000000",
                     }}
                 >
-                    {this.getGenres(book)
+                    {this.getTags(book)
                         .slice(0, 3)
                         .map((genre) => (
                             <div

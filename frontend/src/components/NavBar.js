@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Navbar, Nav, Button, NavDropdown, Form } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
-import PropTypes from "prop-types";
 import { Redirect } from "react-router";
 import BootstrapSwitchButton from "bootstrap-switch-button-react";
 import { bookDetailsContext } from "../BookDetailsContext";
@@ -38,10 +37,6 @@ class NavigationBar extends Component {
         if (e.key === "Enter") {
             this.handleSubmit();
         }
-    };
-
-    handleToggle = (e) => {
-        console.log("butt");
     };
 
     renderRedirect = () => {
@@ -158,10 +153,6 @@ class NavigationBar extends Component {
         );
     }
 }
-
-NavigationBar.propTypes = {
-    loggedInRole: PropTypes.string.isRequired,
-};
 
 NavigationBar.contextType = bookDetailsContext;
 

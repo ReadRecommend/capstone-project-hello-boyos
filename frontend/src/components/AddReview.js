@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Form, Button, Accordion, Card } from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { addReview } from "../fetchFunctions";
 
@@ -77,8 +77,6 @@ class AddReview extends Component {
     render() {
         return (
             <div className="AddReview">
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
-
                 <Accordion>
                     <Card>
                         <Accordion.Toggle

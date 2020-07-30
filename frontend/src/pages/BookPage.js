@@ -12,14 +12,16 @@ import {
     Form,
     Pagination,
     Spinner,
+    InputGroup,
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
 import Error from "../components/Error";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
 import { bookDetailsContext } from "../BookDetailsContext";
+import { BsArrowRepeat } from "react-icons/bs";
 
 class BookPage extends Component {
     constructor(props) {
@@ -66,34 +68,20 @@ class BookPage extends Component {
             this.state.reviewsPerPage
         )
             .then((res) => {
+                if (!res.ok) {
+                    // Something went wrong, likely there is no book with the id specified in the url
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
                 return res.json();
             })
             .then((json) => {
                 this.buildPageBar(json.count);
             })
             .then(() => {
-                getReviewPages(
-                    this.props.match.params.bookID,
-                    this.state.reviewsPerPage
-                )
-                    .then((res) => {
-                        if (!res.ok) {
-                            // Something went wrong, likely there is no book with the id specified in the url
-                            return res.text().then((text) => {
-                                throw Error(text);
-                            });
-                        }
-
-                        // Found a valid book
-                        return res.json();
-                    })
-                    .then((json) => {
-                        this.buildPageBar(json.count);
-                    })
-                    .then(() => {
-                        this.forceUpdate();
-                        this.setState({ loading: false });
-                    });
+                this.forceUpdate();
+                this.setState({ loading: false });
             })
             .catch(() => {
                 this.setState({ book: null, loading: false });
@@ -343,6 +331,26 @@ class BookPage extends Component {
         });
     };
 
+    updatePerPage = (event) => {
+        this.setState({ reviewsPerPage: event.target.value }, () => {
+
+
+            getReviewPages(
+                this.props.match.params.bookID,
+                this.state.reviewsPerPage
+            )
+                .then((res) => {
+                    return res.json();
+                })
+                .then((json) => {
+                    this.setState({ totalReviewPages: json.count }, () => this.movePage(1)
+                    )
+                })
+
+
+        })
+    }
+
     render() {
         const book = this.state.book;
         const user = this.props.initialUserInfo;
@@ -368,7 +376,6 @@ class BookPage extends Component {
         }
         return (
             <div>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Container>
                     <Row>
                         <br></br>
@@ -391,8 +398,8 @@ class BookPage extends Component {
                                     />
                                 </div>
                             ) : (
-                                <BlindCover book={book}></BlindCover>
-                            )}
+                                    <BlindCover book={book}></BlindCover>
+                                )}
                             <Media.Body>
                                 {!this.context && (
                                     <>
@@ -466,6 +473,15 @@ class BookPage extends Component {
                                                 reviews
                                             </small>
 
+                                            <div>
+                                                Reviews per page
+                                                <select id="perPage" onChange={this.updatePerPage} value={this.state.reviewsPerPage}>
+                                                    <option value="1">1</option>
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                                            </div>
+
                                             <ReviewList
                                                 bookID={
                                                     this.props.match.params
@@ -533,7 +549,7 @@ class BookPage extends Component {
                                             method="POST"
                                             onSubmit={this.handleSubmit}
                                         >
-                                            <Form.Group>
+                                            <InputGroup className="mb3">
                                                 <Form.Control
                                                     as="select"
                                                     defaultValue={"Author"}
@@ -545,25 +561,39 @@ class BookPage extends Component {
                                                         Editor's Choice
                                                     </option>
                                                 </Form.Control>
-                                            </Form.Group>
+                                                <InputGroup.Append>
+                                                    <InputGroup.Text
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={
+                                                            this
+                                                                .handleRecommendation
+                                                        }
+                                                    >
+                                                        <BsArrowRepeat />
+                                                    </InputGroup.Text>
+                                                </InputGroup.Append>
+                                            </InputGroup>
+                                            <br></br>
                                             {this.state
                                                 .loadingRecommendations ? (
-                                                <Spinner
-                                                    animation="border"
-                                                    style={{
-                                                        position: "absolute",
-                                                        left: "50%",
-                                                        top: "50%",
-                                                    }}
-                                                />
-                                            ) : (
-                                                <SearchResults
-                                                    books={
-                                                        this.state
-                                                            .currentRecommendations
-                                                    }
-                                                ></SearchResults>
-                                            )}
+                                                    <Spinner
+                                                        animation="border"
+                                                        style={{
+                                                            position: "absolute",
+                                                            left: "50%",
+                                                            top: "50%",
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <SearchResults
+                                                        books={
+                                                            this.state
+                                                                .currentRecommendations
+                                                        }
+                                                    ></SearchResults>
+                                                )}
                                         </Form>
                                     </Tab>
                                 </Tabs>

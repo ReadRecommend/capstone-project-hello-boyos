@@ -3,7 +3,7 @@ import { Button, Form, Container } from "react-bootstrap";
 import { addBook } from "../../fetchFunctions";
 import { WithContext as ReactTags } from "react-tag-input";
 import Datetime from "react-datetime";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "./AdminAddBook.css";
 import "../YearPicker.css";
 
@@ -117,8 +117,6 @@ class AdminAddBook extends Component {
     render() {
         return (
             <Container>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
-
                 <h1>Add a book</h1>
                 <Form method="POST" onSubmit={this.onSubmit}>
                     <Form.Group>
