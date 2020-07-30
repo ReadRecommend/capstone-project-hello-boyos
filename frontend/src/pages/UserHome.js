@@ -92,6 +92,11 @@ class UserHome extends Component {
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
+        if (!name) {
+            toast.error("Please provide a collection name");
+            return;
+        }
+
         // We will let the backend do the checking for us
         addCollection(this.state.userInfo.id, name)
             .then((res) => {
@@ -255,6 +260,54 @@ class UserHome extends Component {
             });
     };
 
+    renderCollection = () => {
+        const currentCollection = this.state.currentCollection;
+        if (!currentCollection.books) {
+            return (
+                <h3
+                    style={{
+                        textAlign: "center",
+                        color: "grey",
+                    }}
+                >
+                    No collection is currently selected
+                </h3>
+            );
+        } else if (currentCollection && currentCollection.books.length === 0) {
+            return (
+                <>
+                    <h3
+                        style={{
+                            textAlign: "center",
+                            color: "grey",
+                        }}
+                    >
+                        You currently have no books in this collection. Add
+                        some!
+                    </h3>
+                    <center>
+                        <Button href="/search">Search</Button>
+                    </center>
+                </>
+            );
+        } else {
+            return (
+                <Collection
+                    key={this.state.currentCollection.id}
+                    currentCollection={this.state.currentCollection}
+                    removeBook={this.removeBook}
+                    userCollections={this.state.collectionList}
+                    addToCollection={addToCollection}
+                    editable={
+                        true &&
+                        this.state.currentCollection.name !== "All" &&
+                        this.state.currentCollection.name !== "Recently Read"
+                    }
+                />
+            );
+        }
+    };
+
     render() {
         return (
             <div className="UserHome">
@@ -332,20 +385,8 @@ class UserHome extends Component {
                         <Col>
                             <h1>{this.state.currentCollection.name}</h1>
                             <br></br>
-                            <Collection
-                                key={this.state.currentCollection.id}
-                                currentCollection={this.state.currentCollection}
-                                removeBook={this.removeBook}
-                                userCollections={this.state.collectionList}
-                                addToCollection={this.addBookToCollection}
-                                editable={
-                                    true &&
-                                    this.state.currentCollection.name !==
-                                        "All" &&
-                                    this.state.currentCollection.name !==
-                                        "Recently Read"
-                                }
-                            />
+
+                            {this.renderCollection()}
                         </Col>
                     </Row>
                 </Container>

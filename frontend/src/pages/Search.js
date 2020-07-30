@@ -3,8 +3,6 @@ import {
     Button,
     Form,
     Container,
-    Row,
-    Col,
     Dropdown,
     DropdownButton,
     Spinner,
@@ -200,17 +198,22 @@ class Search extends Component {
                         <option>&ge; 2 Stars</option>
                         <option>&ge; 1 Stars</option>
                     </Form.Control>
-                    {!this.state.loadingResults && (
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            block
-                            value="Search"
-                        >
+                </InputGroup>
+                <br></br>
+                {!this.state.loadingResults && (
+                    <div>
+                        <Button variant="primary" type="submit" value="Search">
                             Search
                         </Button>
-                    )}
-                </InputGroup>
+                        <DropdownButton
+                            id="per-page-dropdown"
+                            title="Books Per Page"
+                            style={{ float: "right" }}
+                        >
+                            {this.getBooksPerPageDropdown()}
+                        </DropdownButton>
+                    </div>
+                )}
             </Form>
         );
     };
@@ -226,6 +229,12 @@ class Search extends Component {
                     <h1> Search Page </h1>
                     {this.getSearchBar()}
                     <br></br>
+                    <small>
+                        {" "}
+                        Page {this.state.currentPage} of{" "}
+                        {this.state.numberOfPages} out of{" "}
+                        {this.state.currentSearchList.length} results
+                    </small>
                     {this.state.loadingResults ? (
                         <Spinner
                             animation="border"
@@ -235,7 +244,7 @@ class Search extends Component {
                                 top: "50%",
                             }}
                         />
-                    ) : this.state.currentDisplayList.length == 0 ? (
+                    ) : this.state.currentDisplayList.length === 0 ? (
                         <h3 style={{ textAlign: "center", color: "grey" }}>
                             {" "}
                             There are currently no results to display.{" "}
@@ -246,36 +255,24 @@ class Search extends Component {
                             loadingResults={this.state.loadingResults}
                         ></SearchResults>
                     )}
-
                     <br></br>
                     <Container>
-                        <Row>
-                            <Col>
-                                <Pagination>
-                                    <Pagination.Prev
-                                        onClick={() =>
-                                            this.changePage(currentPage - 1)
-                                        }
-                                    />
-                                    {!(this.state.numberOfPages === 0) &&
-                                        this.state.pages}
-                                    <Pagination.Next
-                                        onClick={() =>
-                                            this.changePage(currentPage + 1)
-                                        }
-                                    />
-                                </Pagination>
-                            </Col>
-                            <Col className="float-right">
-                                <DropdownButton
-                                    id="per-page-dropdown"
-                                    title="Books Per Page"
-                                    style={{ float: "right" }}
-                                >
-                                    {this.getBooksPerPageDropdown()}
-                                </DropdownButton>
-                            </Col>
-                        </Row>
+                        <div class="pagination justify-content-center">
+                            <Pagination>
+                                <Pagination.Prev
+                                    onClick={() =>
+                                        this.changePage(currentPage - 1)
+                                    }
+                                />
+                                {!(this.state.numberOfPages === 0) &&
+                                    this.state.pages}
+                                <Pagination.Next
+                                    onClick={() =>
+                                        this.changePage(currentPage + 1)
+                                    }
+                                />
+                            </Pagination>
+                        </div>
                     </Container>
                 </Container>
             </div>

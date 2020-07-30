@@ -8,7 +8,7 @@ class SearchResults extends Component {
             <div>
                 <CardDeck>
                     {this.props.books.map((book) => (
-                        <BookCard key={book.id} book={book} editable="false" />
+                        <BookCard key={book.id} book={book} editable={false} />
                     ))}
                 </CardDeck>
             </div>

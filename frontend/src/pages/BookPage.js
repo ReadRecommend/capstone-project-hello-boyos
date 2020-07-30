@@ -12,6 +12,7 @@ import {
     Form,
     Pagination,
     Spinner,
+    InputGroup,
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
@@ -20,6 +21,7 @@ import Error from "../components/Error";
 import { toast, ToastContainer } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
 import { bookDetailsContext } from "../BookDetailsContext";
+import { BsArrowRepeat } from "react-icons/bs";
 
 class BookPage extends Component {
     constructor(props) {
@@ -535,7 +537,7 @@ class BookPage extends Component {
                                             method="POST"
                                             onSubmit={this.handleSubmit}
                                         >
-                                            <Form.Group>
+                                            <InputGroup className="mb3">
                                                 <Form.Control
                                                     as="select"
                                                     defaultValue={"Author"}
@@ -547,7 +549,21 @@ class BookPage extends Component {
                                                         Editor's Choice
                                                     </option>
                                                 </Form.Control>
-                                            </Form.Group>
+                                                <InputGroup.Append>
+                                                    <InputGroup.Text
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                        onClick={
+                                                            this
+                                                                .handleRecommendation
+                                                        }
+                                                    >
+                                                        <BsArrowRepeat />
+                                                    </InputGroup.Text>
+                                                </InputGroup.Append>
+                                            </InputGroup>
+                                            <br></br>
                                             {this.state
                                                 .loadingRecommendations ? (
                                                     <Spinner

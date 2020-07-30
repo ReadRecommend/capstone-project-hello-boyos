@@ -3,8 +3,10 @@ import { Route, Redirect } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import { verifyUser } from "../fetchFunctions";
 import Error from "./Error";
+import PropTypes from "prop-types";
+
 // A wrapper for <Route> that redirects to the login
-// screen if you're not yet authenticated.
+// screen if you're not yet authenticated when trying to access a protected page
 class PrivateRoute extends Component {
     constructor(props) {
         super(props);
@@ -62,7 +64,7 @@ class PrivateRoute extends Component {
                 }
             })
             .catch((error) => {
-                // Something wrong with the cookie/it's missing, logout
+                // Something wrong with the cookie/it's missing
                 this.setState({
                     loading: false,
                     haveAccess: false,
@@ -107,6 +109,9 @@ class PrivateRoute extends Component {
                 />
             );
         } else if (this.state.brokenCookie) {
+            this.props.notifyError(
+                "Your session has expired. Please log in again"
+            );
             // Cookie is broken/missing, so logout
             return <Redirect to="/logout" />;
         } else if (!this.state.haveAccess) {
@@ -135,5 +140,9 @@ class PrivateRoute extends Component {
         }
     }
 }
+
+PrivateRoute.propTypes = {
+    notifyError: PropTypes.func.isRequired,
+};
 
 export default PrivateRoute;

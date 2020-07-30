@@ -37,16 +37,6 @@ class BookCard extends Component {
         );
     };
 
-    // Can move this to a class in css later
-    getStyle = () => {
-        return {
-            background: "#f4f4f4",
-            textAlign: "center",
-            padding: "10px",
-            borderBottom: "1px #ccc dotted",
-        };
-    };
-
     handleModal = () => {
         if (this !== null && typeof this !== "undefined") {
             this.setState({ modalShow: !this.state.modalShow });
@@ -62,6 +52,7 @@ class BookCard extends Component {
             return (
                 <Button
                     variant="success"
+                    // style={{ position: "absolute", bottom: "1%", left: "5%" }}
                     className="float-left"
                     size="sm"
                     onClick={this.handleModal}
@@ -86,6 +77,7 @@ class BookCard extends Component {
             return (
                 <Button
                     variant="danger"
+                    // style={{ position: "absolute", bottom: "1%", right: "5%" }}
                     className="float-right"
                     size="sm"
                     onClick={this.props.removeBook.bind(book, book.id)}
@@ -104,7 +96,7 @@ class BookCard extends Component {
         const bookID = book.id;
 
         return (
-            <div style={{ margin: "auto" }}>
+            <div style={{ marginLeft: "auto", marginRight: "auto" }}>
                 {this.props.editable === true && (
                     <Modal
                         show={this.state.modalShow}
@@ -117,7 +109,7 @@ class BookCard extends Component {
                         <Modal.Footer></Modal.Footer>
                     </Modal>
                 )}
-                <Card style={{ width: "314px" }}>
+                <Card style={{ width: "314px", marginBottom: "20px" }}>
                     <a href={`/book/${bookID}`}>
                         {!this.context ? (
                             <Card.Img
@@ -130,16 +122,22 @@ class BookCard extends Component {
                         )}
                     </a>
                     <Card.Body>
-                        <Card.Text>
+                        <Card.Text
+                            style={{
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                            }}
+                        >
                             {!this.context && (
                                 <>
                                     <a href={`/book/${bookID}`}>{title}</a>
                                     <br></br>
                                     <small>{book.authors.join(", ")}</small>
                                     <br></br>
+                                    <small>{book.publication_date}</small>
                                 </>
                             )}
-                            <small>{book.publication_date}</small>
                         </Card.Text>
                         <StarRatings
                             rating={book.ave_rating}
@@ -153,11 +151,15 @@ class BookCard extends Component {
                             {book.ave_rating} from{" "}
                             {book.n_ratings.toLocaleString()} reviews
                         </small>
-                        <Card.Text>
+                        {/* <Card.Text></Card.Text> */}
+                    </Card.Body>
+                    {this.props.editable && (
+                        <Card.Footer>
+                            {console.log("Here")}
                             {this.addButton()}
                             {this.removeButton()}
-                        </Card.Text>
-                    </Card.Body>
+                        </Card.Footer>
+                    )}
                 </Card>
             </div>
         );
