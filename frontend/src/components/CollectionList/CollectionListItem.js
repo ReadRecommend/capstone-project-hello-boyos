@@ -17,7 +17,10 @@ class CollectionListItem extends Component {
                     {/* When the button is pressed, this collection will be removed from the collection list. */}
                     {this.props.editable && (
                         <span
-                            onClick={this.props.delCollection.bind(this, name)}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                                this.props.delCollection(name);
+                            }}
                             className="float-right btn-danger btn btn-sm"
                         >
                             x
