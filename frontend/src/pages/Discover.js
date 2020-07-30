@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Form, Container, Spinner, InputGroup } from "react-bootstrap";
 import SearchResults from "../components/SearchResults.js";
 import { getRecommendations, getCollectionOverview } from "../fetchFunctions";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { BsArrowRepeat } from "react-icons/bs";
 
 class Discover extends Component {
@@ -151,11 +151,6 @@ class Discover extends Component {
         return (
             <div className="Search">
                 <Container>
-                    <ToastContainer
-                        autoClose={4000}
-                        pauseOnHover
-                        closeOnClick
-                    />
                     <h1> Discover </h1>
                     <br></br>
                     <Form method="POST" onSubmit={this.handleSubmit}>

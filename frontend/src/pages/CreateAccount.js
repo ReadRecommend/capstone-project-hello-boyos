@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Redirect } from "react-router";
 
 import { createAccount } from "../fetchFunctions";
@@ -75,12 +75,6 @@ class CreateAccount extends Component {
         if (this.state.done === false) {
             return (
                 <div className="CreateAccount">
-                    <ToastContainer
-                        autoClose={4000}
-                        pauseOnHover
-                        closeOnClick
-                    />
-
                     <Container>
                         <br></br>
                         <h1>Create an Account</h1>

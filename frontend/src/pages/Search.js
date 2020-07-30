@@ -10,7 +10,7 @@ import {
 import InputGroup from "react-bootstrap/InputGroup";
 import SearchResults from "../components/SearchResults.js";
 import Pagination from "react-bootstrap/Pagination";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { bookSearch } from "../fetchFunctions";
 
@@ -223,8 +223,6 @@ class Search extends Component {
         const { currentPage } = this.state;
         return (
             <div className="Search">
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
-
                 <Container>
                     <h1> Search Page </h1>
                     {this.getSearchBar()}

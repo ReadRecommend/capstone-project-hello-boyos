@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Form, Container, Spinner } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import UserSearchResults from "../components/UserSearchResults.js";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { searchUsers } from "../fetchFunctions";
 
@@ -108,11 +108,6 @@ class Search extends Component {
         return (
             <div className="Search">
                 <Container>
-                    <ToastContainer
-                        autoClose={4000}
-                        pauseOnHover
-                        closeOnClick
-                    />
                     <h1> User Search Page </h1>
                     <Form method="POST" onSubmit={this.handleSubmit}>
                         <InputGroup>

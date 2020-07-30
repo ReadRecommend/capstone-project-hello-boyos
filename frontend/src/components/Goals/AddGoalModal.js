@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Datetime from "react-datetime";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { withRouter } from "react-router-dom";
 
 import "../../pages/YearPicker.css";
@@ -96,7 +96,6 @@ class AddGoalModal extends Component {
     render() {
         return (
             <Modal show={this.props.show} onHide={this.onClose}>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Modal.Header closeButton>
                     <Modal.Title>Create or Update Goal</Modal.Title>
                 </Modal.Header>

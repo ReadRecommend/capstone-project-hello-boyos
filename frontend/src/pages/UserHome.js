@@ -14,7 +14,7 @@ import {
     getCollection,
     addToCollection,
 } from "../fetchFunctions";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 class UserHome extends Component {
     constructor(props) {
@@ -312,7 +312,6 @@ class UserHome extends Component {
         return (
             <div className="UserHome">
                 <br></br>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 {/* Modal for creating a new collection */}
                 <Modal
                     show={this.state.addCollectionModalShow}

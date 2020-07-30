@@ -3,6 +3,7 @@ import Main from "./Main";
 import NavigationBar from "./components/NavBar.js";
 import { loginContext } from "./LoginContext";
 import { bookDetailsContext } from "./BookDetailsContext";
+import { ToastContainer } from "react-toastify";
 
 import "./App.css";
 
@@ -39,6 +40,7 @@ class App extends Component {
     render() {
         return (
             <div className="App">
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <bookDetailsContext.Provider value={this.state.hideBookDetails}>
                     <NavigationBar
                         loggedInRole={this.state.loggedInRole}

@@ -4,7 +4,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { getAllBooks, deleteBook } from "../../fetchFunctions";
 
@@ -155,12 +155,6 @@ class AdminBookList extends Component {
         } else {
             return (
                 <Container>
-                    <ToastContainer
-                        autoClose={4000}
-                        pauseOnHover
-                        closeOnClick
-                    />
-
                     <h1>Book list</h1>
                     <br></br>
                     {/* This is for react bootstrap table 2 */}

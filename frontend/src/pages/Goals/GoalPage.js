@@ -13,7 +13,7 @@ import {
 import Datetime from "react-datetime";
 import "../YearPicker.css";
 import { getGoals } from "../../fetchFunctions";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import * as moment from "moment";
 
 import AddGoalModal from "../../components/Goals/AddGoalModal";
@@ -200,7 +200,6 @@ class GoalPage extends Component {
         }
         return (
             <Container fluid>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <h1>Reading Goals</h1>
                 <Row>
                     <Col md="2">

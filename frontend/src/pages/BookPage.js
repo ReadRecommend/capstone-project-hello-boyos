@@ -18,7 +18,7 @@ import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
 import Error from "../components/Error";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
 import { bookDetailsContext } from "../BookDetailsContext";
 import { BsArrowRepeat } from "react-icons/bs";
@@ -71,7 +71,7 @@ class BookPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                if (!(this.state.items)) {
+                if (!this.state.items) {
                     this.buildPageBar(json.count);
                 }
             })
@@ -372,7 +372,6 @@ class BookPage extends Component {
         }
         return (
             <div>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Container>
                     <Row>
                         <br></br>
@@ -395,8 +394,8 @@ class BookPage extends Component {
                                     />
                                 </div>
                             ) : (
-                                    <BlindCover book={book}></BlindCover>
-                                )}
+                                <BlindCover book={book}></BlindCover>
+                            )}
                             <Media.Body>
                                 {!this.context && (
                                     <>
@@ -566,22 +565,22 @@ class BookPage extends Component {
                                             <br></br>
                                             {this.state
                                                 .loadingRecommendations ? (
-                                                    <Spinner
-                                                        animation="border"
-                                                        style={{
-                                                            position: "absolute",
-                                                            left: "50%",
-                                                            top: "50%",
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <SearchResults
-                                                        books={
-                                                            this.state
-                                                                .currentRecommendations
-                                                        }
-                                                    ></SearchResults>
-                                                )}
+                                                <Spinner
+                                                    animation="border"
+                                                    style={{
+                                                        position: "absolute",
+                                                        left: "50%",
+                                                        top: "50%",
+                                                    }}
+                                                />
+                                            ) : (
+                                                <SearchResults
+                                                    books={
+                                                        this.state
+                                                            .currentRecommendations
+                                                    }
+                                                ></SearchResults>
+                                            )}
                                         </Form>
                                     </Tab>
                                 </Tabs>

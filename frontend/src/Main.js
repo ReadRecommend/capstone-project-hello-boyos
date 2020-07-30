@@ -18,7 +18,7 @@ import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
 import Discover from "./pages/Discover";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 class Main extends Component {
     notifyError(message) {
@@ -28,7 +28,6 @@ class Main extends Component {
     render() {
         return (
             <div>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Switch>
                     {" "}
                     {/* The Switch decides which component to show based on the current URL.*/}
