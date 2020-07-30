@@ -71,7 +71,9 @@ class BookPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.buildPageBar(json.count);
+                if (!(this.state.items)) {
+                    this.buildPageBar(json.count);
+                }
             })
             .then(() => {
                 getReviewPages(
@@ -393,8 +395,8 @@ class BookPage extends Component {
                                     />
                                 </div>
                             ) : (
-                                <BlindCover book={book}></BlindCover>
-                            )}
+                                    <BlindCover book={book}></BlindCover>
+                                )}
                             <Media.Body>
                                 {!this.context && (
                                     <>
@@ -564,22 +566,22 @@ class BookPage extends Component {
                                             <br></br>
                                             {this.state
                                                 .loadingRecommendations ? (
-                                                <Spinner
-                                                    animation="border"
-                                                    style={{
-                                                        position: "absolute",
-                                                        left: "50%",
-                                                        top: "50%",
-                                                    }}
-                                                />
-                                            ) : (
-                                                <SearchResults
-                                                    books={
-                                                        this.state
-                                                            .currentRecommendations
-                                                    }
-                                                ></SearchResults>
-                                            )}
+                                                    <Spinner
+                                                        animation="border"
+                                                        style={{
+                                                            position: "absolute",
+                                                            left: "50%",
+                                                            top: "50%",
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <SearchResults
+                                                        books={
+                                                            this.state
+                                                                .currentRecommendations
+                                                        }
+                                                    ></SearchResults>
+                                                )}
                                         </Form>
                                     </Tab>
                                 </Tabs>
