@@ -75,7 +75,6 @@ class UserHome extends Component {
             })
             .then(() => {
                 this.selectOverview("all_books");
-                toast.success(`Sucessfully deleted the collection '${name}'`);
             })
             .catch((error) => {
                 // An error occurred

@@ -85,10 +85,9 @@ class AddReview extends Component {
                             as={Card.Header}
                             variant="link"
                             eventKey="0"
+                            style={{ cursor: "pointer" }}
                         >
-                            <a href="#">
-                                <h5>Leave a review</h5>
-                            </a>
+                            <h5>Leave a review</h5>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="0">
                             <Card.Body>

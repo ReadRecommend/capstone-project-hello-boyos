@@ -217,6 +217,8 @@ class BookPage extends Component {
                         }
                     });
                 break;
+            default:
+                return null;
         }
     };
 
@@ -486,16 +488,26 @@ class BookPage extends Component {
                                                 <br></br>
                                             </>
                                         )}
-                                        <strong>Publication Year: </strong>
-                                        {book.publication_date}
-                                        <br></br>
+                                        {book.publication_date && (
+                                            <>
+                                                <strong>
+                                                    Publication Year:{" "}
+                                                </strong>
+                                                {book.publication_date}
+                                                <br></br>
+                                            </>
+                                        )}
                                         <strong>Genres: </strong>
                                         {book.genres.sort().join(", ")}
                                         <br></br>
-                                        <strong>Language: </strong>
-                                        {book.language}
-                                        <br></br>
-                                        {!this.context && (
+                                        {book.language && (
+                                            <>
+                                                <strong>Language: </strong>
+                                                {book.language}
+                                                <br></br>
+                                            </>
+                                        )}
+                                        {!this.context && book.isbn && (
                                             <>
                                                 <strong>ISBN: </strong>
                                                 {book.isbn}
