@@ -35,14 +35,14 @@ def get_author():
     else:
         # If no author name provided:
         authors = book.authors
-        author_books = []
+        author_books = set()
         for author in authors:
             author_name = author.name
             author_book = Author.query.filter_by(name=author_name).first()
             if not author_book:
                 raise ResourceNotFound("An author with this name does not exist")
             author_book = author_book.books
-            author_books = author_books + author_book
+            author_books.update(set(author_book))
         if book in author_books:
             author_books.remove(book)
 
@@ -87,9 +87,9 @@ def get_genre():
         if book in genre_books:
             genre_books.remove(book)
     else:
-        # If genre name provided:
+        # If no genre name provided:
         genres = book.genres
-        genre_books = []
+        genre_books = set()
 
         for genre in genres:
             genre = genre.name
@@ -97,7 +97,7 @@ def get_genre():
             if not genre_book:
                 raise ResourceNotFound("A genre with this name does not exist")
             genre_book = genre_book.books
-            genre_books = genre_book + genre_book
+            genre_books.update(set(genre_book))
 
         if book in genre_books:
             genre_books.remove(book)
