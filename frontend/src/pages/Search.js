@@ -197,10 +197,19 @@ class Search extends Component {
                     </Form.Control>
                 </InputGroup>
                 {!this.state.loadingResults && (
+                    <div>
                         <Button variant="primary" type="submit" value="Search">
                             Search
                         </Button>
-                    )}
+                        <DropdownButton
+                            id="per-page-dropdown"
+                            title="Books Per Page"
+                            style={{ float: "right" }}
+                        >
+                            {this.getBooksPerPageDropdown()}
+                        </DropdownButton>
+                    </div>
+                )}
             </Form>
         );
     };
@@ -214,6 +223,7 @@ class Search extends Component {
                     <h1> Search Page </h1>
                     {this.getSearchBar()}
                     <br></br>
+                    <small> Page {this.state.currentPage} of {this.state.numberOfPages} out of {this.state.currentSearchList.length} results</small>
                     {this.state.loadingResults ? (
                         <Spinner
                             animation="border"
@@ -234,36 +244,24 @@ class Search extends Component {
                             loadingResults={this.state.loadingResults}
                         ></SearchResults>
                     )}
-
                     <br></br>
                     <Container>
-                        <Row>
-                            <Col>
-                                <Pagination>
-                                    <Pagination.Prev
-                                        onClick={() =>
-                                            this.changePage(currentPage - 1)
-                                        }
-                                    />
-                                    {!(this.state.numberOfPages === 0) &&
-                                        this.state.pages}
-                                    <Pagination.Next
-                                        onClick={() =>
-                                            this.changePage(currentPage + 1)
-                                        }
-                                    />
-                                </Pagination>
-                            </Col>
-                            <Col className="float-right">
-                                <DropdownButton
-                                    id="per-page-dropdown"
-                                    title="Books Per Page"
-                                    style={{ float: "right" }}
-                                >
-                                    {this.getBooksPerPageDropdown()}
-                                </DropdownButton>
-                            </Col>
-                        </Row>
+                        <div class="pagination justify-content-center">
+                            <Pagination>
+                                <Pagination.Prev
+                                    onClick={() =>
+                                        this.changePage(currentPage - 1)
+                                    }
+                                />
+                                {!(this.state.numberOfPages === 0) &&
+                                    this.state.pages}
+                                <Pagination.Next
+                                    onClick={() =>
+                                        this.changePage(currentPage + 1)
+                                    }
+                                />
+                            </Pagination>
+                        </div>
                     </Container>
                 </Container>
             </div>
