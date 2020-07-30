@@ -33,7 +33,7 @@ class BookPage extends Component {
             recommendationMode: "Author",
             reviewPage: 1,
             // TODO: Make this an input on the page
-            reviewsPerPage: 2,
+            reviewsPerPage: 5,
             totalReviewPages: 0,
             items: [],
             loadingRecommendations: true,
@@ -350,7 +350,6 @@ class BookPage extends Component {
     updatePerPage = (event) => {
         this.setState({ reviewsPerPage: event.target.value }, () => {
 
-
             getReviewPages(
                 this.props.match.params.bookID,
                 this.state.reviewsPerPage
@@ -359,12 +358,35 @@ class BookPage extends Component {
                     return res.json();
                 })
                 .then((json) => {
-                    this.setState({ totalReviewPages: json.count }, () => this.movePage(1)
+                    this.setState({ totalReviewPages: json.count }, () => {
+                        this.movePage(1)
+                    }
+
                     )
                 })
 
 
         })
+    }
+
+    updatePage = () => {
+        this.setState({ loading: true }, () => {
+            getReviewPages(
+                this.props.match.params.bookID,
+                this.state.reviewsPerPage
+            )
+                .then((res) => {
+                    return res.json();
+                })
+                .then((json) => {
+                    this.setState({ totalReviewPages: json.count }, () => {
+                        this.movePage(1)
+
+                    })
+                })
+            this.setState({ loading: false })
+        })
+
     }
 
     render() {
@@ -414,8 +436,8 @@ class BookPage extends Component {
                                     />
                                 </div>
                             ) : (
-                                <BlindCover book={book}></BlindCover>
-                            )}
+                                    <BlindCover book={book}></BlindCover>
+                                )}
                             <Media.Body>
                                 {!this.context && (
                                     <>
@@ -469,6 +491,7 @@ class BookPage extends Component {
                                                                 .id
                                                         }
                                                         notify={this.notify}
+                                                        success={this.updatePage}
                                                     />
                                                 </>
                                             )}
@@ -594,22 +617,22 @@ class BookPage extends Component {
                                             <br></br>
                                             {this.state
                                                 .loadingRecommendations ? (
-                                                <Spinner
-                                                    animation="border"
-                                                    style={{
-                                                        position: "absolute",
-                                                        left: "50%",
-                                                        top: "50%",
-                                                    }}
-                                                />
-                                            ) : (
-                                                <SearchResults
-                                                    books={
-                                                        this.state
-                                                            .currentRecommendations
-                                                    }
-                                                ></SearchResults>
-                                            )}
+                                                    <Spinner
+                                                        animation="border"
+                                                        style={{
+                                                            position: "absolute",
+                                                            left: "50%",
+                                                            top: "50%",
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <SearchResults
+                                                        books={
+                                                            this.state
+                                                                .currentRecommendations
+                                                        }
+                                                    ></SearchResults>
+                                                )}
                                         </Form>
                                     </Tab>
                                 </Tabs>
