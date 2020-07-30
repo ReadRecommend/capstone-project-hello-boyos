@@ -1,8 +1,10 @@
+import random
+
 from flask import jsonify, request
 
 from backend.errors import ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
-from backend.recommendation import recommendation_bp
+from backend.recommendation import POOL_SIZE, recommendation_bp, DEFAULT_NRECOMMEND
 from backend.recommendation.content_recommender import ContentRecommender
 from backend.recommendation.utils import validate_integer, weighted_rating
 from backend.user.utils import sort_books
@@ -13,7 +15,9 @@ from backend.user.utils import sort_books
 @recommendation_bp.route("/author", methods=["POST"])
 def get_author():
 
-    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
+    n_recommend = validate_integer(
+        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    )
 
     # Seed Book
     book_id = request.json.get("bookID")
@@ -46,9 +50,7 @@ def get_author():
         if book in author_books:
             author_books.remove(book)
 
-    return_books = sorted(list(set(author_books)), key=weighted_rating, reverse=True)[
-        :n_recommend
-    ]
+    return_books = sorted(list(set(author_books)), key=weighted_rating, reverse=True)
 
     if request.json.get("userID"):
         user_id = validate_integer(request.json.get("userID"), "userID")
@@ -58,7 +60,9 @@ def get_author():
         user_books = sort_books(reader)
         return_books = sorted(
             list(set(return_books) - set(user_books)), key=weighted_rating, reverse=True
-        )[:n_recommend]
+        )
+
+    return_books = random.sample((return_books[: POOL_SIZE * n_recommend]), n_recommend)
 
     return jsonify(books_schema.dump(return_books))
 
@@ -66,7 +70,9 @@ def get_author():
 @recommendation_bp.route("/genre", methods=["POST"])
 def get_genre():
 
-    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
+    n_recommend = validate_integer(
+        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    )
 
     # Seed Book
     book_id = request.json.get("bookID")
@@ -102,9 +108,7 @@ def get_genre():
         if book in genre_books:
             genre_books.remove(book)
 
-    return_books = sorted(list(set(genre_books)), key=weighted_rating, reverse=True)[
-        :n_recommend
-    ]
+    return_books = sorted(list(set(genre_books)), key=weighted_rating, reverse=True)
 
     if request.json.get("userID"):
         user_id = validate_integer(request.json.get("userID"), "userID")
@@ -114,7 +118,9 @@ def get_genre():
         user_books = sort_books(reader)
         return_books = sorted(
             list(set(return_books) - set(user_books)), key=weighted_rating, reverse=True
-        )[:n_recommend]
+        )
+
+    return_books = random.sample((return_books[: POOL_SIZE * n_recommend]), n_recommend)
 
     return jsonify(books_schema.dump(return_books))
 
@@ -135,7 +141,9 @@ def get_following():
             "The user with the specified ID does not follow any users"
         )
 
-    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
+    n_recommend = validate_integer(
+        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    )
 
     following_books = []
 
@@ -161,10 +169,13 @@ def get_content():
     if not book:
         raise ResourceNotFound("A book with this ID does not exist")
 
-    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
+    n_recommend = validate_integer(
+        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    )
 
     recommender = ContentRecommender(ngram_range=(1, 1))
-    recommendations = recommender.recommend(book, n_recommend=n_recommend)
+    recommendations = recommender.recommend(book, n_recommend=POOL_SIZE * n_recommend)
+    recommendations = random.sample(recommendations, n_recommend)
 
     if request.json.get("userID"):
         user_id = validate_integer(request.json.get("userID"), "userID")
@@ -180,6 +191,6 @@ def get_content():
 @recommendation_bp.route("/top_rated", methods=["POST"])
 def get_top():
     n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
-    books = Book.query.filter(Book.ave_rating > 3).all()
+    books = Book.query.filter(Book.ave_rating > POOL_SIZE).all()
     books = sorted(books, key=weighted_rating, reverse=True)[:n_recommend]
     return jsonify(books_schema.dump(books))
