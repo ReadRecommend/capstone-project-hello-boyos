@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Container, Spinner } from "react-bootstrap";
+import { Button, Container, Spinner, Row, Col } from "react-bootstrap";
 import {
     LineChart,
     Line,
@@ -41,8 +41,16 @@ class GoalPage extends Component {
             yearView: null,
             yearPickerValue: null,
             modalShow: false,
-            loading: false,
+            loadingGraph: true,
+            loadingPage: true,
         };
+    }
+
+    componentDidMount() {
+        this.setState(
+            { loadingPage: false },
+            this.onYearViewChange(moment().startOf("year"))
+        );
     }
 
     // Function that makes the modal show
@@ -67,7 +75,7 @@ class GoalPage extends Component {
     // Function that updates the data in the state given data from a fetch
     updateData = (data) => {
         if (data.length === 0) {
-            this.setState({ loading: false });
+            this.setState({ loadingGraph: false });
             return;
         }
 
@@ -80,7 +88,7 @@ class GoalPage extends Component {
             monthDataPoint.goal = dataPoint.goal;
         }
 
-        this.setState({ data: monthsBase, loading: false });
+        this.setState({ data: monthsBase, loadingGraph: false });
     };
 
     // Function that handles a change in the year picker
@@ -121,103 +129,116 @@ class GoalPage extends Component {
             });
     };
 
-    render() {
-        return (
-            <Container>
-                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
-
-                <h1>Goal Page</h1>
-                <h3>Select a year to view your goal progress for that year</h3>
-                {this.state.loading ? (
-                    // If we are loading, show a spinner
-                    <Spinner
-                        animation="border"
-                        style={{
-                            left: "50%",
-                            top: "50%",
-                        }}
-                    />
-                ) : (
-                    // If we are not loading, show this content
-                    <div
-                        style={{
-                            textAlign: "center",
-                        }}
-                    >
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
+    renderGraph = () => {
+        if (this.state.loadingGraph) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else if (this.state.data.length === 0 && !this.state.loadingGraph) {
+            return <p>No Goals found for this year...</p>;
+        } else {
+            return (
+                <>
+                    <h3>{this.state.yearView || "No Year Selected"}</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <LineChart
+                            title={this.state.yearView}
+                            width={1200}
+                            height={400}
+                            data={this.state.data}
+                            margin={{
+                                top: 5,
+                                right: 20,
+                                bottom: 5,
+                                left: 0,
                             }}
                         >
-                            <Datetime
-                                dateFormat="YYYY"
-                                input={false}
-                                value={this.state.yearPickerValue}
-                                onChange={this.onYearViewChange}
+                            <Line
+                                type="monotone"
+                                dataKey="n_read"
+                                stroke="#8884d8"
+                                name="Books Read"
                             />
-                        </div>
-                        <h3>{this.state.yearView || "No Year Selected"}</h3>
-                    </div>
-                )}
+                            <Line
+                                type="monotone"
+                                dataKey="goal"
+                                stroke="green"
+                                name="Goal"
+                            />
+                            <Legend verticalAlign="bottom" height={36} />
+                            <CartesianGrid
+                                stroke="#ccc"
+                                strokeDasharray="5 5"
+                            />
+                            <XAxis dataKey="month" />
+                            <YAxis />
+                            <Tooltip />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </>
+            );
+        }
+    };
 
-                {this.state.data.length === 0 &&
-                    !this.state.loading &&
-                    this.state.yearView && (
-                        <p>No Goals found for this year...</p>
-                    )}
-
-                {
-                    // Ensure we have a year selected, we are not loading, and data was returned before displaying the diagram
-                    this.state.yearView &&
-                        this.state.data.length !== 0 &&
-                        !this.state.loading && (
-                            <ResponsiveContainer width="100%" height={400}>
-                                <LineChart
-                                    width={1200}
-                                    height={400}
-                                    data={this.state.data}
-                                    margin={{
-                                        top: 5,
-                                        right: 20,
-                                        bottom: 5,
-                                        left: 0,
-                                    }}
-                                >
-                                    <Line
-                                        type="linear"
-                                        dataKey="n_read"
-                                        stroke="#8884d8"
-                                    />
-                                    <Line
-                                        type="linear"
-                                        dataKey="goal"
-                                        stroke="green"
-                                    />
-                                    <Legend verticalAlign="top" height={36} />
-                                    <CartesianGrid
-                                        stroke="#ccc"
-                                        strokeDasharray="5 5"
-                                    />
-                                    <XAxis dataKey="month" />
-                                    <YAxis />
-                                    <Tooltip />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        )
-                }
-                <br></br>
-                <AddGoalModal
-                    show={this.state.modalShow}
-                    closeModal={this.closeModal}
-                    updateGraph={this.updateGraph}
+    render() {
+        if (this.state.loadingPage) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        left: "50%",
+                        top: "50%",
+                    }}
                 />
-                <div style={{ textAlign: "center" }}>
-                    <Button onClick={this.openModal}>
-                        Create or Update a Goal
-                    </Button>
-                </div>
+            );
+        }
+        return (
+            <Container fluid>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
+                <h1>Reading Goals</h1>
+                <Row>
+                    <Col md="2">
+                        <h5>Select a year to view your progress</h5>
+                        <AddGoalModal
+                            show={this.state.modalShow}
+                            closeModal={this.closeModal}
+                            updateGraph={this.updateGraph}
+                        />
+                        <div style={{ textAlign: "center" }}>
+                            <Button onClick={this.openModal}>
+                                Create or Update a Goal
+                            </Button>
+                        </div>
+                        <br></br>
+                        <div
+                            style={{
+                                textAlign: "center",
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                            >
+                                <Datetime
+                                    dateFormat="YYYY"
+                                    input={false}
+                                    value={this.state.yearPickerValue}
+                                    onChange={this.onYearViewChange}
+                                />
+                            </div>
+                        </div>
+                    </Col>
+                    <Col md="8">{this.renderGraph()}</Col>
+                </Row>
             </Container>
         );
     }

@@ -1,8 +1,9 @@
 import json
 import os
-import uuid
+from getpass import getpass
 
 import psycopg2
+from colorama import Fore, init
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -10,12 +11,11 @@ load_dotenv()
 from backend import db, guard
 from backend.model.author import Author
 from backend.model.book import Book
+from backend.model.collection import Collection
 from backend.model.genre import Genre
 from backend.model.reader import Reader
-from backend.model.collection import Collection
-from backend.model.collection_membership import CollectionMembership
 
-load_dotenv()
+init(autoreset=True)
 
 
 def json_to_db(path):
@@ -24,8 +24,6 @@ def json_to_db(path):
         path (str): The absolute path to the books JSON file
     """
     f = open(path, "r")
-    namespace = uuid.uuid4()
-
     data = json.load(f)
 
     for book_data in data:
@@ -64,11 +62,11 @@ def json_to_db(path):
 
 
 # Get postgres info from env, or use defaults
-user = os.getenv("POSTGRES_USER") or "postgres"
-password = os.getenv("POSTGRES_PASSWORD") or "test123"
-host = os.getenv("POSTGRES_HOST") or "localhost"
-port = os.getenv("POSTGRES_PORT") or "5432"
-database = os.getenv("POSTGRES_DATABASE") or "test"
+user = os.getenv("POSTGRES_USER", "postgres")
+password = os.getenv("POSTGRES_PASSWORD", "test123")
+host = os.getenv("POSTGRES_HOST", "localhost")
+port = os.getenv("POSTGRES_PORT", "5432")
+database = os.getenv("POSTGRES_DATABASE", "test")
 
 # Connect to database
 conn = psycopg2.connect(
@@ -87,7 +85,7 @@ cur.close()
 conn.close()
 
 
-print("Creating tables and loading in book data")
+print("Creating tables and loading in book data (may take some time)...")
 db.create_all()
 json_to_db("books.json")
 
@@ -104,18 +102,6 @@ user2 = Reader(
     password=guard.hash_password("pass123"),
     roles="user",
 )
-user3 = Reader(
-    username="SteveLee",
-    email="steve.lee@gmail.com",
-    password=guard.hash_password("stevelee123"),
-    roles="admin",
-)
-user4 = Reader(
-    username="SecretAdmin",
-    email="secretAdmin@gmail.com",
-    password=guard.hash_password("admin"),
-    roles="admin",
-)
 
 user1.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
@@ -123,19 +109,8 @@ user1.collections.append(
 user2.collections.append(
     Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
 )
-user3.collections.append(
-    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
-)
-user4.collections.append(
-    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(15).all())
-)
-# user1.collections.append(Collection(name="Recently Read",))
-# user2.collections.append(Collection(name="Recently Read",))
-# user3.collections.append(Collection(name="Recently Read",))
-# user4.collections.append(Collection(name="Recently Read",))
 
 user1.follows.append(user2)
-user1.follows.append(user3)
 user1.followers.append(user2)
 
 classics = Genre.query.filter_by(name="Classics").first()
@@ -154,7 +129,28 @@ user2.collections.append(
     )
 )
 
-db.session.add_all([user1, user2, user3, user4])
+print("Creating admin role:")
+admin_username = input("Choose an admin username (admin): ") or "admin"
+admin_email = (
+    input("Choose an admin email (<username>@readrecomend.com): ")
+    or f"{admin_username}@readrecommend.com"
+)
+
+while True:
+    admin_password1 = getpass("Choose an admin password: ")
+    admin_password2 = getpass("Confirm password: ")
+    if admin_password1 == admin_password2:
+        break
+    print(Fore.RED + "Passwords did not match, please try again")
+
+admin = Reader(
+    username=admin_username,
+    email="admin@readrecommend.com",
+    password=guard.hash_password(admin_password2),
+    roles="admin",
+)
+
+db.session.add_all([user1, user2, admin])
 db.session.commit()
 
-print("Setup complete!")
+print(Fore.GREEN + "Setup complete!")

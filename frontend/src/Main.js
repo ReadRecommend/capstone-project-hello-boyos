@@ -30,7 +30,7 @@ class Main extends Component {
                         exact
                         path="/"
                         component={Home}
-                        roles={["user", "admin"]}
+                        roles={["user", "admin", "everyone"]}
                         key="home"
                     />
                     <PrivateRoute
@@ -113,7 +113,7 @@ class Main extends Component {
                         exact
                         path="/discover"
                         component={Discover}
-                        roles={["user"]}
+                        roles={["user", "everyone"]}
                         key="discover"
                     />
                     <Route exact path="*" key="404">
