@@ -60,6 +60,19 @@ class Search extends Component {
             });
     };
 
+    removeCurrentUser = (userList) => {
+        if (!this.props.initialUserInfo) {
+            return userList;
+        }
+        let users = [];
+        userList.forEach((user) => {
+            if (user.id !== this.props.initialUserInfo.id) {
+                users.push(user);
+            }
+        });
+        return users;
+    };
+
     render() {
         return (
             <div className="Search">
@@ -90,7 +103,18 @@ class Search extends Component {
                         </InputGroup>
                     </Form>
                     <br></br>
-                    <UserSearchResults users={this.state.currentSearchList} />
+                    {this.state.currentSearchList.length == 0 ? (
+                        <h3 style={{ textAlign: "center", color: "grey" }}>
+                            {" "}
+                            There are currently no results to display.{" "}
+                        </h3>
+                    ) : (
+                        <UserSearchResults
+                            users={this.removeCurrentUser(
+                                this.state.currentSearchList
+                            )}
+                        />
+                    )}
                 </Container>
             </div>
         );
