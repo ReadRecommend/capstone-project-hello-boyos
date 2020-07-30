@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Navbar, Nav, Button, NavDropdown, Form } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
 import PropTypes from "prop-types";
 import { Redirect } from "react-router";
@@ -131,7 +132,8 @@ class NavigationBar extends Component {
                         </>
                     )}
                 </Nav>
-                {this.renderSearchBar()}
+                {console.log("The current location is: " + (this.props.location.pathname !== "/search" && this.props.location.pathname !== "/usrsearch"))}
+                {(this.props.location.pathname !== "/search" && this.props.location.pathname !== "/usrsearch") && this.renderSearchBar()}
                 {this.renderRedirect()}
                 <Nav style={{ marginRight: "10px" }}>
                     <BootstrapSwitchButton
@@ -163,4 +165,4 @@ NavigationBar.propTypes = {
 
 NavigationBar.contextType = bookDetailsContext;
 
-export default NavigationBar;
+export default withRouter(NavigationBar);
