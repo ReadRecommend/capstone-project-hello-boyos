@@ -196,6 +196,7 @@ class Search extends Component {
                         <option>&ge; 1 Stars</option>
                     </Form.Control>
                 </InputGroup>
+                <br></br>
                 {!this.state.loadingResults && (
                     <div>
                         <Button variant="primary" type="submit" value="Search">
@@ -223,7 +224,12 @@ class Search extends Component {
                     <h1> Search Page </h1>
                     {this.getSearchBar()}
                     <br></br>
-                    <small> Page {this.state.currentPage} of {this.state.numberOfPages} out of {this.state.currentSearchList.length} results</small>
+                    <small>
+                        {" "}
+                        Page {this.state.currentPage} of{" "}
+                        {this.state.numberOfPages} out of{" "}
+                        {this.state.currentSearchList.length} results
+                    </small>
                     {this.state.loadingResults ? (
                         <Spinner
                             animation="border"
