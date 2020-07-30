@@ -44,7 +44,7 @@ class Discover extends Component {
         this.setState({ loading: true });
         switch (this.state.recommendationMode) {
             case "Top Rated":
-                getRecommendations("top_rated", user.id, null, 20)
+                getRecommendations("top_rated", user ? user.id : null, null, 20)
                     .then((res) => {
                         if (!res.ok) {
                             return res.text().then((text) => {
@@ -74,7 +74,7 @@ class Discover extends Component {
                     });
                 break;
             case "People You Follow":
-                getRecommendations("following", user.id, null, 20)
+                getRecommendations("following", user ? user.id : null, null, 20)
                     .then((res) => {
                         if (!res.ok) {
                             return res.text().then((text) => {
@@ -140,6 +140,8 @@ class Discover extends Component {
                         }
                     });
                 break;
+            default:
+                return null;
         }
     };
 

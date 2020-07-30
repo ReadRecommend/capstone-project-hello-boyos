@@ -8,7 +8,7 @@ import { bookDetailsContext } from "../BookDetailsContext";
 /*
 The BookCard class deals with displaying the books. In a collection / search results or similar
 */
-class CollectionItem extends Component {
+class BookCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -120,21 +120,25 @@ class CollectionItem extends Component {
                 <Card style={{ width: "314px" }}>
                     <a href={`/book/${bookID}`}>
                         {!this.context ? (
-                            <Card.Img variant="top" src={cover} height="475px" />
-                            ):(
-                            <BlindCover book={book}/>
-                            )
-                        }
-                       
+                            <Card.Img
+                                variant="top"
+                                src={cover}
+                                height="475px"
+                            />
+                        ) : (
+                            <BlindCover book={book} />
+                        )}
                     </a>
                     <Card.Body>
                         <Card.Text>
-                            {!this.context && <>
-                                <a href={`/book/${bookID}`}>{title}</a>
-                                <br></br>
-                                <small>{book.authors.join(", ")}</small>
-                                <br></br>
-                            </>}                            
+                            {!this.context && (
+                                <>
+                                    <a href={`/book/${bookID}`}>{title}</a>
+                                    <br></br>
+                                    <small>{book.authors.join(", ")}</small>
+                                    <br></br>
+                                </>
+                            )}
                             <small>{book.publication_date}</small>
                         </Card.Text>
                         <StarRatings
@@ -160,11 +164,11 @@ class CollectionItem extends Component {
     }
 }
 
-CollectionItem.propTypes = {
+BookCard.propTypes = {
     book: PropTypes.object.isRequired,
-    userCollections: PropTypes.array.isRequired,
+    userCollections: PropTypes.array,
 };
 
-CollectionItem.contextType = bookDetailsContext;
+BookCard.contextType = bookDetailsContext;
 
-export default CollectionItem;
+export default BookCard;

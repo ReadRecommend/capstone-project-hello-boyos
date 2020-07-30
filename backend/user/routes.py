@@ -62,6 +62,32 @@ def get_readers():
     return jsonify(readers_schema.dump(readers))
 
 
+@user_bp.route("/<id>", methods=["DELETE"])
+@flask_praetorian.roles_required("admin")
+def delete_reader(id):
+    if not isinstance(id, int) and not id.isdigit():
+        raise InvalidRequest(
+            r"Id should be an integer or a string interpretable as an integer",
+        )
+    reader = Reader.query.filter_by(id=id).first()
+
+    # Check user exists
+    if not (reader):
+        raise ResourceNotFound("User does not exist")
+
+    # Check we are not deleting an admin
+    if reader.roles.find("admin") != -1:
+        raise ForbiddenResource("Cannot delete an admin")
+
+    # Delete the user
+    db.session.delete(reader)
+    db.session.commit()
+
+    # Return the new state of all users in the db
+    users = Reader.query.all()
+    return jsonify(readers_schema.dump(users))
+
+
 @user_bp.route("/<username>/followers")
 def get_followers(username):
     reader = Reader.query.filter_by(username=username).first()

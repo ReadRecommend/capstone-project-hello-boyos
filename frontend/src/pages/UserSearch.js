@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Button, Form, Container } from "react-bootstrap";
+import { Button, Form, Container, Spinner } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import UserSearchResults from "../components/UserSearchResults.js";
+import { toast, ToastContainer } from "react-toastify";
+
+import { searchUsers } from "../fetchFunctions";
 
 class Search extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class Search extends Component {
         this.state = {
             search: "",
             currentSearchList: [],
+            loading: false,
         };
     }
 
@@ -30,17 +32,10 @@ class Search extends Component {
     };
 
     handleSubmit = (event) => {
-        if (event) event.preventDefault();
-        const data = {
-            search: this.state.search,
-        };
-        fetch("http://localhost:5000/search/users", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+        event.preventDefault();
+        this.setState({ loading: true });
+
+        searchUsers(this.state.search)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -52,14 +47,72 @@ class Search extends Component {
             .then((users) => {
                 this.setState({
                     currentSearchList: users,
+                    loading: false,
                 });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
+    };
+
+    removeCurrentUser = (userList) => {
+        if (!this.props.initialUserInfo) {
+            return userList;
+        }
+        let users = [];
+        userList.forEach((user) => {
+            if (user.id !== this.props.initialUserInfo.id) {
+                users.push(user);
+            }
+        });
+        return users;
+    };
+
+    renderResults = () => {
+        if (this.state.loading) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else if (this.state.currentSearchList.length == 0) {
+            return (
+                <h3 style={{ textAlign: "center", color: "grey" }}>
+                    {" "}
+                    There are currently no results to display.{" "}
+                </h3>
+            );
+        } else {
+            return (
+                <UserSearchResults
+                    users={this.removeCurrentUser(this.state.currentSearchList)}
+                />
+            );
+        }
     };
 
     render() {
         return (
             <div className="Search">
                 <Container>
+                    <ToastContainer
+                        autoClose={4000}
+                        pauseOnHover
+                        closeOnClick
+                    />
                     <h1> User Search Page </h1>
                     <Form method="POST" onSubmit={this.handleSubmit}>
                         <InputGroup>
@@ -81,16 +134,7 @@ class Search extends Component {
                         </InputGroup>
                     </Form>
                     <br></br>
-                    {this.state.currentSearchList.length == 0 ? (
-                        <h3 style={{ textAlign: "center", color: "grey" }}>
-                            {" "}
-                            There are currently no results to display.{" "}
-                        </h3>
-                    ) : (
-                        <UserSearchResults
-                            users={this.state.currentSearchList}
-                        />
-                    )}
+                    {this.renderResults()}
                 </Container>
             </div>
         );

@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { getUserById, getCollectionOverview } from "../fetchFunctions";
+import {
+    getUserById,
+    getCollectionOverview,
+    getCollection,
+} from "../fetchFunctions";
 import CollectionList from "../components/CollectionList/CollectionList";
 import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
@@ -47,7 +51,6 @@ class UserPage extends Component {
                     this.setState({ currentUser: this.props.initialUserInfo });
                 }
             })
-
             .catch((error) => {
                 this.setState({ userPageInfo: null, loading: false });
             });
@@ -59,12 +62,23 @@ class UserPage extends Component {
     selected collection can then be displayed.
     */
     selectCollection = (id) => {
-        fetch(`http://localhost:5000/collection/${id}`)
+        getCollection(id)
             .then((res) => {
                 return res.json();
             })
             .then((json) => {
                 this.setState({ currentCollection: json });
+            })
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
             });
     };
 
@@ -96,8 +110,17 @@ class UserPage extends Component {
             });
     };
 
-    notify = (message) => {
-        toast.info(message);
+    notify = (message, type) => {
+        switch (type) {
+            case "success":
+                toast.success(message);
+                break;
+            case "error":
+                toast.error(message);
+                break;
+            default:
+                toast.info(message);
+        }
     };
 
     render() {

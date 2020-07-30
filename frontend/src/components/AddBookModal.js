@@ -74,7 +74,8 @@ class AddBookModal extends Component {
                                 );
                                 this.hideModal();
                                 this.props.notify(
-                                    `Successfully added ${book.title} to your collection`
+                                    `Successfully added ${book.title} to your collection`,
+                                    "success"
                                 );
                             }}
                         >

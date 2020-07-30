@@ -9,8 +9,12 @@ class Reader(db.Model):
     password = db.Column(db.String, nullable=False)
     roles = db.Column(db.String, nullable=False)
 
-    collections = db.relationship("Collection", backref="reader", lazy=True)
-    reviews = db.relationship("Review", backref="reader", lazy=True)
+    collections = db.relationship(
+        "Collection", backref="reader", lazy=True, cascade="all,delete"
+    )
+    reviews = db.relationship(
+        "Review", backref="reader", lazy=True, cascade="all,delete"
+    )
 
     follows = db.relationship(
         "Reader",
@@ -18,6 +22,7 @@ class Reader(db.Model):
         primaryjoin=(id == followers.c.follower_id),
         secondaryjoin=(id == followers.c.reader_id),
         backref="followers",
+        cascade="all,delete",
     )
 
     def __repr__(self):

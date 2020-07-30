@@ -77,7 +77,7 @@ class AddGoalModal extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success("Successfully updated goal!");
+                toast.success("Successfully updated goal");
                 this.closeAndSelect(this.state.timePeriod.year);
             })
             .catch((error) => {

@@ -4,7 +4,7 @@ import { Cookies } from "react-cookie";
 import { loginContext } from "../LoginContext";
 import { toast, ToastContainer } from "react-toastify";
 
-import "./Login.css";
+import { logIn } from "../fetchFunctions";
 
 class Login extends Component {
     constructor(props) {
@@ -12,7 +12,6 @@ class Login extends Component {
         this.state = {
             username: "",
             password: "",
-            access_token: "",
         };
     }
 
@@ -31,17 +30,7 @@ class Login extends Component {
             return;
         }
 
-        const data = {
-            username: this.state.username,
-            password: this.state.password,
-        };
-        fetch("http://localhost:5000/auth/login", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+        logIn(this.state.username, this.state.password)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -88,7 +77,6 @@ class Login extends Component {
             <div className="Login">
                 <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
 
-                {/* <form> */}
                 <Container>
                     <br></br>
                     <h1>Login</h1>
@@ -136,7 +124,6 @@ class Login extends Component {
                         Create an Account
                     </Button>
                 </Container>
-                {/* </form> */}
             </div>
         );
     }

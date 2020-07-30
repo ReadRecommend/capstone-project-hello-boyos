@@ -6,7 +6,7 @@ import ToolkitProvider, { Search } from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 
-import { getAllBooks, deleteBook } from "../../fetchFunctions";
+import { getAllUsers, deleteUser } from "../../fetchFunctions";
 
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min.css";
@@ -14,20 +14,20 @@ import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 
 const { SearchBar, ClearSearchButton } = Search;
 
-class AdminBookList extends Component {
+class AdminUserList extends Component {
     constructor(props) {
         super(props);
 
         this.getDeleteFormatter = this.getDeleteFormatter.bind(this);
         this.state = {
             loading: true,
-            books: [],
+            users: [],
         };
     }
 
     componentDidMount() {
         // Get all the books in the db
-        getAllBooks()
+        getAllUsers()
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -38,7 +38,7 @@ class AdminBookList extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ books: json, loading: false });
+                this.setState({ users: json, loading: false });
             })
             .catch((error) => {
                 // An error occurred
@@ -53,21 +53,29 @@ class AdminBookList extends Component {
             });
     }
 
-    // Function that returns the button that will be displayed in the final dummy column of the table
-    getDeleteFormatter(cell, row) {
-        return (
-            <Button
-                variant="danger"
-                onClick={this.handleDeleteBook.bind(this, row.id)}
-            >
-                DELETE
-            </Button>
-        );
+    // Function that returns href for the user
+    getUsernameFormatter(cell, row) {
+        if (!row.roles.includes("admin")) {
+            // Admins shouldn't have pages
+            return <Link to={"/user/" + row.id}>{cell}</Link>;
+        } else {
+            return <p>{cell}</p>;
+        }
     }
 
-    // Function that returns href for the title
-    getTitleFormatter(cell, row) {
-        return <Link to={"/book/" + row.id}>{cell}</Link>;
+    // Function that returns the delete button that will be displayed in the final dummy column of the table
+    getDeleteFormatter(cell, row) {
+        if (!row.roles.includes("admin")) {
+            // We shouldn't be able to delete admins
+            return (
+                <Button
+                    variant="danger"
+                    onClick={this.handleDeleteUser.bind(this, row.id)}
+                >
+                    DELETE
+                </Button>
+            );
+        }
     }
 
     getColumns() {
@@ -80,21 +88,23 @@ class AdminBookList extends Component {
                 sort: true,
             },
             {
-                dataField: "title",
-                text: "Title",
-                formatter: this.getTitleFormatter,
+                dataField: "username",
+                text: "Username",
+                formatter: this.getUsernameFormatter,
                 sort: true,
                 style: { wordWrap: "break-word" },
             },
             {
-                dataField: "n_ratings",
-                text: "Number of ratings",
+                dataField: "email",
+                text: "Email",
                 sort: true,
+                style: { wordWrap: "break-word" },
             },
             {
-                dataField: "ave_rating",
-                text: "Average rating",
+                dataField: "roles",
+                text: "Role",
                 sort: true,
+                style: { wordWrap: "break-word" },
             },
             {
                 dataField: "delete",
@@ -108,11 +118,10 @@ class AdminBookList extends Component {
         return columns;
     }
 
-    // Function that deletes the book from the database, and the state
-    handleDeleteBook(id) {
+    handleDeleteUser(id) {
         this.setState({ loading: true });
 
-        deleteBook(id)
+        deleteUser(id)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -123,8 +132,8 @@ class AdminBookList extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success(`Successfully deleted book with id '${id}'`);
-                this.setState({ books: json, loading: false });
+                toast.success(`Successfully deleted user with id '${id}'`);
+                this.setState({ users: json, loading: false });
             })
             .catch((error) => {
                 // An error occurred
@@ -161,11 +170,11 @@ class AdminBookList extends Component {
                         closeOnClick
                     />
 
-                    <h1>Book list</h1>
+                    <h1>User list</h1>
                     <br></br>
                     {/* This is for react bootstrap table 2 */}
                     <ToolkitProvider
-                        data={this.state.books}
+                        data={this.state.users}
                         keyField="id"
                         columns={this.getColumns()}
                         bootstrap4
@@ -191,4 +200,4 @@ class AdminBookList extends Component {
     }
 }
 
-export default AdminBookList;
+export default AdminUserList;

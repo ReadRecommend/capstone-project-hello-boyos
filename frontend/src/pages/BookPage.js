@@ -9,7 +9,6 @@ import {
     Tabs,
     Tab,
     Image,
-    Button,
     Form,
     Pagination,
     Spinner,
@@ -218,6 +217,8 @@ class BookPage extends Component {
                         }
                     });
                 break;
+            default:
+                return null;
         }
     };
 
@@ -323,8 +324,17 @@ class BookPage extends Component {
         });
     };
 
-    notify = (message) => {
-        toast.info(message);
+    notify = (message, type) => {
+        switch (type) {
+            case "success":
+                toast.success(message);
+                break;
+            case "error":
+                toast.error(message);
+                break;
+            default:
+                toast.info(message);
+        }
     };
 
     movePage = (page) => {
@@ -384,16 +394,18 @@ class BookPage extends Component {
                                 <BlindCover book={book}></BlindCover>
                             )}
                             <Media.Body>
-                                {!this.context && <>
-                                    <h1>{book.title}</h1>
-                                    <h5>
-                                        <small>
-                                            {this.sortAuthors(book.authors).join(
-                                                ", "
-                                            )}
-                                        </small>
-                                    </h5> </>
-                                }
+                                {!this.context && (
+                                    <>
+                                        <h1>{book.title}</h1>
+                                        <h5>
+                                            <small>
+                                                {this.sortAuthors(
+                                                    book.authors
+                                                ).join(", ")}
+                                            </small>
+                                        </h5>{" "}
+                                    </>
+                                )}
                                 <h6>
                                     <small>
                                         Read by {book.n_readers} user
@@ -478,25 +490,39 @@ class BookPage extends Component {
                                         title="Additional Information"
                                     >
                                         <br></br>
-                                        {!this.context && <>
-                                            <strong>Publisher: </strong>
-                                            {book.publisher}
-                                            <br></br>
-                                        </>}                                        
-                                        <strong>Publication Year: </strong>
-                                        {book.publication_date}
-                                        <br></br>
+                                        {!this.context && (
+                                            <>
+                                                <strong>Publisher: </strong>
+                                                {book.publisher}
+                                                <br></br>
+                                            </>
+                                        )}
+                                        {book.publication_date && (
+                                            <>
+                                                <strong>
+                                                    Publication Year:{" "}
+                                                </strong>
+                                                {book.publication_date}
+                                                <br></br>
+                                            </>
+                                        )}
                                         <strong>Genres: </strong>
                                         {book.genres.sort().join(", ")}
                                         <br></br>
-                                        <strong>Language: </strong>
-                                        {book.language}
-                                        <br></br>
-                                        {!this.context && <>
-                                            <strong>ISBN: </strong>
-                                            {book.isbn}
-                                            <br></br>
-                                        </>}                                        
+                                        {book.language && (
+                                            <>
+                                                <strong>Language: </strong>
+                                                {book.language}
+                                                <br></br>
+                                            </>
+                                        )}
+                                        {!this.context && book.isbn && (
+                                            <>
+                                                <strong>ISBN: </strong>
+                                                {book.isbn}
+                                                <br></br>
+                                            </>
+                                        )}
                                     </Tab>
                                     <Tab
                                         eventKey="recommend"

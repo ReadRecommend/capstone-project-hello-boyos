@@ -37,7 +37,7 @@ def add_collection():
         )
 
     # Ensure we are not trying to delete or create main
-    if collection_name == "Main" or collection_name == "Recently Read":
+    if collection_name == "Main":
         raise InvalidRequest("Cannot create or delete a collection with this name")
 
     if reader_id != flask_praetorian.current_user().id:

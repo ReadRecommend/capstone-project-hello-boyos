@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Alert, Button, Form, Container } from "react-bootstrap";
+import { Button, Form, Container } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
 
-import "./Login.css";
+import { createAccount } from "../fetchFunctions";
 
 class CreateAccount extends Component {
     constructor(props) {
@@ -11,8 +12,6 @@ class CreateAccount extends Component {
             username: "",
             email: "",
             password: "",
-            errorShow: false,
-            errorMessage: "",
         };
     }
 
@@ -32,64 +31,49 @@ class CreateAccount extends Component {
         this.setState({ password_confirm: event.target.value });
     };
 
-    // Function that makes the error not show
-    handleError() {
-        this.setState({ errorShow: false, errorMessage: "" });
-    }
-
     handleSubmit = (event) => {
         event.preventDefault();
         if (!this.state.username || !this.state.email || !this.state.password) {
-            this.setState({
-                errorShow: true,
-                errorMessage: "Please fill in the required fields",
-            });
+            toast.error("Please fill in the required fields");
             return;
         }
 
-        const data = {
-            username: this.state.username,
-            email: this.state.email,
-            password: this.state.password,
-        };
-        fetch("http://localhost:5000/auth/signup", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+        createAccount(
+            this.state.username,
+            this.state.email,
+            this.state.password
+        )
             .then((res) => {
                 if (!res.ok) {
-                    this.setState({
-                        errorShow: true,
-                        errorMessage:
-                            "This username or password is currently in use. Please choose another",
-                    }).then(() => {
-                        throw Error;
+                    return res.text().then((text) => {
+                        throw Error(text);
                     });
                 }
+
                 return res.json();
             })
             .then(() => {
                 // Change route to login
                 return this.props.history.push("/login");
             })
-            .catch((e) => { });
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
+            });
     };
 
     render() {
         return (
             <div className="CreateAccount">
-                {/* Alert for general problems */}
-                <Alert
-                    show={this.state.errorShow}
-                    onClose={() => this.handleError()}
-                    variant="danger"
-                    dismissible
-                >
-                    {this.state.errorMessage}
-                </Alert>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
+
                 <Container>
                     <br></br>
                     <h1>Create an Account</h1>
@@ -113,6 +97,7 @@ class CreateAccount extends Component {
                                 placeholder="Email"
                                 value={this.state.email}
                                 onChange={this.updateEmail}
+                                required
                             />
                         </Form.Group>
                         <Form.Group>
@@ -126,9 +111,14 @@ class CreateAccount extends Component {
                                 required
                             />
                         </Form.Group>
-                        <Button variant="primary" type="submit" block value="Sign In">
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            block
+                            value="Sign In"
+                        >
                             Sign Up
-            </Button>
+                        </Button>
                     </Form>
                     <br></br>
                     <p className="text-center"> or </p>
@@ -139,7 +129,7 @@ class CreateAccount extends Component {
                         block
                     >
                         Login
-          </Button>
+                    </Button>
                 </Container>
             </div>
         );

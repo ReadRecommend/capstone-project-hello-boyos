@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { Navbar, Nav, Button, NavDropdown, Form } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import PropTypes from "prop-types";
-import { Router, Route, Redirect, useLocation} from 'react-router';
-import BootstrapSwitchButton from 'bootstrap-switch-button-react';
+import { Redirect } from "react-router";
+import BootstrapSwitchButton from "bootstrap-switch-button-react";
 import { bookDetailsContext } from "../BookDetailsContext";
-
-
 
 class NavigationBar extends Component {
     constructor(props) {
@@ -42,9 +40,8 @@ class NavigationBar extends Component {
     };
 
     handleToggle = (e) => {
-        console.log("butt")
-
-    }
+        console.log("butt");
+    };
 
     renderRedirect = () => {
         const { type, search } = this.state;
@@ -72,8 +69,8 @@ class NavigationBar extends Component {
     };
 
     renderSearchBar = () => {
-        return(
-            <Nav style={{marginRight:'10px'}}>
+        return (
+            <Nav style={{ marginRight: "10px" }}>
                 <Form inline onSubmit={this.handleSubmit}>
                     <InputGroup>
                         <Form.Control
@@ -81,13 +78,13 @@ class NavigationBar extends Component {
                             placeholder="Search"
                             value={this.state.search}
                             onChange={this.updateSearch}
-                            style={{width:'200px'}}
+                            style={{ width: "200px" }}
                         />
                         <Form.Control
                             as="select"
                             defaultValue={"Books"}
                             onChange={this.changeSearchType}
-                            style={{width:'91px'}}
+                            style={{ width: "91px" }}
                         >
                             <option>Books</option>
                             <option>Users</option>
@@ -112,8 +109,8 @@ class NavigationBar extends Component {
         return (
             <Navbar bg="dark" variant="dark">
                 <Navbar.Brand href="/">ReadRecommend</Navbar.Brand>
-                <Nav className="mr-auto">                    
-                    {this.props.loggedInRole == "Admin" &&
+                <Nav className="mr-auto">
+                    {this.props.loggedInRole === "Admin" && (
                         // If we are an admin
                         <NavDropdown title="Admin Pages">
                             <NavDropdown.Item href="/admin/bookList">
@@ -122,21 +119,30 @@ class NavigationBar extends Component {
                             <NavDropdown.Item href="/admin/addBook">
                                 Add New Book
                             </NavDropdown.Item>
+                            <NavDropdown.Item href="/admin/userList">
+                                User List
+                            </NavDropdown.Item>
                         </NavDropdown>
-                    }  
-                    {this.props.loggedInRole == "User" &&
-                    <>
-                        <Nav.Link href="/discover">
-                            Discover
-                        </Nav.Link>
-                        <Nav.Link href="/goals">My Goals</Nav.Link>
-                    </>
-                    }
+                    )}
+                    {this.props.loggedInRole === "User" && (
+                        <>
+                            <Nav.Link href="/discover">Discover</Nav.Link>
+                            <Nav.Link href="/goals">My Goals</Nav.Link>
+                        </>
+                    )}
                 </Nav>
                 {this.renderSearchBar()}
                 {this.renderRedirect()}
-                <Nav style={{marginRight:'10px'}}>
-                    <BootstrapSwitchButton checked={this.context} width="100" onlabel="Mystery" offlabel="Certainty" onstyle="primary" onChange={this.props.toggleBookDetails}/>
+                <Nav style={{ marginRight: "10px" }}>
+                    <BootstrapSwitchButton
+                        checked={this.context}
+                        width="100"
+                        onlabel="Mystery"
+                        offlabel="Certainty"
+                        onstyle="primary"
+                        onChange={this.props.toggleBookDetails}
+                        offstyle="secondary"
+                    />
                 </Nav>
                 <Nav>
                     <Button

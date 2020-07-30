@@ -5,6 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Error from "./components/Error";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
+import AdminUserList from "./pages/Admin/AdminUserList";
 import UserHome from "./pages/UserHome";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -12,8 +13,6 @@ import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
 import GoalPage from "./pages/Goals/GoalPage";
-import AddReview from "./components/AddReview";
-import { bookDetailsContext } from "./BookDetailsContext";
 
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
@@ -31,7 +30,7 @@ class Main extends Component {
                         exact
                         path="/"
                         component={Home}
-                        roles={["user", "admin"]}
+                        roles={["user", "admin", "everyone"]}
                         key="home"
                     />
                     <PrivateRoute
@@ -54,6 +53,13 @@ class Main extends Component {
                         component={AdminBookList}
                         roles={["admin"]}
                         key="adminBookList"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/admin/userList"
+                        component={AdminUserList}
+                        roles={["admin"]}
+                        key="adminUserList"
                     />
                     <PrivateRoute
                         exact
@@ -86,14 +92,14 @@ class Main extends Component {
                         exact
                         path="/search"
                         component={Search}
-                        roles={["user"]}
+                        roles={["user", "everyone"]}
                         key="search"
                     />
                     <PrivateRoute
                         exact
                         path="/usrsearch"
                         component={UserSearch}
-                        roles={["user"]}
+                        roles={["user", "everyone"]}
                         key="userSearch"
                     />
                     <PrivateRoute
@@ -107,7 +113,7 @@ class Main extends Component {
                         exact
                         path="/discover"
                         component={Discover}
-                        roles={["user"]}
+                        roles={["user", "everyone"]}
                         key="discover"
                     />
                     <Route exact path="*" key="404">

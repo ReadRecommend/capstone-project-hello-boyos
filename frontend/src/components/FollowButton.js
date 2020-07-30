@@ -30,7 +30,7 @@ class FollowButton extends Component {
                 this.setState({ following: false, currentUser: user });
             }
         });
-        this.props.notify(`Successfully unfollowed ${userUsername}`);
+        this.props.notify(`Successfully unfollowed ${userUsername}`, "success");
     };
 
     handleFollow = (followerUsername, userUsername) => {
@@ -39,7 +39,7 @@ class FollowButton extends Component {
                 this.setState({ following: true, currentUser: user });
             }
         });
-        this.props.notify(`Successfully followed ${userUsername}`);
+        this.props.notify(`Successfully followed ${userUsername}`, "success");
     };
 
     render() {
