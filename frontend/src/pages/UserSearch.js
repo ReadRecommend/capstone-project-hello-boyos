@@ -88,7 +88,7 @@ class Search extends Component {
                     }}
                 />
             );
-        } else if (this.state.currentSearchList.length == 0) {
+        } else if (this.state.currentSearchList.length === 0) {
             return (
                 <h3 style={{ textAlign: "center", color: "grey" }}>
                     {" "}

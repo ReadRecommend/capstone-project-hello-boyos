@@ -3,8 +3,6 @@ import {
     Button,
     Form,
     Container,
-    Row,
-    Col,
     Dropdown,
     DropdownButton,
     Spinner,
@@ -246,7 +244,7 @@ class Search extends Component {
                                 top: "50%",
                             }}
                         />
-                    ) : this.state.currentDisplayList.length == 0 ? (
+                    ) : this.state.currentDisplayList.length === 0 ? (
                         <h3 style={{ textAlign: "center", color: "grey" }}>
                             {" "}
                             There are currently no results to display.{" "}

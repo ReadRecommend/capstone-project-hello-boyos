@@ -39,10 +39,6 @@ class NavigationBar extends Component {
         }
     };
 
-    handleToggle = (e) => {
-        console.log("butt");
-    };
-
     renderRedirect = () => {
         const { type, search } = this.state;
         if (this.state.Redirect) {
