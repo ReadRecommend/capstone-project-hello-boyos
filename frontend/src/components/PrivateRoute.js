@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
-import { verifyUser } from "../fetchFunctions";
+import { verifyUser, refreshToken } from "../fetchFunctions";
 import Error from "./Error";
 import PropTypes from "prop-types";
+import { Cookies } from "react-cookie";
 
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated when trying to access a protected page
@@ -23,54 +24,73 @@ class PrivateRoute extends Component {
     }
 
     authorisation = (roles) => {
-        verifyUser()
+        refreshToken()
             .then((res) => {
-                // An error occurred
                 if (!res.ok) {
                     return res.text().then((text) => {
-                        throw Error(text);
+                        throw new Error(text);
                     });
                 }
-
-                // We are a valid user
                 return res.json();
             })
             .then((json) => {
-                const user = json;
-                localStorage.setItem("loggedIn", "true");
-
-                // Check if our role has access to this page
-                let allowedAccess = false;
-                for (const role of user.roles) {
-                    if (roles.indexOf(role) !== -1) {
-                        allowedAccess = true;
-                    }
-                }
-
-                if (allowedAccess === false) {
-                    // Not authorised
-                    this.setState({
-                        loading: false,
-                        haveAccess: false,
-                        userInfo: user,
-                    });
-                } else {
-                    // Authorised
-                    this.setState({
-                        loading: false,
-                        haveAccess: true,
-                        userInfo: user,
-                    });
-                }
-            })
-            .catch((error) => {
-                // Something wrong with the cookie/it's missing
-                this.setState({
-                    loading: false,
-                    haveAccess: false,
-                    userInfo: null,
-                    brokenCookie: true,
+                let cookie = new Cookies();
+                cookie.remove("accessToken");
+                cookie.set("accessToken", json.access_token, {
+                    path: "/",
                 });
+            })
+            .catch(() => {})
+            .finally(() => {
+                verifyUser()
+                    .then((res) => {
+                        // An error occurred
+                        if (!res.ok) {
+                            return res.text().then((text) => {
+                                throw Error(text);
+                            });
+                        }
+
+                        // We are a valid user
+                        return res.json();
+                    })
+                    .then((json) => {
+                        const user = json;
+                        localStorage.setItem("loggedIn", "true");
+
+                        // Check if our role has access to this page
+                        let allowedAccess = false;
+                        for (const role of user.roles) {
+                            if (roles.indexOf(role) !== -1) {
+                                allowedAccess = true;
+                            }
+                        }
+
+                        if (allowedAccess === false) {
+                            // Not authorised
+                            this.setState({
+                                loading: false,
+                                haveAccess: false,
+                                userInfo: user,
+                            });
+                        } else {
+                            // Authorised
+                            this.setState({
+                                loading: false,
+                                haveAccess: true,
+                                userInfo: user,
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        // Something wrong with the cookie/it's missing
+                        this.setState({
+                            loading: false,
+                            haveAccess: false,
+                            userInfo: null,
+                            brokenCookie: true,
+                        });
+                    });
             });
     };
 

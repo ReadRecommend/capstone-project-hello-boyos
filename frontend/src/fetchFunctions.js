@@ -8,6 +8,12 @@ export function verifyUser() {
     });
 }
 
+export function refreshToken() {
+    return fetch(`${apiUrl}/auth/refresh`, {
+        credentials: "include",
+    });
+}
+
 export function createAccount(username, email, password) {
     const data = {
         username: username,

@@ -3,7 +3,7 @@ from flask import jsonify, request
 import flask_praetorian
 from backend import db, guard
 from backend.auth import auth_bp
-from backend.errors import InvalidRequest, ResourceExists
+from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
 from backend.model.schema import Collection, Reader, reader_schema
 
 
@@ -67,3 +67,13 @@ def signup():
 def verify():
     user = flask_praetorian.current_user()
     return jsonify(reader_schema.dump(user))
+
+
+@auth_bp.route("/refresh", methods=["GET"])
+def refresh():
+    old_token = guard.read_token_from_cookie() or guard.read_token_from_header()
+    if not old_token:
+        raise ResourceNotFound("No token found in the header or cookie")
+    new_token = guard.refresh_jwt_token(old_token)
+    return jsonify({"access_token": new_token}), 200
+
