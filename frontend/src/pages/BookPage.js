@@ -429,12 +429,12 @@ class BookPage extends Component {
                                         </h5>{" "}
                                     </>
                                 )}
-                                <h6>
+                                {!this.context && <h6>
                                     <small>
                                         Read by {book.n_readers} user
                                         {book.n_readers === 1 ? "" : "s"}
                                     </small>
-                                </h6>
+                                </h6>}
                                 <p>
                                     {user ? (
                                         <AddBookModal
