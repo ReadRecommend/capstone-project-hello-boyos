@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import { Form, Container, Spinner } from "react-bootstrap";
+import { Form, Container, Spinner, InputGroup } from "react-bootstrap";
 import SearchResults from "../components/SearchResults.js";
 import { getRecommendations, getCollectionOverview } from "../fetchFunctions";
 import { toast, ToastContainer } from "react-toastify";
+import { BsArrowRepeat } from "react-icons/bs";
+
 class Discover extends Component {
     constructor(props) {
         super(props);
@@ -157,7 +159,7 @@ class Discover extends Component {
                     <h1> Discover </h1>
                     <br></br>
                     <Form method="POST" onSubmit={this.handleSubmit}>
-                        <Form.Group>
+                        <InputGroup>
                             <Form.Control
                                 as="select"
                                 defaultValue={"Top Rated"}
@@ -171,7 +173,17 @@ class Discover extends Component {
                                     </>
                                 )}
                             </Form.Control>
-                        </Form.Group>
+                            <InputGroup.Append>
+                                <InputGroup.Text
+                                    style={{
+                                        cursor: "pointer",
+                                    }}
+                                    onClick={this.handleSubmit}
+                                >
+                                    <BsArrowRepeat />
+                                </InputGroup.Text>
+                            </InputGroup.Append>
+                        </InputGroup>
                     </Form>
                     <br></br>
                     {this.state.loading ? (
