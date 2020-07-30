@@ -24,7 +24,6 @@ class App extends Component {
     };
 
     toggleBookDetails = (e) => {
-        //e.persist();
         const { hideBookDetails } = this.state;
         this.setState(
             { hideBookDetails: !hideBookDetails },
