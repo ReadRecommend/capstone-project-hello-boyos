@@ -141,6 +141,7 @@ class NavigationBar extends Component {
                         offlabel="Certainty"
                         onstyle="primary"
                         onChange={this.props.toggleBookDetails}
+                        offstyle="secondary"
                     />
                 </Nav>
                 <Nav>

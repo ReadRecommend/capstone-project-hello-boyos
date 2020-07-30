@@ -132,7 +132,7 @@ class AdminUserList extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success(`Successfully deleted user with id '${id}'!`);
+                toast.success(`Successfully deleted user with id '${id}'`);
                 this.setState({ users: json, loading: false });
             })
             .catch((error) => {

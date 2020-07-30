@@ -110,8 +110,17 @@ class UserPage extends Component {
             });
     };
 
-    notify = (message) => {
-        toast.info(message);
+    notify = (message, type) => {
+        switch (type) {
+            case "success":
+                toast.success(message);
+                break;
+            case "error":
+                toast.error(message);
+                break;
+            default:
+                toast.info(message);
+        }
     };
 
     render() {

@@ -123,7 +123,7 @@ class AdminBookList extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success(`Successfully deleted book with id '${id}'!`);
+                toast.success(`Successfully deleted book with id '${id}'`);
                 this.setState({ books: json, loading: false });
             })
             .catch((error) => {

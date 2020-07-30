@@ -50,6 +50,7 @@ class UserHome extends Component {
             if (user) {
                 this.setState({ userInfo: user });
             }
+            toast.success(`Successfully unfollowed ${userUsername}`);
         });
     };
 
@@ -67,7 +68,7 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success(`Successfully deleted collection ${name}!`);
+                toast.success(`Successfully deleted collection ${name}`);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
@@ -103,7 +104,7 @@ class UserHome extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success(`Successfully created new collection '${name}'!`);
+                toast.success(`Successfully created new collection '${name}'`);
                 this.setState({
                     userInfo: json,
                     collectionList: json.collections,
@@ -144,7 +145,7 @@ class UserHome extends Component {
             })
             .then((json) => {
                 toast.success(
-                    `Successfully removed book ${book.title} from collection ${json.name}!`
+                    `Successfully removed book ${book.title} from collection ${json.name}`
                 );
                 this.setState({ currentCollection: json });
             })
