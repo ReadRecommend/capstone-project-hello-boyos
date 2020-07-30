@@ -1,25 +1,27 @@
 import React, { Component } from "react";
-import { Alert, Form, Button, Accordion, Card } from "react-bootstrap";
+import { Form, Button, Accordion, Card } from "react-bootstrap";
+import { toast, ToastContainer } from "react-toastify";
+
+import { addReview } from "../fetchFunctions";
 
 class AddReview extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            reader_id: "",
-            book_id: "",
+            readerId: "",
+            bookId: "",
 
             review: "",
             score: "",
-
-            errorShow: false,
-            errorMessage: "",
         };
     }
 
     componentDidMount() {
-        this.setState({ reader_id: this.props.readerID });
-        this.setState({ book_id: this.props.bookID });
+        this.setState({
+            readerId: this.props.readerID,
+            bookId: this.props.bookID,
+        });
     }
 
     updateReview = (event) => {
@@ -30,78 +32,69 @@ class AddReview extends Component {
         this.setState({ score: event.target.value });
     };
 
-    handleError() {
-        this.setState({ errorShow: false, errorMessage: "" });
-    }
-
     handleSubmit = (event) => {
         event.preventDefault();
         if (!this.state.score) {
-            this.setState({
-                errorShow: true,
-                errorMessage: "Please fill in the required fields",
-            });
+            toast.error("Please fill in the required fields");
             return;
         }
 
-        const data = {
-            reader_id: this.state.reader_id,
-            book_id: this.state.book_id,
-            review: this.state.review,
-            score: this.state.score,
-        };
-
-        fetch("http://localhost:5000/book/review", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+        addReview(
+            this.state.readerId,
+            this.state.bookId,
+            this.state.score,
+            this.state.review
+        )
             .then((res) => {
                 if (!res.ok) {
-                    this.setState({
-                        errorShow: true,
-                        errorMessage: "You have already reviewed this book.",
-                    }).then(() => {
-                        throw Error;
+                    return res.text().then((text) => {
+                        throw Error(text);
                     });
                 }
+
                 return res.json();
             })
             .then(() => {
-                this.props.notify("Review successfully published!");
-                window.location.reload()
+                this.props.notify("Review successfully published", "success");
+                window.location.reload();
                 return this.props.history.push(
-                    "/book/" + this.state.book_id + "/reviews"
+                    "/book/" + this.state.bookId + "/reviews"
                 );
             })
-            .catch((e) => { });
+            .catch((error) => {
+                // An error occurred
+                let errorMessage = "Something went wrong...";
+                try {
+                    errorMessage = JSON.parse(error.message).message;
+                } catch {
+                    errorMessage = error.message;
+                } finally {
+                    toast.error(errorMessage);
+                }
+            });
     };
 
     render() {
         return (
             <div className="AddReview">
-                <Alert
-                    show={this.state.errorShow}
-                    onClose={() => this.handleError()}
-                    variant="danger"
-                    dismissible
-                >
-                    {this.state.errorMessage}
-                </Alert>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
+
                 <Accordion>
                     <Card>
-                        {/* <Card.Header> */}
-                        <Accordion.Toggle as={Card.Header} variant="link" eventKey="0">
-                            <a href="#">
-                                <h5>Leave a review</h5>
-                            </a>
+                        <Accordion.Toggle
+                            as={Card.Header}
+                            variant="link"
+                            eventKey="0"
+                            style={{ cursor: "pointer" }}
+                        >
+                            <h5>Leave a review</h5>
                         </Accordion.Toggle>
-                        {/* </Card.Header> */}
                         <Accordion.Collapse eventKey="0">
                             <Card.Body>
-                                <Form method="POST" onSubmit={this.handleSubmit}>
+                                <Form
+                                    method="POST"
+                                    onSubmit={this.handleSubmit}
+                                >
                                     <Form.Group>
                                         <Form.Control
                                             type="number"
@@ -125,7 +118,7 @@ class AddReview extends Component {
                                     </Form.Group>
                                     <Button variant="primary" type="submit">
                                         Submit
-                  </Button>
+                                    </Button>
                                 </Form>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -135,7 +128,5 @@ class AddReview extends Component {
         );
     }
 }
-
-
 
 export default AddReview;

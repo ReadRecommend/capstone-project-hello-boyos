@@ -3,7 +3,9 @@ from sqlalchemy import CheckConstraint
 
 
 class ReaderGoal(db.Model):
-    reader_id = db.Column(db.Integer, db.ForeignKey("reader.id"), primary_key=True)
+    reader_id = db.Column(
+        db.Integer, db.ForeignKey("reader.id", ondelete="CASCADE"), primary_key=True,
+    )
     month = db.Column(
         "month",
         db.Integer,

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { Alert, Button, Form, Container } from "react-bootstrap";
+import { Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
 import { loginContext } from "../LoginContext";
-import { toast, ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from "react-toastify";
 
-import "./Login.css";
+import { logIn } from "../fetchFunctions";
 
 class Login extends Component {
     constructor(props) {
@@ -12,7 +12,6 @@ class Login extends Component {
         this.state = {
             username: "",
             password: "",
-            access_token: "",
         };
     }
 
@@ -31,17 +30,7 @@ class Login extends Component {
             return;
         }
 
-        const data = {
-            username: this.state.username,
-            password: this.state.password,
-        };
-        fetch("http://localhost:5000/auth/login", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        })
+        logIn(this.state.username, this.state.password)
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
@@ -56,7 +45,7 @@ class Login extends Component {
                 cookie.set("accessToken", json.access_token, { path: "/" });
 
                 let role = "User";
-                if (json.roles.search("admin") != -1) {
+                if (json.roles.search("admin") !== -1) {
                     role = "Admin";
                 }
 
@@ -88,7 +77,6 @@ class Login extends Component {
             <div className="Login">
                 <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
 
-                {/* <form> */}
                 <Container>
                     <br></br>
                     <h1>Login</h1>
@@ -116,9 +104,14 @@ class Login extends Component {
                                 required
                             />
                         </Form.Group>
-                        <Button variant="primary" type="submit" block value="Sign In">
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            block
+                            value="Sign In"
+                        >
                             Sign In
-            </Button>
+                        </Button>
                     </Form>
                     <br></br>
                     <p className="text-center"> or </p>
@@ -129,9 +122,8 @@ class Login extends Component {
                         block
                     >
                         Create an Account
-          </Button>
+                    </Button>
                 </Container>
-                {/* </form> */}
             </div>
         );
     }

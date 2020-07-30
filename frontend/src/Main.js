@@ -5,6 +5,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Error from "./components/Error";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
+import AdminUserList from "./pages/Admin/AdminUserList";
 import UserHome from "./pages/UserHome";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -12,11 +13,11 @@ import CreateAccount from "./pages/CreateAccount";
 import Logout from "./pages/Logout";
 import UserPage from "./pages/UserPage";
 import GoalPage from "./pages/Goals/GoalPage";
-import AddReview from "./components/AddReview";
 
 import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
+import Discover from "./pages/Discover";
 
 class Main extends Component {
     render() {
@@ -52,6 +53,13 @@ class Main extends Component {
                         component={AdminBookList}
                         roles={["admin"]}
                         key="adminBookList"
+                    />
+                    <PrivateRoute
+                        exact
+                        path="/admin/userList"
+                        component={AdminUserList}
+                        roles={["admin"]}
+                        key="adminUserList"
                     />
                     <PrivateRoute
                         exact
@@ -101,6 +109,16 @@ class Main extends Component {
                         roles={["user"]}
                         key="goalPage"
                     />
+                    <PrivateRoute
+                        exact
+                        path="/discover"
+                        component={Discover}
+                        roles={["user"]}
+                        key="discover"
+                    />
+                    <Route exact path="*" key="404">
+                        <h1>404 Page not found</h1>
+                    </Route>
                     <Route
                         path="*"
                         key="404"

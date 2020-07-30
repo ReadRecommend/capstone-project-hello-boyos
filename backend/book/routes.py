@@ -1,20 +1,19 @@
-from flask import jsonify, request
-import flask_sqlalchemy
 import math
 
+from flask import jsonify, request
 
 import flask_praetorian
 from backend import db
 from backend.book import book_bp
 from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
 from backend.model.schema import (
+    Author,
     Book,
+    CollectionMembership,
+    Genre,
+    Review,
     book_schema,
     books_schema,
-    Genre,
-    Author,
-    Review,
-    CollectionMembership,
     review_schema,
     reviews_schema,
 )
@@ -165,7 +164,7 @@ def add_review():
     if Review.query.filter(
         (Review.reader_id == reader_id) & (Review.book_id == book_id)
     ).first():
-        raise ResourceExists("User has already reviewed this book")
+        raise ResourceExists("You have already reviewed this book")
 
     new_review = Review(
         reader_id=reader_id, book_id=book_id, review=review, score=score,

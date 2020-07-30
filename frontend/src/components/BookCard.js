@@ -2,11 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Modal, Card, Button, ListGroup, ListGroupItem } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
+import BlindCover from "../components/BlindCover";
+import { bookDetailsContext } from "../BookDetailsContext";
 
 /*
 The BookCard class deals with displaying the books. In a collection / search results or similar
 */
-class CollectionItem extends Component {
+class BookCard extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -102,7 +104,7 @@ class CollectionItem extends Component {
         const bookID = book.id;
 
         return (
-            <div>
+            <div style={{ margin: "auto" }}>
                 {this.props.editable === true && (
                     <Modal
                         show={this.state.modalShow}
@@ -117,14 +119,26 @@ class CollectionItem extends Component {
                 )}
                 <Card style={{ width: "314px" }}>
                     <a href={`/book/${bookID}`}>
-                        <Card.Img variant="top" src={cover} height="475px" />
+                        {!this.context ? (
+                            <Card.Img
+                                variant="top"
+                                src={cover}
+                                height="475px"
+                            />
+                        ) : (
+                            <BlindCover book={book} />
+                        )}
                     </a>
                     <Card.Body>
                         <Card.Text>
-                            <a href={`/book/${bookID}`}>{title}</a>
-                            <br></br>
-                            <small>{book.authors}</small>
-                            <br></br>
+                            {!this.context && (
+                                <>
+                                    <a href={`/book/${bookID}`}>{title}</a>
+                                    <br></br>
+                                    <small>{book.authors.join(", ")}</small>
+                                    <br></br>
+                                </>
+                            )}
                             <small>{book.publication_date}</small>
                         </Card.Text>
                         <StarRatings
@@ -150,9 +164,11 @@ class CollectionItem extends Component {
     }
 }
 
-CollectionItem.propTypes = {
+BookCard.propTypes = {
     book: PropTypes.object.isRequired,
-    userCollections: PropTypes.array.isRequired,
+    userCollections: PropTypes.array,
 };
 
-export default CollectionItem;
+BookCard.contextType = bookDetailsContext;
+
+export default BookCard;

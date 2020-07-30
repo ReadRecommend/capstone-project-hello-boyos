@@ -10,7 +10,6 @@ from backend.model.schema import (
     Book,
     Collection,
     Reader,
-    ReaderGoal,
     collection_schema,
     reader_schema,
 )
@@ -38,7 +37,7 @@ def add_collection():
         )
 
     # Ensure we are not trying to delete or create main
-    if collection_name == "Main" or collection_name == "Recently Read":
+    if collection_name == "Main":
         raise InvalidRequest("Cannot create or delete a collection with this name")
 
     if reader_id != flask_praetorian.current_user().id:
@@ -86,6 +85,7 @@ def add_collection():
 def modify_collection():
     collection_id = request.json.get("collection_id")
     book_id = request.json.get("book_id")
+
     if not (collection_id and book_id):
         raise InvalidRequest(
             "Request should be of the form {{'collection_id': id, 'book_id': id}}",

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Modal, Form, InputGroup } from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Datetime from "react-datetime";
 import { toast, ToastContainer } from "react-toastify";
@@ -77,7 +77,7 @@ class AddGoalModal extends Component {
                 return res.json();
             })
             .then((json) => {
-                toast.success("Successfully updated goal!");
+                toast.success("Successfully updated goal");
                 this.closeAndSelect(this.state.timePeriod.year);
             })
             .catch((error) => {
