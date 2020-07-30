@@ -90,7 +90,16 @@ class Search extends Component {
                         </InputGroup>
                     </Form>
                     <br></br>
-                    <UserSearchResults users={this.state.currentSearchList} />
+                    {this.state.currentSearchList.length == 0 ? (
+                        <h3 style={{ textAlign: "center", color: "grey" }}>
+                            {" "}
+                            There are currently no results to display.{" "}
+                        </h3>
+                    ) : (
+                        <UserSearchResults
+                            users={this.state.currentSearchList}
+                        />
+                    )}
                 </Container>
             </div>
         );
