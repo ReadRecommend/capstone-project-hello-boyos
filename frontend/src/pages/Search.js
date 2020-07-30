@@ -195,17 +195,12 @@ class Search extends Component {
                         <option>&ge; 2 Stars</option>
                         <option>&ge; 1 Stars</option>
                     </Form.Control>
-                    {!this.state.loadingResults && (
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            block
-                            value="Search"
-                        >
+                </InputGroup>
+                {!this.state.loadingResults && (
+                        <Button variant="primary" type="submit" value="Search">
                             Search
                         </Button>
                     )}
-                </InputGroup>
             </Form>
         );
     };
