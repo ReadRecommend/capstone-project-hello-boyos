@@ -68,36 +68,20 @@ class BookPage extends Component {
             this.state.reviewsPerPage
         )
             .then((res) => {
+                if (!res.ok) {
+                    // Something went wrong, likely there is no book with the id specified in the url
+                    return res.text().then((text) => {
+                        throw Error(text);
+                    });
+                }
                 return res.json();
             })
             .then((json) => {
-                if (!this.state.items) {
-                    this.buildPageBar(json.count);
-                }
+                this.buildPageBar(json.count);
             })
             .then(() => {
-                getReviewPages(
-                    this.props.match.params.bookID,
-                    this.state.reviewsPerPage
-                )
-                    .then((res) => {
-                        if (!res.ok) {
-                            // Something went wrong, likely there is no book with the id specified in the url
-                            return res.text().then((text) => {
-                                throw Error(text);
-                            });
-                        }
-
-                        // Found a valid book
-                        return res.json();
-                    })
-                    .then((json) => {
-                        this.buildPageBar(json.count);
-                    })
-                    .then(() => {
-                        this.forceUpdate();
-                        this.setState({ loading: false });
-                    });
+                this.forceUpdate();
+                this.setState({ loading: false });
             })
             .catch(() => {
                 this.setState({ book: null, loading: false });
