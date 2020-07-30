@@ -29,8 +29,6 @@ def add_collection():
     collection_data = request.json
     reader_id = collection_data.get("reader_id")
     collection_name = collection_data.get("name")
-    print(reader_id)
-    print(collection_name)
 
     # Check proper fields exist
     if not (reader_id and collection_name):

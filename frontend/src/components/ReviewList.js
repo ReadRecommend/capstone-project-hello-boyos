@@ -40,6 +40,12 @@ class ReviewList extends Component {
             });
             this.forceUpdate();
         }
+        if (previousProps.reviewsPerPage !== this.props.reviewsPerPage) {
+            this.setState({ nReviews: this.props.reviewsPerPage }, () => {
+                this.updateReviews();
+            });
+            this.forceUpdate();
+        }
     }
 
     render() {
