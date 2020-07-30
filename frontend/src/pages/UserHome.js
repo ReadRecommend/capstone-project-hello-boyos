@@ -343,20 +343,43 @@ class UserHome extends Component {
                         <Col>
                             <h1>{this.state.currentCollection.name}</h1>
                             <br></br>
-                            <Collection
-                                key={this.state.currentCollection.id}
-                                currentCollection={this.state.currentCollection}
-                                removeBook={this.removeBook}
-                                userCollections={this.state.collectionList}
-                                addToCollection={this.addToCollection}
-                                editable={
-                                    true &&
-                                    this.state.currentCollection.name !=
-                                        "All" &&
-                                    this.state.currentCollection.name !=
-                                        "Recently Read"
-                                }
-                            />
+
+                            {this.state.currentCollection.books == null ? (
+                                <></>
+                            ) : this.state.currentCollection.books.length ==
+                              0 ? (
+                                <p>
+                                    <h3
+                                        style={{
+                                            textAlign: "center",
+                                            color: "grey",
+                                        }}
+                                    >
+                                        You currently have no books in this
+                                        collection. Add some!
+                                    </h3>
+                                    <center>
+                                        <Button href="/search">Search</Button>
+                                    </center>
+                                </p>
+                            ) : (
+                                <Collection
+                                    key={this.state.currentCollection.id}
+                                    currentCollection={
+                                        this.state.currentCollection
+                                    }
+                                    removeBook={this.removeBook}
+                                    userCollections={this.state.collectionList}
+                                    addToCollection={this.addToCollection}
+                                    editable={
+                                        true &&
+                                        this.state.currentCollection.name !=
+                                            "All" &&
+                                        this.state.currentCollection.name !=
+                                            "Recently Read"
+                                    }
+                                />
+                            )}
                         </Col>
                     </Row>
                 </Container>
