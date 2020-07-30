@@ -126,8 +126,7 @@ class NavigationBar extends Component {
                             <Nav.Link href="/goals">My Goals</Nav.Link>
                         </>
                     )}
-                </Nav>
-                {console.log("The current location is: " + (this.props.location.pathname !== "/search" && this.props.location.pathname !== "/usrsearch"))}
+                </Nav>                
                 {(this.props.location.pathname !== "/search" && this.props.location.pathname !== "/usrsearch") && this.renderSearchBar()}
                 {this.renderRedirect()}
                 <Nav style={{ marginRight: "10px" }}>

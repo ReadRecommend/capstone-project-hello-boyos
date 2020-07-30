@@ -154,8 +154,7 @@ class BookCard extends Component {
                         {/* <Card.Text></Card.Text> */}
                     </Card.Body>
                     {this.props.editable && (
-                        <Card.Footer>
-                            {console.log("Here")}
+                        <Card.Footer>                            
                             {this.addButton()}
                             {this.removeButton()}
                         </Card.Footer>
