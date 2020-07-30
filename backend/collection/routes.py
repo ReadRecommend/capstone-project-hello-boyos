@@ -29,11 +29,13 @@ def add_collection():
     collection_data = request.json
     reader_id = collection_data.get("reader_id")
     collection_name = collection_data.get("name")
+    print(reader_id)
+    print(collection_name)
 
     # Check proper fields exist
     if not (reader_id and collection_name):
         raise InvalidRequest(
-            "Request should be of the form {reader_id: 'user_id', name: 'collection_name'}",
+            "Request should be of the form {{reader_id: 'user_id', name: 'collection_name'}}"
         )
 
     # Ensure we are not trying to delete or create main

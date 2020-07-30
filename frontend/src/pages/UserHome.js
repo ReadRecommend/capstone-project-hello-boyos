@@ -92,6 +92,11 @@ class UserHome extends Component {
 
     // Function that adds a collection to a user's collection list
     addCollection = (name) => {
+        if (!name) {
+            toast.error("Please provide a collection name");
+            return;
+        }
+
         // We will let the backend do the checking for us
         addCollection(this.state.userInfo.id, name)
             .then((res) => {
@@ -259,20 +264,18 @@ class UserHome extends Component {
         const currentCollection = this.state.currentCollection;
         if (!currentCollection.books) {
             return (
-                <p>
-                    <h3
-                        style={{
-                            textAlign: "center",
-                            color: "grey",
-                        }}
-                    >
-                        No collection is currently selected
-                    </h3>
-                </p>
+                <h3
+                    style={{
+                        textAlign: "center",
+                        color: "grey",
+                    }}
+                >
+                    No collection is currently selected
+                </h3>
             );
         } else if (currentCollection && currentCollection.books.length === 0) {
             return (
-                <p>
+                <>
                     <h3
                         style={{
                             textAlign: "center",
@@ -285,10 +288,9 @@ class UserHome extends Component {
                     <center>
                         <Button href="/search">Search</Button>
                     </center>
-                </p>
+                </>
             );
         } else {
-            console.log(this.addToCollection);
             return (
                 <Collection
                     key={this.state.currentCollection.id}
