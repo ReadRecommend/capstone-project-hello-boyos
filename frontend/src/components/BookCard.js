@@ -37,16 +37,6 @@ class BookCard extends Component {
         );
     };
 
-    // Can move this to a class in css later
-    getStyle = () => {
-        return {
-            background: "#f4f4f4",
-            textAlign: "center",
-            padding: "10px",
-            borderBottom: "1px #ccc dotted",
-        };
-    };
-
     handleModal = () => {
         if (this !== null && typeof this !== "undefined") {
             this.setState({ modalShow: !this.state.modalShow });
@@ -104,7 +94,7 @@ class BookCard extends Component {
         const bookID = book.id;
 
         return (
-            <div style={{ margin: "auto" }}>
+            <div style={{ marginLeft: "auto", marginRight: "auto" }}>
                 {this.props.editable === true && (
                     <Modal
                         show={this.state.modalShow}
@@ -137,9 +127,9 @@ class BookCard extends Component {
                                     <br></br>
                                     <small>{book.authors.join(", ")}</small>
                                     <br></br>
+                                    <small>{book.publication_date}</small>
                                 </>
                             )}
-                            <small>{book.publication_date}</small>
                         </Card.Text>
                         <StarRatings
                             rating={book.ave_rating}
