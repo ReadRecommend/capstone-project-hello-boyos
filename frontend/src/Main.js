@@ -92,14 +92,14 @@ class Main extends Component {
                         exact
                         path="/search"
                         component={Search}
-                        roles={["user"]}
+                        roles={["user", "everyone"]}
                         key="search"
                     />
                     <PrivateRoute
                         exact
                         path="/usrsearch"
                         component={UserSearch}
-                        roles={["user"]}
+                        roles={["user", "everyone"]}
                         key="userSearch"
                     />
                     <PrivateRoute

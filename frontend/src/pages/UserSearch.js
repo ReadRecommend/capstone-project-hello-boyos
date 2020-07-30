@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button, Form, Container } from "react-bootstrap";
+import { Button, Form, Container, Spinner } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
 import UserSearchResults from "../components/UserSearchResults.js";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,6 +13,7 @@ class Search extends Component {
         this.state = {
             search: "",
             currentSearchList: [],
+            loading: false,
         };
     }
 
@@ -32,6 +33,7 @@ class Search extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
+        this.setState({ loading: true });
 
         searchUsers(this.state.search)
             .then((res) => {
@@ -45,6 +47,7 @@ class Search extends Component {
             .then((users) => {
                 this.setState({
                     currentSearchList: users,
+                    loading: false,
                 });
             })
             .catch((error) => {
@@ -58,6 +61,47 @@ class Search extends Component {
                     toast.error(errorMessage);
                 }
             });
+    };
+
+    removeCurrentUser = (userList) => {
+        if (!this.props.initialUserInfo) {
+            return userList;
+        }
+        let users = [];
+        userList.forEach((user) => {
+            if (user.id !== this.props.initialUserInfo.id) {
+                users.push(user);
+            }
+        });
+        return users;
+    };
+
+    renderResults = () => {
+        if (this.state.loading) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else if (this.state.currentSearchList.length == 0) {
+            return (
+                <h3 style={{ textAlign: "center", color: "grey" }}>
+                    {" "}
+                    There are currently no results to display.{" "}
+                </h3>
+            );
+        } else {
+            return (
+                <UserSearchResults
+                    users={this.removeCurrentUser(this.state.currentSearchList)}
+                />
+            );
+        }
     };
 
     render() {
@@ -90,16 +134,7 @@ class Search extends Component {
                         </InputGroup>
                     </Form>
                     <br></br>
-                    {this.state.currentSearchList.length == 0 ? (
-                        <h3 style={{ textAlign: "center", color: "grey" }}>
-                            {" "}
-                            There are currently no results to display.{" "}
-                        </h3>
-                    ) : (
-                        <UserSearchResults
-                            users={this.state.currentSearchList}
-                        />
-                    )}
+                    {this.renderResults()}
                 </Container>
             </div>
         );

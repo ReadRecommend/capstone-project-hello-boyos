@@ -1,5 +1,6 @@
 import math
 
+import isbnlib
 from flask import jsonify, request
 
 import flask_praetorian
@@ -43,7 +44,11 @@ def add_book():
     if Book.query.filter((Book.isbn == isbn)).first():
         raise ResourceExists("A book with this isbn already exists")
 
-    # TODO Check if a book with this title/author combo exists
+    # Check if isbn is valid
+    if not (isbn := isbnlib.to_isbn13(isbn.clean(isbn))):
+        raise InvalidRequest(
+            "The isbn provided is not valid or could not be converted into isbn-13 format"
+        )
 
     # Create new book
     new_book = Book(
