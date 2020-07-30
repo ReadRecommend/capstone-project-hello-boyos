@@ -235,12 +235,18 @@ class Search extends Component {
                                 top: "50%",
                             }}
                         />
+                    ) : this.state.currentDisplayList.length == 0 ? (
+                        <h3 style={{ textAlign: "center", color: "grey" }}>
+                            {" "}
+                            There are currently no results to display.{" "}
+                        </h3>
                     ) : (
                         <SearchResults
                             books={this.state.currentDisplayList}
                             loadingResults={this.state.loadingResults}
                         ></SearchResults>
                     )}
+
                     <br></br>
                     <Container>
                         <Row>
