@@ -18,11 +18,17 @@ import BookPage from "./pages/BookPage";
 import Search from "./pages/Search";
 import UserSearch from "./pages/UserSearch";
 import Discover from "./pages/Discover";
+import { toast, ToastContainer } from "react-toastify";
 
 class Main extends Component {
+    notifyError(message) {
+        toast.error(message);
+    }
+
     render() {
         return (
             <div>
+                <ToastContainer autoClose={4000} pauseOnHover closeOnClick />
                 <Switch>
                     {" "}
                     {/* The Switch decides which component to show based on the current URL.*/}
@@ -32,6 +38,7 @@ class Main extends Component {
                         component={Home}
                         roles={["user", "admin", "everyone"]}
                         key="home"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -39,6 +46,7 @@ class Main extends Component {
                         component={UserHome}
                         roles={["user"]}
                         key="userHome"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -46,6 +54,7 @@ class Main extends Component {
                         component={AdminAddBook}
                         roles={["admin"]}
                         key="adminAddBook"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -53,6 +62,7 @@ class Main extends Component {
                         component={AdminBookList}
                         roles={["admin"]}
                         key="adminBookList"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -60,6 +70,7 @@ class Main extends Component {
                         component={AdminUserList}
                         roles={["admin"]}
                         key="adminUserList"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -67,6 +78,7 @@ class Main extends Component {
                         component={UserPage}
                         roles={["everyone"]}
                         key="user"
+                        notifyError={this.notifyError}
                     />
                     <Route
                         exact
@@ -87,6 +99,7 @@ class Main extends Component {
                         component={BookPage}
                         roles={["everyone"]}
                         key="bookPage"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -94,6 +107,7 @@ class Main extends Component {
                         component={Search}
                         roles={["user", "everyone"]}
                         key="search"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -101,6 +115,7 @@ class Main extends Component {
                         component={UserSearch}
                         roles={["user", "everyone"]}
                         key="userSearch"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -108,6 +123,7 @@ class Main extends Component {
                         component={GoalPage}
                         roles={["user"]}
                         key="goalPage"
+                        notifyError={this.notifyError}
                     />
                     <PrivateRoute
                         exact
@@ -115,6 +131,7 @@ class Main extends Component {
                         component={Discover}
                         roles={["user", "everyone"]}
                         key="discover"
+                        notifyError={this.notifyError}
                     />
                     <Route exact path="*" key="404">
                         <h1>404 Page not found</h1>

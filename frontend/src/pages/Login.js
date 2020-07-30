@@ -15,6 +15,17 @@ class Login extends Component {
         };
     }
 
+    componentDidMount() {
+        if (
+            this.props.location.state &&
+            this.props.location.state.newAccount === true
+        ) {
+            toast.success(
+                "Successfully created your account! Please try to login now"
+            );
+        }
+    }
+
     updateUsername = (event) => {
         this.setState({ username: event.target.value });
     };
