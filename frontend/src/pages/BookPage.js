@@ -347,6 +347,26 @@ class BookPage extends Component {
         });
     };
 
+    updatePerPage = (event) => {
+        this.setState({ reviewsPerPage: event.target.value }, () => {
+
+
+            getReviewPages(
+                this.props.match.params.bookID,
+                this.state.reviewsPerPage
+            )
+                .then((res) => {
+                    return res.json();
+                })
+                .then((json) => {
+                    this.setState({ totalReviewPages: json.count }, () => this.movePage(1)
+                    )
+                })
+
+
+        })
+    }
+
     render() {
         const book = this.state.book;
         const user = this.props.initialUserInfo;
@@ -468,6 +488,15 @@ class BookPage extends Component {
                                                 {book.n_ratings.toLocaleString()}{" "}
                                                 reviews
                                             </small>
+
+                                            <div>
+                                                Reviews per page
+                                                <select id="perPage" onChange={this.updatePerPage} value={this.state.reviewsPerPage}>
+                                                    <option value="1">1</option>
+                                                    <option value="5">5</option>
+                                                    <option value="10">10</option>
+                                                </select>
+                                            </div>
 
                                             <ReviewList
                                                 bookID={

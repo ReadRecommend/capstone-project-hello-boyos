@@ -137,7 +137,7 @@ def get_review(id):
     request_data = request.json
 
     page = request_data.get("page")
-    nReview = request_data.get("reviews_per_page")
+    nReview = int(request_data.get("reviews_per_page"))
 
     review = Review.query.filter_by(book_id=id).paginate(page, nReview, True)
     return jsonify(reviews_schema.dump(review.items))
@@ -150,7 +150,7 @@ def get_review_count(id):
 
     request_data = request.json
 
-    nReview = request_data.get("reviews_per_page")
+    nReview = int(request_data.get("reviews_per_page"))
 
     review = Review.query.filter_by(book_id=id).count()
 
