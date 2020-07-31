@@ -37,7 +37,7 @@ The following variables are supported in the `.env` file:
 | `FLASK_RUN_HOST`     | The host to run the Flask application on                     | localhost                                    |
 | `FLASK_RUN_PORT`     | The port to run the Flask application on                     | 5000                                         |
 | `FRONTEND_PORT`      | The port to run the React application on. (See [Serve](https://github.com/vercel/serve) documentation for more information) | 3000                                         |
-| `BROWSER`            | The browser to open the react app in. WIll be ignored if application is configured for production | Will user system default browser             |
+| `BROWSER`            | The browser to open the react app in. WIll be ignored if application is configured for production | Will use system default browser              |
 
 **Note:** A `.env` file is required, with at least a new secret key
 
