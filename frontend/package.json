@@ -1,6 +1,6 @@
 {
-    "name": "react_crash_todo",
-    "version": "0.1.0",
+    "name": "readrecommend",
+    "version": "1.0.0",
     "private": true,
     "dependencies": {
         "bootstrap": "^4.5.0",
@@ -29,7 +29,8 @@
         "react-toastify": "^6.0.8",
         "recharts": "^1.8.5",
         "typescript": "^3.9.6",
-        "webfontloader": "^1.6.28"
+        "webfontloader": "^1.6.28",
+        "yargs-parser": "^18.1.3"
     },
     "scripts": {
         "start": "react-scripts start",

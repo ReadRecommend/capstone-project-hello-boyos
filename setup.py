@@ -14,6 +14,7 @@ from backend.model.book import Book
 from backend.model.collection import Collection
 from backend.model.genre import Genre
 from backend.model.reader import Reader
+from backend.recommendation.content_recommender import ContentRecommender
 
 init(autoreset=True)
 
@@ -23,9 +24,11 @@ def json_to_db(path):
     Args:
         path (str): The absolute path to the books JSON file
     """
-    f = open(path, "r")
-    data = json.load(f)
-
+    try:
+        f = open(path, "r")
+        data = json.load(f)
+    except FileNotFoundError:
+        return
     for book_data in data:
         book = Book(
             isbn=book_data.get("isbn"),
@@ -65,7 +68,7 @@ def json_to_db(path):
 user = os.getenv("POSTGRES_USER", "postgres")
 password = os.getenv("POSTGRES_PASSWORD", "test123")
 host = os.getenv("POSTGRES_HOST", "localhost")
-port = os.getenv("POSTGRES_PORT", "5432")
+port = int(os.getenv("POSTGRES_PORT", "5432"))
 database = os.getenv("POSTGRES_DATABASE", "test")
 
 # Connect to database
@@ -104,31 +107,41 @@ user2 = Reader(
     roles="user",
 )
 
-user1.collections.append(
-    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
-)
-user2.collections.append(
-    Collection(name="Main", books=Book.query.order_by(db.func.random()).limit(5).all())
-)
 
 user1.follows.append(user2)
 user1.followers.append(user2)
 
-classics = Genre.query.filter_by(name="Classics").first()
-user1.collections.append(
-    Collection(
-        name="Classics",
-        books=Book.query.filter(Book.genres.contains(classics)).limit(10).all(),
+# Only add collections if there are books
+if Book.query.first():
+    user1.collections.append(
+        Collection(
+            name="Main", books=Book.query.order_by(db.func.random()).limit(5).all()
+        )
     )
-)
+    user2.collections.append(
+        Collection(
+            name="Main", books=Book.query.order_by(db.func.random()).limit(5).all()
+        )
+    )
 
-scifi = Genre.query.filter_by(name="Science Fiction").first()
-user2.collections.append(
-    Collection(
-        name="SciFi",
-        books=Book.query.filter(Book.genres.contains(scifi)).limit(10).all(),
+    classics = Genre.query.filter_by(name="Classics").first()
+    user1.collections.append(
+        Collection(
+            name="Classics",
+            books=Book.query.filter(Book.genres.contains(classics)).limit(10).all(),
+        )
     )
-)
+
+    scifi = Genre.query.filter_by(name="Science Fiction").first()
+    user2.collections.append(
+        Collection(
+            name="SciFi",
+            books=Book.query.filter(Book.genres.contains(scifi)).limit(10).all(),
+        )
+    )
+else:
+    user1.collections.append(Collection(name="Main"))
+    user2.collections.append(Collection(name="Main"))
 
 print("Creating admin role:")
 admin_username = input("Choose an admin username (admin): ") or "admin"
@@ -153,5 +166,8 @@ admin = Reader(
 
 db.session.add_all([user1, user2, admin])
 db.session.commit()
+
+print("Training recommendation model...")
+cr = ContentRecommender(force_retrain=True)
 
 print(Fore.GREEN + "Setup complete!")

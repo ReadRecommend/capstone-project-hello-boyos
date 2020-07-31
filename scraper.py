@@ -1,10 +1,14 @@
+import json
+import os
+import sys
+from multiprocessing import Pool
+
 import requests
 from bs4 import BeautifulSoup
-import json
+from dotenv import load_dotenv
 from tqdm import tqdm
-import sys
-import argparse
-from multiprocessing import Pool
+
+load_dotenv()
 
 
 def strip_list_page(url):
@@ -134,57 +138,25 @@ def strip_book(url):
 
 if __name__ == "__main__":
     # Configure command line arguments
-    parser = argparse.ArgumentParser(
-        description="Scrape book details from Goodreads. Note for large numbers of books things may fail"
+    n_books = (input("Enter number of books to scrape (1000): ")) or 1000
+    n_books = int(n_books)
+    n_workers = int(input("Enter number of parrallel workers to utilise (16): ")) or 16
+    n_workers = int(n_workers)
+    list_url = (
+        input(
+            "Enter Goodreads list to scrape (https://www.goodreads.com/list/show/1.Best_Books_Ever): "
+        )
+        or "https://www.goodreads.com/list/show/1.Best_Books_Ever"
     )
-    parser.add_argument(
-        "-b",
-        "--books",
-        metavar="books",
-        type=int,
-        help="The amount of books desired. Default: 500",
-        default=500,
-    )
-    parser.add_argument(
-        "-l",
-        "--list",
-        metavar="list",
-        type=str,
-        nargs="?",
-        help="The url of the Goodreads list to scrape.\nDefault: https://www.goodreads.com/list/show/1.Best_Books_Ever",
-        default="https://www.goodreads.com/list/show/1.Best_Books_Ever",
-    )
-    parser.add_argument(
-        "-o",
-        "--out",
-        nargs="?",
-        type=str,
-        metavar="outfile",
-        default="books.json",
-        help="The filepath to save the scraped books. Default: books.json",
-    )
-    parser.add_argument(
-        "-t",
-        "--threads",
-        nargs="?",
-        type=int,
-        metavar="threads",
-        default=8,
-        help="The number of threads to use when scraping. Default: 8",
-    )
-
-    args = parser.parse_args()
+    out_file = os.getenv("INITIAL_DATA", "books.json")
 
     # Start of scraping script
     book_urls = []
     books = []
-    n_books = args.books
     n_pages = ((n_books - 1) // 100) + 1
-    list_url = args.list
 
     # Process pool for parallel scraping
-    threads = min([n_books - 1, args.threads])
-    pool = Pool(threads)
+    pool = Pool(n_workers)
 
     # All pages to scrape the books from (100 books per page)
     page_urls = [f"{list_url}?page={page_no}" for page_no in range(1, n_pages + 1)]
@@ -223,5 +195,5 @@ if __name__ == "__main__":
     pool.close()
     pool.join()
 
-    with open(args.out, "w") as f:
+    with open(out_file, "w") as f:
         json.dump(books, f, indent=2)
