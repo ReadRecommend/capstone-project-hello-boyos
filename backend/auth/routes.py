@@ -1,16 +1,18 @@
 from flask import jsonify, request
 
 import flask_praetorian
+from flask_praetorian.exceptions import MissingToken
 from backend import db, guard
 from backend.auth import auth_bp
-from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
+from backend.errors import InvalidRequest, ResourceExists
 from backend.model.schema import Collection, Reader, reader_schema
 
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    username = request.json.get("username")
-    password = request.json.get("password")
+    reader_data = request.json
+    username = reader_data.get("username")
+    password = reader_data.get("password")
 
     if not (username and password):
         raise InvalidRequest(
@@ -30,8 +32,8 @@ def login():
 def signup():
     reader_data = request.json
     username = reader_data.get("username")
-    email = reader_data.get("email")
     password = reader_data.get("password")
+    email = reader_data.get("email")
 
     # Ensure request is valid format
     if not (username and email and password):
@@ -71,9 +73,17 @@ def verify():
 
 @auth_bp.route("/refresh", methods=["GET"])
 def refresh():
-    old_token = guard.read_token_from_cookie() or guard.read_token_from_header()
-    if not old_token:
-        raise ResourceNotFound("No token found in the header or cookie")
+    # Look for token in both header and cookie
+    try:
+        old_token = guard.read_token_from_cookie()
+    except MissingToken:
+        try:
+            old_token = guard.read_token_from_header()
+        except MissingToken:
+            raise MissingToken(
+                "No jwt token found in headers under 'Authorization', or in a cookie under 'accessToken"
+            )
+
     new_token = guard.refresh_jwt_token(old_token)
     return jsonify({"access_token": new_token}), 200
 

@@ -1,11 +1,12 @@
+from datetime import datetime
+
 from flask import jsonify, request
 
 import flask_praetorian
 from backend import db
 from backend.collection import collection_bp
 from backend.errors import AuthenticationError, InvalidRequest, ResourceNotFound
-from backend.user.utils import sort_books
-from backend.goals.utils import increase_goal, decrease_goal
+from backend.goals.utils import decrease_goal, increase_goal
 from backend.model.schema import (
     Book,
     Collection,
@@ -13,25 +14,30 @@ from backend.model.schema import (
     collection_schema,
     reader_schema,
 )
-from datetime import datetime
+from backend.user.utils import get_all_books
+from backend.utils import extract_integer, extract_integers
+
 
 # Get the books in a collection
-@collection_bp.route("/<collectionID>")
-def get_collection(collectionID):
+@collection_bp.route("/<collection_id>")
+def get_collection(collection_id):
+    if not collection_id.isdigit():
+        raise InvalidRequest("A collection's ID should be a positive integer")
 
-    collection = Collection.query.filter_by(id=collectionID).first_or_404()
+    collection = Collection.query.filter_by(id=collection_id).first()
+    if not collection:
+        raise ResourceNotFound("A collection with this ID does not exist")
     return jsonify(collection_schema.dump(collection))
 
 
 @collection_bp.route("", methods=["POST", "DELETE"])
-@flask_praetorian.auth_required
+@flask_praetorian.roles_required("user")
 def add_collection():
     collection_data = request.json
-    reader_id = collection_data.get("reader_id")
+    reader_id = extract_integer(collection_data, "reader_id")
     collection_name = collection_data.get("name")
 
-    # Check proper fields exist
-    if not (reader_id and collection_name):
+    if not (collection_name):
         raise InvalidRequest(
             "Request should be of the form {{reader_id: 'user_id', name: 'collection_name'}}"
         )
@@ -79,25 +85,24 @@ def add_collection():
     return jsonify(reader_schema.dump(reader))
 
 
-# TODO ensure only the user who owns the collection can modify it
 @collection_bp.route("/modify", methods=["POST", "DELETE"])
-@flask_praetorian.auth_required
+@flask_praetorian.roles_required("user")
 def modify_collection():
-    collection_id = request.json.get("collection_id")
-    book_id = request.json.get("book_id")
+    collection_id, book_id = extract_integers(
+        request.json, ["collection_id", "book_id"]
+    )
 
-    if not (collection_id and book_id):
-        raise InvalidRequest(
-            "Request should be of the form {{'collection_id': id, 'book_id': id}}",
-        )
     collection = Collection.query.filter_by(id=collection_id).first()
     book = Book.query.filter_by(id=book_id).first()
-    user = Reader.query.filter_by(id=flask_praetorian.current_user().id).first()
+    user = flask_praetorian.current_user()
+
+    if user.id != collection.reader_id:
+        raise AuthenticationError("You can only add/delete your own collections")
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:
         # Check if this book already exists in our all collection. If it doesn't, we need to update goals.
-        all_books = sort_books(user)
+        all_books = get_all_books(user)
         if not (book in all_books):
             # Increase n_read of goal
             year = datetime.now().year
@@ -118,7 +123,7 @@ def modify_collection():
 
         # Check if the book is still somewhere in our all collection after deletion.
         # If it isn't, we need to update goals
-        all_books = sort_books(user)
+        all_books = get_all_books(user)
         if book not in all_books:
             # Decrease the n_read value of the goal for this month
             year = datetime.now().year

@@ -1,7 +1,6 @@
 import os
 import pickle
 import re
-from typing import List, Tuple
 
 import pandas as pd
 from nltk.tokenize import RegexpTokenizer
@@ -22,8 +21,8 @@ class ContentRecommender:
     def __init__(
         self,
         save_path="backend/recommendation/static",
-        ngram_range: Tuple[int, int] = (1, 2),
-        force_retrain: bool = False,
+        ngram_range=(1, 2),
+        force_retrain=False,
     ):
         """Initialise a ContentRecommender and train it if necessary
 
@@ -31,9 +30,9 @@ class ContentRecommender:
         TFIDFVectorizer from `save_path`. If the persisted objects are not available the model will retrain.
 
         Args:
-            save_path: Where the persisted book content and TFIDFVectorizer are saved.
+            save_path (str): Where the persisted book content and TFIDFVectorizer are saved.
                 Defaults to "backend/recommendation/static".
-            ngram_range (optional): Which n_grams the vectorizer considers. See the sklearn
+            ngram_range (Tuple[int, int], optional): Which n_grams the vectorizer considers. See the sklearn
                 documentation for more information
                 https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn-feature-extraction-text-tfidfvectorizer.
                 Defaults to (1, 2).
@@ -52,11 +51,11 @@ class ContentRecommender:
             except FileNotFoundError:
                 self.train(ngram_range=ngram_range)
 
-    def train(self, ngram_range: Tuple[int, int] = (1, 2)):
+    def train(self, ngram_range=(1, 2)):
         """Train the TFIDFVectorizer over all content from all books in the database
 
         Args:
-            ngram_range (optional): Which n_grams the vectorizer considers. See the sklearn
+            ngram_range (Tuple[int, int], optional): Which n_grams the vectorizer considers. See the sklearn
                 documentation for more information
                 https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn-feature-extraction-text-tfidfvectorizer.
                 Defaults to (1, 2).
@@ -83,14 +82,14 @@ class ContentRecommender:
             pickle.dump(self._tfidf, f)
         book_df.to_parquet(f"{self._save_path}/book_df.parquet")
 
-    def recommend(self, book: Book, n_recommend: int = 20) -> List[Book]:
+    def recommend(self, book, n_recommend=20):
         """Get a list of the most similar books to a provided book
 
         Similarity is defined as the cosine similarity across the TFIDF vector of the content
 
         Args:
-            book: The "seed" book that we are looking for recommendations from
-            n_recommend (optional): The number of books to recommend. Note: As books from other languages
+            book (Book): The "seed" book that we are looking for recommendations from
+            n_recommend (int, optional): The number of books to recommend. Note: As books from other languages
             are excluded after this limit is enforced, the actual length of the returned list may
             be less than `n_recommend`. Defaults to 20.
 
@@ -123,12 +122,12 @@ class ContentRecommender:
         return recommendations
 
     @staticmethod
-    def get_clean_content(book: Book) -> str:
+    def get_clean_content(book):
         """Aggregate a books fields into one string, then clean that string
 
         Fields aggregated are: Title, summary, genres, authors
         Args:
-            book: The Book who's content to aggregate and clean
+            book (Book): The Book who's content to aggregate and clean
 
         Returns:
             str: The clean content string
@@ -142,11 +141,11 @@ class ContentRecommender:
         return ContentRecommender.clean_data(content)
 
     @staticmethod
-    def clean_data(text: str) -> str:
+    def clean_data(text):
         """Uniformly clean up a piece of text
 
         Args:
-            text: The string to clean
+            text (str): The string to clean
 
         Returns:
             str: The clean string
@@ -157,11 +156,11 @@ class ContentRecommender:
         return text
 
     @staticmethod
-    def _remove_punctuation(text: str) -> str:
+    def _remove_punctuation(text):
         """Removes any punctuation from a string
 
         Args:
-            text: The text to remove punctuation from
+            text (str): The text to remove punctuation from
 
         Returns:
             str: the cleaned string
@@ -172,11 +171,11 @@ class ContentRecommender:
         return text
 
     @staticmethod
-    def _remove_html(text: str) -> str:
+    def _remove_html(text):
         """Remove any html tags from the string
 
         Args:
-            text: The string to remove html tags from
+            text (str): The string to remove html tags from
 
         Returns:
             str: The cleaned string
