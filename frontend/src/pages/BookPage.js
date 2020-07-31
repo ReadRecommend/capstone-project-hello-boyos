@@ -368,8 +368,30 @@ class BookPage extends Component {
 
                     })
                 })
+
+            getBook(this.props.match.params.bookID)
+                .then((res) => {
+                    if (!res.ok) {
+                        // Something went wrong, likely there is no book with the id specified in the url
+                        return res.text().then((text) => {
+                            throw Error(text);
+                        });
+                    }
+
+                    // Found a valid book
+                    return res.json();
+                })
+                .then((json) => {
+                    this.setState(
+                        {
+                            book: json,
+                        }
+                    );
+                });
             this.setState({ loading: false })
         })
+
+
 
     }
 
