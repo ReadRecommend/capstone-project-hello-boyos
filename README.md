@@ -18,9 +18,7 @@ Once you have postgres running, create a username, password, and an empty databa
 
 ## Configuration
 
-To configure the settings of ReadRecommend, a `.env` file is used. In the root folder create a file named `.env`, which will be used to store your specific configuration settings. Some public settings are also stored in the `.flaskenv` file for the backend API. You can override these by placing alternate values in your own `.env` file. In general, the hierarchy of configuration goes `.env` --> `.flaskenv` --> `backend/config.py`.  
-
-
+To configure the settings of ReadRecommend, a `.env` file is used. In the root folder create a file named `.env`, which will be used to store your specific configuration settings. Some public settings are also stored in the `.flaskenv` file for the backend API. You can override these by placing alternate values in your own `.env` file. In general, the hierarchy of configuration goes `.env` --> `.flaskenv` --> `backend/config.py`.
 
 The following variables are supported in the `.env` file:
 
@@ -41,6 +39,8 @@ The following variables are supported in the `.env` file:
 | `FRONTEND_PORT`      | The port to run the React application on. (See [Serve](https://github.com/vercel/serve) documentation for more information) | 3000                                         |
 | `BROWSER`            | The browser to open the react app in. WIll be ignored if application is configured for production | Will user system default browser             |
 
+**Note:** A `.env` file is required, with at least a new secret key
+
 ### Example `.env` File
 
 An example of a `.env` file might be:
@@ -58,7 +58,7 @@ export BROWSER=chromium
 
 ## Make
 
-ReadRecommend comes with a `Makefile` to make installing and running the application as simple as possible. 
+ReadRecommend comes with a `Makefile` to make installing and running the application as simple as possible.
 
 ### Setup
 
@@ -68,9 +68,9 @@ To begin, run:
 make setup
 ```
 
-This will install all necessary tools and packages, as well as create the appropriate virtual environments. 
+This will install all necessary tools and packages, as well as create the appropriate virtual environments.
 
-Additionally, it will ask if you would like to scrape some dummy data from Goodreads. Input either `y` or `n` to continue. If you select `y`,  a few prompts will appear asking for how many books to scrape, and from which Goodreads list.  Once the scraping has completed, the books will be written out to the path specified in `INITIAL_DATA`. 
+Additionally, it will ask if you would like to scrape some dummy data from Goodreads. Input either `y` or `n` to continue. If you select `y`, a few prompts will appear asking for how many books to scrape, and from which Goodreads list. Once the scraping has completed, the books will be written out to the path specified in `INITIAL_DATA`.
 
 After this step, the database will be initialised, and you will be prompted to create an administrator account.
 
@@ -81,8 +81,6 @@ Once the previous steps have been followed, simply run the following to start Re
 ```shell
 make run
 ```
-
-
 
 ### Clean
 
