@@ -32,7 +32,7 @@ class Search extends Component {
     };
 
     handleSubmit = (event) => {
-        event.preventDefault();
+        if(event) event.preventDefault();
         this.setState({ loading: true });
 
         searchUsers(this.state.search)
@@ -117,15 +117,16 @@ class Search extends Component {
                                 value={this.state.search}
                                 onChange={this.updateSearch}
                             />
-
-                            <Button
-                                variant="primary"
-                                type="submit"
-                                block
-                                value="Search"
-                            >
-                                Search
-                            </Button>
+                            <InputGroup.Append>
+                                <Button
+                                    variant="primary"
+                                    type="submit"
+                                    
+                                    value="Search"
+                                >
+                                    Search
+                                </Button>
+                            </InputGroup.Append>                            
                         </InputGroup>
                     </Form>
                     <br></br>

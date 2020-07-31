@@ -87,7 +87,8 @@ conn.close()
 
 print("Creating tables and loading in book data (may take some time)...")
 db.create_all()
-json_to_db("books.json")
+initial_data = os.getenv("INITIAL_DATA", "books.json")
+json_to_db(initial_data)
 
 print("Adding dummy non-book data")
 user1 = Reader(

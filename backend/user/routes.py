@@ -2,19 +2,16 @@ from flask import jsonify, request
 
 import flask_praetorian
 from backend import db
-from backend.user import user_bp
-from backend.user.utils import get_recently_read, get_all_books
-from backend.errors import (
-    InvalidRequest,
-    ResourceNotFound,
-    ForbiddenResource,
-)
+from backend.errors import ForbiddenResource, InvalidRequest, ResourceNotFound
 from backend.model.schema import (
+    Collection,
     Reader,
     collection_schema,
     reader_schema,
     readers_schema,
 )
+from backend.user import user_bp
+from backend.user.utils import get_all_books, get_recently_read
 
 
 @user_bp.route("/<username>")
@@ -25,16 +22,16 @@ def get_reader(username):
     return jsonify(reader_schema.dump(reader))
 
 
-@user_bp.route("/id/<id>")
-def get_reader_by_id(id):
-    if not isinstance(id, int) and not id.isdigit():
+@user_bp.route("/id/<id_>")
+def get_reader_by_id(id_):
+    if not isinstance(id_, int) and not id_.isdigit():
         raise InvalidRequest(
             r"Id should be an integer or a string interpretable as an integer",
         )
 
-    reader = Reader.query.filter_by(id=id).first()
+    reader = Reader.query.filter_by(id=id_).first()
     if not reader:
-        raise ResourceNotFound(f"A user with the id {id} does not exist")
+        raise ResourceNotFound(f"A user with the id {id_} does not exist")
     return jsonify(reader_schema.dump(reader))
 
 
@@ -43,8 +40,11 @@ def get_all_readers_books(username):
     reader = Reader.query.filter_by(username=username).first()
     if not reader:
         raise ResourceNotFound(f"A user with the username {username} does not exist")
-    all_books = get_all_books(reader)
-    return jsonify(collection_schema.dump(all_books))
+    all_books = get_all_books(
+        reader, sort_func=lambda membership: membership.book.title
+    )
+    all_collection = Collection(books=all_books, name="All", reader=reader)
+    return jsonify(collection_schema.dump(all_collection))
 
 
 @user_bp.route("/<username>/recently_read")
@@ -62,21 +62,21 @@ def get_readers():
     return jsonify(readers_schema.dump(readers))
 
 
-@user_bp.route("/<id>", methods=["DELETE"])
+@user_bp.route("/<id_>", methods=["DELETE"])
 @flask_praetorian.roles_required("admin")
-def delete_reader(id):
-    if not isinstance(id, int) and not id.isdigit():
+def delete_reader(id_):
+    if not isinstance(id_, int) and not id_.isdigit():
         raise InvalidRequest(
             r"Id should be an integer or a string interpretable as an integer",
         )
-    reader = Reader.query.filter_by(id=id).first()
+    reader = Reader.query.filter_by(id=id_).first()
 
     # Check user exists
-    if not (reader):
-        raise ResourceNotFound("User does not exist")
+    if not reader:
+        raise ResourceNotFound("A user with the specified ID does not exist")
 
     # Check we are not deleting an admin
-    if reader.roles.find("admin") != -1:
+    if "admin" in reader.roles:
         raise ForbiddenResource("Cannot delete an admin")
 
     # Delete the user
@@ -91,6 +91,9 @@ def delete_reader(id):
 @user_bp.route("/<username>/followers")
 def get_followers(username):
     reader = Reader.query.filter_by(username=username).first()
+    if not reader:
+        raise ResourceNotFound("A user with the specified ID does not exist")
+
     followers = reader.followers
     return jsonify(readers_schema.dump(followers))
 
@@ -98,6 +101,9 @@ def get_followers(username):
 @user_bp.route("/<username>/following")
 def get_following(username):
     reader = Reader.query.filter_by(username=username).first()
+    if not reader:
+        raise ResourceNotFound("A user with the specified ID does not exist")
+
     followings = reader.follows
     return jsonify(readers_schema.dump(followings))
 
@@ -105,8 +111,9 @@ def get_following(username):
 @user_bp.route("/follow", methods=["POST", "DELETE"])
 @flask_praetorian.auth_required
 def follow():
-    follower_username = request.json.get("follower")
-    reader_username = request.json.get("user")
+    follow_data = request.json
+    follower_username = follow_data.get("follower")
+    reader_username = follow_data.get("user")
 
     if not (follower_username and reader_username):
         raise InvalidRequest(

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Navbar, Nav, Button, NavDropdown, Form } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Redirect } from "react-router";
 import BootstrapSwitchButton from "bootstrap-switch-button-react";
@@ -125,8 +126,8 @@ class NavigationBar extends Component {
                             <Nav.Link href="/goals">My Goals</Nav.Link>
                         </>
                     )}
-                </Nav>
-                {this.renderSearchBar()}
+                </Nav>                
+                {(this.props.location.pathname !== "/search" && this.props.location.pathname !== "/usrsearch") && this.renderSearchBar()}
                 {this.renderRedirect()}
                 <Nav style={{ marginRight: "10px" }}>
                     <BootstrapSwitchButton
@@ -154,4 +155,4 @@ class NavigationBar extends Component {
 
 NavigationBar.contextType = bookDetailsContext;
 
-export default NavigationBar;
+export default withRouter(NavigationBar);

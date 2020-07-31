@@ -17,7 +17,7 @@ import {
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
-import Error from "../components/Error";
+import ErrorPage from "../components/ErrorPage";
 import { toast } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
 import { bookDetailsContext } from "../BookDetailsContext";
@@ -61,6 +61,9 @@ class BookPage extends Component {
                     },
                     this.handleRecommendation
                 );
+            })
+            .catch(() => {
+                this.setState({ book: null });
             });
 
         getReviewPages(
@@ -333,7 +336,6 @@ class BookPage extends Component {
 
     updatePerPage = (event) => {
         this.setState({ reviewsPerPage: event.target.value }, () => {
-
             getReviewPages(
                 this.props.match.params.bookID,
                 this.state.reviewsPerPage
@@ -343,15 +345,11 @@ class BookPage extends Component {
                 })
                 .then((json) => {
                     this.setState({ totalReviewPages: json.count }, () => {
-                        this.movePage(1)
-                    }
-
-                    )
-                })
-
-
-        })
-    }
+                        this.movePage(1);
+                    });
+                });
+        });
+    };
 
     updatePage = () => {
         this.setState({ loading: true }, () => {
@@ -412,10 +410,10 @@ class BookPage extends Component {
         }
         if (!book) {
             return (
-                <Error
+                <ErrorPage
                     errorCode={404}
                     errorMessage="The book you are looking for doesn't exist"
-                ></Error>
+                ></ErrorPage>
             );
         }
         return (
@@ -457,12 +455,14 @@ class BookPage extends Component {
                                         </h5>{" "}
                                     </>
                                 )}
-                                {!this.context && <h6>
-                                    <small>
-                                        Read by {book.n_readers} user
-                                        {book.n_readers === 1 ? "" : "s"}
-                                    </small>
-                                </h6>}
+                                {!this.context && (
+                                    <h6>
+                                        <small>
+                                            Read by {book.n_readers} user
+                                            {book.n_readers === 1 ? "" : "s"}
+                                        </small>
+                                    </h6>
+                                )}
                                 <p>
                                     {user ? (
                                         <AddBookModal
@@ -497,7 +497,9 @@ class BookPage extends Component {
                                                                 .id
                                                         }
                                                         notify={this.notify}
-                                                        success={this.updatePage}
+                                                        success={
+                                                            this.updatePage
+                                                        }
                                                     />
                                                 </>
                                             )}
@@ -520,10 +522,21 @@ class BookPage extends Component {
 
                                             <div>
                                                 Reviews per page
-                                                <select id="perPage" onChange={this.updatePerPage} value={this.state.reviewsPerPage}>
+                                                <select
+                                                    id="perPage"
+                                                    onChange={
+                                                        this.updatePerPage
+                                                    }
+                                                    value={
+                                                        this.state
+                                                            .reviewsPerPage
+                                                    }
+                                                >
                                                     <option value="1">1</option>
                                                     <option value="5">5</option>
-                                                    <option value="10">10</option>
+                                                    <option value="10">
+                                                        10
+                                                    </option>
                                                 </select>
                                             </div>
 

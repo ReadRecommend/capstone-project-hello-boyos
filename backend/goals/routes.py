@@ -2,16 +2,16 @@ from flask import jsonify, request
 
 import flask_praetorian
 from backend import db
+from backend.errors import InvalidRequest
 from backend.goals import goals_bp
 from backend.goals.utils import validate_goal
-from backend.errors import InvalidRequest
 from backend.model.schema import ReaderGoal, goal_schema, goals_schema
+from backend.utils import extract_integers
 
 
 @goals_bp.route("/<year>", methods=["GET"])
 @flask_praetorian.roles_required("user")
 def get_goals(year):
-
     try:
         reader_goals = ReaderGoal.query.filter_by(
             year=year, reader_id=flask_praetorian.current_user().id
@@ -27,19 +27,10 @@ def get_goals(year):
 @flask_praetorian.roles_required("user")
 def update_goal():
     goal_data = request.json
-    month = goal_data.get("month")
-    year = goal_data.get("year")
-    goal = goal_data.get("goal")
-    n_read = goal_data.get("n_read")
+    month, year, goal, n_read = extract_integers(
+        goal_data, ["month", "year", "goal", "n_read"]
+    )
 
-    # Check the request has all the values we are expecting
-    if month is None or year is None or goal is None or n_read is None:
-        raise InvalidRequest(
-            "Request should be of the form {{month: 'month', year: 'year', goal: 'goal', n_read: 'n_read'}}"
-        )
-
-    # Sanity check values
-    # Raises an exception if something wrong with the values
     validate_goal(month, year, goal, n_read)
 
     reader_goal = ReaderGoal.query.filter_by(

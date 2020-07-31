@@ -1,11 +1,11 @@
 import math
 
-import isbnlib
 from flask import jsonify, request
 
 import flask_praetorian
 from backend import db
 from backend.book import book_bp
+from backend.book.utils import validate_book_data
 from backend.errors import InvalidRequest, ResourceExists, ResourceNotFound
 from backend.model.schema import (
     Author,
@@ -18,62 +18,37 @@ from backend.model.schema import (
     review_schema,
     reviews_schema,
 )
+from backend.utils import extract_integer, extract_integers
 
 
 @book_bp.route("", methods=["POST"])
 @flask_praetorian.roles_required("admin")
 def add_book():
-    book_data = request.json
-    isbn = book_data.get("isbn")
-    title = book_data.get("title")
-    authors = book_data.get("authors")
-    genres = book_data.get("genres")
-    publisher = book_data.get("publisher")
-    publicationDate = book_data.get("publicationDate")
-    summary = book_data.get("summary")
-    cover = book_data.get("cover")
-    language = book_data.get("language")
-
-    # Ensure request is valid format
-    if not (title and isbn and authors):
-        raise InvalidRequest(
-            "Request should be of the form {{isbn: 'isbn', title: 'title', authors: [authors]}}"
-        )
-
-    # Check if a Book with this isbn already exists
-    if Book.query.filter((Book.isbn == isbn)).first():
-        raise ResourceExists("A book with this isbn already exists")
-
-    # Check if isbn is valid
-    if not (isbn := isbnlib.to_isbn13(isbn.clean(isbn))):
-        raise InvalidRequest(
-            "The isbn provided is not valid or could not be converted into isbn-13 format"
-        )
+    raw_book_data = request.json
+    book_data = validate_book_data(raw_book_data)
 
     # Create new book
     new_book = Book(
-        isbn=isbn,
-        title=title,
-        publisher=publisher,
-        publication_date=publicationDate,
-        summary=summary,
-        cover=cover,
-        n_ratings=0,
-        ave_rating=0,
-        language=language,
+        isbn=book_data.get("isbn"),
+        title=book_data.get("title"),
+        publisher=book_data.get("publisher"),
+        publication_date=book_data.get("publication_date"),
+        summary=book_data.get("summary"),
+        cover=book_data.get("cover"),
+        language=book_data.get("language"),
     )
 
     # Add genre to the database if it does not already exist
-    for genre_name in set(genres):
-        if (existing_genre := Genre.query.filter_by(name=genre_name).first()) :
+    for genre_name in set(book_data.get("genres", [])):
+        if existing_genre := Genre.query.filter_by(name=genre_name).first():
             new_book.genres.append(existing_genre)
         else:
             new_genre = Genre(name=genre_name)
             new_book.genres.append(new_genre)
 
     # Add author to the database if it does not already exist
-    for author_name in set(authors):
-        if (existing_author := Author.query.filter_by(name=author_name).first()) :
+    for author_name in set(book_data.get("authors", [])):
+        if existing_author := Author.query.filter_by(name=author_name).first():
             new_book.authors.append(existing_author)
         else:
             new_author = Author(name=author_name)
@@ -89,11 +64,7 @@ def add_book():
 @book_bp.route("", methods=["DELETE"])
 @flask_praetorian.roles_required("admin")
 def delete_book():
-    book_id = request.json.get("id")
-
-    # Ensure proper fields exist
-    if not (book_id):
-        raise InvalidRequest("Request should be of the form {{book_id: 'book_id'}}")
+    book_id = extract_integer(request.json, "id")
 
     book = Book.query.filter_by(id=book_id).first()
 
@@ -119,53 +90,53 @@ def get_books():
     return jsonify(books_schema.dump(books))
 
 
-@book_bp.route("/<id>")
-def get_book(id):
-    if not id.isdigit():
+@book_bp.route("/<id_>")
+def get_book(id_):
+    if not id_.isdigit():
         raise InvalidRequest("A book's ID should be a positive integer")
-    book = Book.query.filter_by(id=id).first()
+    book = Book.query.filter_by(id=id_).first()
     if not book:
         raise ResourceNotFound("A book with this id does not exist")
     return jsonify(book_schema.dump(book))
 
 
-@book_bp.route("/<id>/reviews", methods=["POST"])
-def get_review(id):
-    if not id.isdigit():
+@book_bp.route("/<id_>/reviews", methods=["POST"])
+def get_review(id_):
+    if not id_.isdigit():
         raise InvalidRequest("A book's ID should be a positive integer")
 
     request_data = request.json
 
-    page = request_data.get("page")
-    nReview = int(request_data.get("reviews_per_page"))
+    # page = request_data.get("page")
+    page, n_reviews = extract_integers(request_data, ["page", "reviews_per_page"])
 
-    review = Review.query.filter_by(book_id=id).paginate(page, nReview, True)
+    review = Review.query.filter_by(book_id=id_).paginate(page, n_reviews, True)
     return jsonify(reviews_schema.dump(review.items))
 
 
-@book_bp.route("/<id>/reviewpage", methods=["POST"])
-def get_review_count(id):
-    if not id.isdigit():
+@book_bp.route("/<id_>/reviewpage", methods=["POST"])
+def get_review_count(id_):
+    if not id_.isdigit():
         raise InvalidRequest("A book's ID should be a positive integer")
 
     request_data = request.json
 
-    nReview = int(request_data.get("reviews_per_page"))
+    n_reviews = extract_integer(request_data, "reviews_per_page")
 
-    review = Review.query.filter_by(book_id=id).count()
+    review = Review.query.filter_by(book_id=id_).count()
 
-    pages = math.ceil(review / nReview)
+    pages = math.ceil(review / n_reviews)
     return {"count": pages}
 
 
 @book_bp.route("/review", methods=["POST"])
+@flask_praetorian.roles_required("user")
 def add_review():
     review_data = request.json
-    reader_id = review_data.get("reader_id")
-    book_id = review_data.get("book_id")
+    reader_id, book_id = extract_integers(review_data, ["reader_id", "book_id"])
 
     review = review_data.get("review")
-    score = review_data.get("score")
+    score = extract_integer(review_data, "score")
     if Review.query.filter(
         (Review.reader_id == reader_id) & (Review.book_id == book_id)
     ).first():
@@ -178,9 +149,7 @@ def add_review():
     book = Book.query.filter_by(id=book_id).first()
 
     book.n_ratings += 1
-    book.ave_rating = (
-        (int(score) - book.ave_rating) / (book.n_ratings)
-    ) + book.ave_rating
+    book.ave_rating = ((score - book.ave_rating) / (book.n_ratings)) + book.ave_rating
 
     db.session.add(new_review)
     db.session.commit()

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Jumbotron, Button, Container, Row, Col } from "react-bootstrap";
 import { File } from "react-kawaii";
-class Error extends Component {
+class ErrorPage extends Component {
     render() {
         const errorCode = this.props.errorCode;
         const errorMessage = this.props.errorMessage;
@@ -28,4 +28,4 @@ class Error extends Component {
     }
 }
 
-export default Error;
+export default ErrorPage;

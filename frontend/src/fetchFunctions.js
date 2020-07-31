@@ -8,6 +8,12 @@ export function verifyUser() {
     });
 }
 
+export function refreshToken() {
+    return fetch(`${apiUrl}/auth/refresh`, {
+        credentials: "include",
+    });
+}
+
 export function createAccount(username, email, password) {
     const data = {
         username: username,
@@ -146,6 +152,7 @@ export function addReview(readerId, bookId, score, review) {
         headers: {
             "Content-type": "application/json; charset=UTF-8",
         },
+        credentials: "include",
     });
 }
 
@@ -314,7 +321,7 @@ export function getRecommendations(
         body: JSON.stringify({
             userID: userID,
             bookID: bookID,
-            nRecommend: nRecommend,
+            n_recommend: nRecommend,
             author: author,
             genre: genre,
         }),

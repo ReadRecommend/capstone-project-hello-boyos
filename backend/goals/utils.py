@@ -4,7 +4,8 @@ from backend.errors import InvalidRequest
 
 
 def increase_goal(user_id, month, year):
-    """ Increase the n_read value of a goal at the corresponding month/year, or create a new one if it doesn't exist.
+    """ Increase the n_read value of a goal at the corresponding month/year, 
+    or create a new one if it doesn't exist.
 
     Args:
         user_id (int): Id of the user whose goals we are modifying
@@ -30,7 +31,8 @@ def increase_goal(user_id, month, year):
 
 
 def decrease_goal(user_id, month, year):
-    """ Decrease the n_read value of a goal at the corresponding month/year, or do nothing if the goal for this month doesn't exist.
+    """ Decrease the n_read value of a goal at the corresponding month/year, 
+    or do nothing if the goal for this month doesn't exist.
 
     Args:
         user_id (int): Id of the user whose goals we are modifying
@@ -65,21 +67,12 @@ def validate_goal(month, year, goal, n_read):
         goal (int): The goal number of books to read for this month/year
         n_read (int): The number of books already read on this month/year
 
-    Returns: 
+    Returns:
         None
-    Raises: 
-        InvalidRequest: If any of month, year, goal, or n_read are not valid integers
+    Raises:
+        InvalidRequest: If any of month, year, goal, or n_read are not valid values
 
     """
-    # Ensure values are integers
-    try:
-        year = int(year)
-        month = int(month)
-        goal = int(goal)
-        n_read = int(n_read)
-    except:
-        raise InvalidRequest("Year, month, goal and n_read must be integers")
-
     if month < 1 or month > 12:
         raise InvalidRequest("Month must be in the range 1-12")
 
@@ -87,7 +80,7 @@ def validate_goal(month, year, goal, n_read):
         raise InvalidRequest("Year must be >= 0")
 
     if n_read < 0:
-        raise InvalidRequest("N_read must be >= 0")
+        raise InvalidRequest("n_read must be >= 0")
 
     if goal < 1:
         raise InvalidRequest("Goal must be >= 1")
