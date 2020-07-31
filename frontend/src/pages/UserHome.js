@@ -271,6 +271,7 @@ class UserHome extends Component {
                 <Spinner
                     animation="border"
                     style={{
+                        position: "absolute",
                         left: "50%",
                         top: "50%",
                     }}

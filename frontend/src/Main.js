@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 
 import PrivateRoute from "./components/PrivateRoute";
-import Error from "./components/Error";
+import ErrorPage from "./components/ErrorPage";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
 import AdminUserList from "./pages/Admin/AdminUserList";
@@ -139,10 +139,10 @@ class Main extends Component {
                         path="*"
                         key="404"
                         component={() => (
-                            <Error
+                            <ErrorPage
                                 errorCode="404"
                                 errorMessage="Sorry, the page you are looking for does not exist"
-                            ></Error>
+                            ></ErrorPage>
                         )}
                     ></Route>
                 </Switch>

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import { verifyUser, refreshToken } from "../fetchFunctions";
-import Error from "./Error";
+import ErrorPage from "./ErrorPage";
 import PropTypes from "prop-types";
 import { Cookies } from "react-cookie";
 
@@ -28,7 +28,7 @@ class PrivateRoute extends Component {
             .then((res) => {
                 if (!res.ok) {
                     return res.text().then((text) => {
-                        throw new Error(text);
+                        throw Error(text);
                     });
                 }
                 return res.json();
@@ -137,10 +137,10 @@ class PrivateRoute extends Component {
         } else if (!this.state.haveAccess) {
             // If we don't have access display 403
             return (
-                <Error
+                <ErrorPage
                     errorCode={403}
                     errorMessage="Sorry, it looks like you don't have the correct authorisation to access this page"
-                ></Error>
+                ></ErrorPage>
             );
         } else {
             return (
