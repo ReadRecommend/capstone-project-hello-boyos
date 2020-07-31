@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from backend.model.schema import Book
+from backend.recommendation import RETRAIN_THRESHOLD
 
 
 class ContentRecommender:
@@ -28,6 +29,8 @@ class ContentRecommender:
 
         By default, a new ContentRecommender will load the dataframe of books and the trained
         TFIDFVectorizer from `save_path`. If the persisted objects are not available the model will retrain.
+        Once RETRAIN_THRESHOLD new books have been added to the system, the ContentRecommender will
+        automatically retrain
 
         Args:
             save_path (str): Where the persisted book content and TFIDFVectorizer are saved.
@@ -51,6 +54,9 @@ class ContentRecommender:
             except FileNotFoundError:
                 self.train(ngram_range=ngram_range)
 
+        if self._book_df.shape[0] < Book.query.count() + RETRAIN_THRESHOLD:
+            self.train(ngram_range=ngram_range)
+
     def train(self, ngram_range=(1, 2)):
         """Train the TFIDFVectorizer over all content from all books in the database
 
@@ -62,7 +68,7 @@ class ContentRecommender:
         """
         books = Book.query.all()
 
-        # If there are no books in the database, return
+        # If there are no books in the database, return without training
         if not books:
             return
 

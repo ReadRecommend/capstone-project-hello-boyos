@@ -10,4 +10,8 @@ POOL_SIZE = 3
 # The default number of books to recommend
 DEFAULT_NRECOMMEND = 10
 
+# The number of books that needs to be added to the database to
+# prompt the ContentRecommender to retrain on all books
+RETRAIN_THRESHOLD = 100
+
 from backend.recommendation import routes
