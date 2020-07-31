@@ -62,6 +62,10 @@ class ContentRecommender:
         """
         books = Book.query.all()
 
+        # If there are no books in the database, return
+        if not books:
+            return
+
         # Generate a dataframe of all books in the database, holding their id and content
         book_df = pd.DataFrame()
         for book in books:
