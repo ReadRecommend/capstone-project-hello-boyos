@@ -58,11 +58,15 @@ export BROWSER=chromium
 
 ## Make
 
-ReadRecommend comes with a `Makefile` to make installing and running the application as simple as possible.
+ReadRecommend comes with a `Makefile` to make installing and running the application as simple as possible. Before running the any `make` commands however, both Python (>=3.8.0, <=3.8.3) and Node.js need to be installed. These can be found at the following links:
+
+-   [Python](https://www.python.org/downloads/)
+
+-   [Node](https://nodejs.org/en/download/)
 
 ### Setup
 
-To begin, run:
+Once Node and Python have been installed, run:
 
 ```shell
 make setup
@@ -72,7 +76,7 @@ This will install all necessary tools and packages, as well as create the approp
 
 Additionally, it will ask if you would like to scrape some dummy data from Goodreads. Input either `y` or `n` to continue. If you select `y`, a few prompts will appear asking for how many books to scrape, and from which Goodreads list. Once the scraping has completed, the books will be written out to the path specified in `INITIAL_DATA`.
 
-After this step, the database will be initialised, and you will be prompted to create an administrator account.
+After this step, the database will be initialised, and you will be prompted to create an administrator account, as well as given the option to create two "dummy" users in the system.
 
 ### Run
 
