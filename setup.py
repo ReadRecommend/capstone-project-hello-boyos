@@ -143,12 +143,15 @@ if "y" in dummy_users:
     else:
         user1.collections.append(Collection(name="Main"))
         user2.collections.append(Collection(name="Main"))
+
     print(Fore.CYAN + "=========================================")
     print(
         Fore.CYAN
         + "Dummy user info:\nusername: JohnSmith \tpassword: hunter2\nusername: JaneDoe\tpassword: pass123"
     )
     print(Fore.CYAN + "=========================================")
+    db.session.add_all([user1, user2])
+    db.session.commit()
 
 print("Creating admin role:")
 admin_username = input("Choose an admin username (admin): ") or "admin"
@@ -176,8 +179,7 @@ admin = Reader(
     password=guard.hash_password(admin_password2),
     roles="admin",
 )
-
-db.session.add_all([user1, user2, admin])
+db.session.add_all(admin)
 db.session.commit()
 
 print("Training recommendation model...")
