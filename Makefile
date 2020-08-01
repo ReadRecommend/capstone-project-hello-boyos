@@ -14,13 +14,13 @@ help:
 setup:
 	@curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 	@poetry install
+	@poetry run python -m nltk.downloader wordnet stopwords
 	@npm install --prefix frontend
 	@make initialise
-	@poetry run python -m nltk.downloader all
 .PHONY: setup
 
 initialise:
-	@echo "Would you like to scrape data from Goodreads to initialse the database? [y/n]"
+	@echo "Would you like to scrape data from Goodreads to initialise the database? [y/n]"
 	@read line; if [ $$line = "y" ]; then poetry run python scraper.py; fi
 	@poetry run python setup.py
 .PHONY: initialise

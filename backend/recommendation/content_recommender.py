@@ -208,8 +208,10 @@ class ContentRecommender:
         Returns:
             List[str]: The words with stopwords removed
         """
+        if not isinstance(language, str):
+            return words
         try:
-            stopwords = corpus.stopwords.words(language)
+            stopwords = corpus.stopwords.words(language.lower())
         except OSError:
             return words
         words = [word for word in words if word not in stopwords]
