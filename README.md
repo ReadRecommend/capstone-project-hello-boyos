@@ -46,14 +46,14 @@ The following variables are supported in the `.env` file:
 An example of a `.env` file might be:
 
 ```shell
-export POSTGRES_USER=myuser
-export POSTGRES_PORT=9999
-export POSTGRES_PASSWORD=password
-export POSTGRES_DATABASE=readrecommend
-export DATABASE_URL=postgresql://myuser:password@localhost/readrecommend
-export SECRET_KEY=very_secret_key
-export JWT_ACCESS_MINUTES=15
-export BROWSER=chromium
+POSTGRES_USER="myuser"
+POSTGRES_PORT=9999
+POSTGRES_PASSWORD="password"
+POSTGRES_DATABASE="readrecommend"
+DATABASE_URL="postgresql://myuser:password@localhost/readrecommend"
+SECRET_KEY="very_secret_key"
+JWT_ACCESS_MINUTES=15
+BROWSER="chromium"
 ```
 
 ## Make

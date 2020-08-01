@@ -2,7 +2,12 @@
 
 include .env
 include .flaskenv
-export
+
+# Escape quoted environment variables 
+VARS:=$(shell sed -ne 's/ *\#.*$$//; /./ s/=.*$$// p' .env )
+$(foreach v,$(VARS),$(eval $(shell echo export $(v)="$($(v))")))
+VARS:=$(shell sed -ne 's/ *\#.*$$//; /./ s/=.*$$// p' .flaskenv )
+$(foreach v,$(VARS),$(eval $(shell echo export $(v)="$($(v))")))
 
 help:
 	@echo "---------------------------ReadRecommend-----------------------------"
@@ -10,6 +15,7 @@ help:
 	@echo "make clean: re-initialise database"
 	@echo "make run: run the project"
 	@echo "---------------------------------------------------------------------"
+.PHONY: clean
 
 setup:
 	@curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
@@ -31,9 +37,9 @@ clean:
 
 run:
 	@make -j2 frontend backend
+.PHONY: run
 
 FRONTEND_PORT ?= 3000
-
 frontend:
 	@poetry run npm start --prefix frontend -l $(FRONTEND_PORT)
 .PHONY: frontend

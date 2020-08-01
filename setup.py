@@ -6,7 +6,7 @@ import psycopg2
 from colorama import Fore, init
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 from backend import db, guard
 from backend.model.author import Author
