@@ -20,7 +20,7 @@ setup:
 
 initialise:
 	@echo "Would you like to scrape data from Goodreads to initialse the database? [y/n]"
-	@read line; if [ $$line = "y" ]; then @poetry run python scraper.py; fi
+	@read line; if [ $$line = "y" ]; then poetry run python scraper.py; fi
 	@poetry run python setup.py
 .PHONY: initialise
 
