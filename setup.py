@@ -179,7 +179,7 @@ admin = Reader(
     password=guard.hash_password(admin_password2),
     roles="admin",
 )
-db.session.add_all(admin)
+db.session.add(admin)
 db.session.commit()
 
 print("Training recommendation model...")
