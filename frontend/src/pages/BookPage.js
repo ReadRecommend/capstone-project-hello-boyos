@@ -362,10 +362,9 @@ class BookPage extends Component {
                 })
                 .then((json) => {
                     this.setState({ totalReviewPages: json.count }, () => {
-                        this.movePage(1)
-
-                    })
-                })
+                        this.movePage(1);
+                    });
+                });
 
             getBook(this.props.match.params.bookID)
                 .then((res) => {
@@ -380,18 +379,40 @@ class BookPage extends Component {
                     return res.json();
                 })
                 .then((json) => {
-                    this.setState(
-                        {
-                            book: json,
-                        }
-                    );
+                    this.setState({
+                        book: json,
+                    });
                 });
-            this.setState({ loading: false })
-        })
+            this.setState({ loading: false });
+        });
+    };
 
-
-
-    }
+    renderRecommendations = () => {
+        if (this.state.loadingRecommendations) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else if (this.state.currentRecommendations.length === 0) {
+            return (
+                <h5 style={{ textAlign: "center", color: "grey" }}>
+                    No books found
+                </h5>
+            );
+        } else {
+            return (
+                <SearchResults
+                    books={this.state.currentRecommendations}
+                ></SearchResults>
+            );
+        }
+    };
 
     render() {
         const book = this.state.book;
@@ -440,8 +461,8 @@ class BookPage extends Component {
                                     />
                                 </div>
                             ) : (
-                                    <BlindCover book={book}></BlindCover>
-                                )}
+                                <BlindCover book={book}></BlindCover>
+                            )}
                             <Media.Body>
                                 {!this.context && (
                                     <>
@@ -634,24 +655,7 @@ class BookPage extends Component {
                                                 </InputGroup.Append>
                                             </InputGroup>
                                             <br></br>
-                                            {this.state
-                                                .loadingRecommendations ? (
-                                                    <Spinner
-                                                        animation="border"
-                                                        style={{
-                                                            position: "absolute",
-                                                            left: "50%",
-                                                            top: "50%",
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <SearchResults
-                                                        books={
-                                                            this.state
-                                                                .currentRecommendations
-                                                        }
-                                                    ></SearchResults>
-                                                )}
+                                            {this.renderRecommendations()}
                                         </Form>
                                     </Tab>
                                 </Tabs>
