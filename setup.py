@@ -1,6 +1,7 @@
 import json
 import os
 from getpass import getpass
+import readline
 
 import psycopg2
 from colorama import Fore, init
@@ -36,8 +37,10 @@ def json_to_db(path):
             publisher=book_data.get("publisher"),
             publication_date=book_data.get("publication_year"),
             summary=book_data.get("description"),
-            cover=book_data.get("image_url")
-            or "https://www.kindpng.com/picc/m/84-843028_book-clipart-square-blank-book-cover-clip-art.png",
+            cover=book_data.get(
+                "image_url",
+                "https://www.kindpng.com/picc/m/84-843028_book-clipart-square-blank-book-cover-clip-art.png",
+            ),
             n_ratings=book_data.get("n_reviews"),
             ave_rating=book_data.get("rating"),
             language=book_data.get("language"),
