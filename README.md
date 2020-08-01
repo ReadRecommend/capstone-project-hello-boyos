@@ -22,22 +22,23 @@ To configure the settings of ReadRecommend, a `.env` file is used. In the root f
 
 The following variables are supported in the `.env` file:
 
-| Variable             | Description                                                  | Default Value                                |
-| -------------------- | ------------------------------------------------------------ | -------------------------------------------- |
-| `POSTGRES_USER`      | The username of the Postgres user used to access the database | postgres                                     |
-| `POSTGRES_PORT`      | The port the Postgres database runs on                       | 5432                                         |
-| `POSTGRES_PASSWORD`  | The password associated with `POSTGRES_USER`                 | test123                                      |
-| `POSTGRES_DATABASE`  | The name of the Postgres database to connect to              | test                                         |
-| `DATABASE_URL`       | The url of the postgres database, should have the form postgresql://POSTGRES_USER:POSTGRES_PASSWORD@hostname/POSTGRES_DATABASE | postgresql://postgres:test123@localhost/test |
-| `SECRET_KEY`         | The secret key used for cryptographic signing of cookies. **Must be changed from default in production** | **Do not use default in production**         |
-| `JWT_PLACES`         | Locations to look for a JWT token. Should be one string, with places seperated by commas. (See [flask-praetorian](https://flask-praetorian.readthedocs.io/en/latest/notes.html) documentation for more info) | cookie,header                                |
-| `JWT_ACCESS_MINUTES` | The number of minutes a JWT token allows access to protected routes. (see [flask-praetorian](https://flask-praetorian.readthedocs.io/en/latest/notes.html) documentation for more info) | 30                                           |
-| `JWT_REFRESH_DAYS`   | The number of days a JWT token can be refreshed once it has expired. (see [flask-praetorian](https://flask-praetorian.readthedocs.io/en/latest/notes.html) documentation for more info) | 7                                            |
-| `INITIAL_DATA`       | A path pointing to a .json file containing book data. Such a file will be autegenerated when running `make setup` at this location | books.json                                   |
-| `FLASK_RUN_HOST`     | The host to run the Flask application on                     | localhost                                    |
-| `FLASK_RUN_PORT`     | The port to run the Flask application on                     | 5000                                         |
-| `FRONTEND_PORT`      | The port to run the React application on. (See [Serve](https://github.com/vercel/serve) documentation for more information) | 3000                                         |
-| `BROWSER`            | The browser to open the react app in. WIll be ignored if application is configured for production | Will use system default browser              |
+| Variable             | Description                                                  | Default Value                                                |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `POSTGRES_USER`      | The username of the Postgres user used to access the database | postgres                                                     |
+| `POSTGRES_PORT`      | The port the Postgres database runs on                       | 5432                                                         |
+| `POSTGRES_PASSWORD`  | The password associated with `POSTGRES_USER`                 | test123                                                      |
+| `POSTGRES_DATABASE`  | The name of the Postgres database to connect to              | test                                                         |
+| `DATABASE_URL`       | The url of the postgres database, should have the form postgresql://POSTGRES_USER:POSTGRES_PASSWORD@hostname/POSTGRES_DATABASE | postgresql://postgres:test123@localhost/test                 |
+| `SECRET_KEY`         | The secret key used for cryptographic signing of cookies. **Must be changed from default in production** | **Do not use default in production**                         |
+| `JWT_PLACES`         | Locations to look for a JWT token. Should be one string, with places seperated by commas. (See [flask-praetorian](https://flask-praetorian.readthedocs.io/en/latest/notes.html) documentation for more info) | cookie,header                                                |
+| `JWT_ACCESS_MINUTES` | The number of minutes a JWT token allows access to protected routes. (see [flask-praetorian](https://flask-praetorian.readthedocs.io/en/latest/notes.html) documentation for more info) | 30                                                           |
+| `JWT_REFRESH_DAYS`   | The number of days a JWT token can be refreshed once it has expired. (see [flask-praetorian](https://flask-praetorian.readthedocs.io/en/latest/notes.html) documentation for more info) | 7                                                            |
+| `INITIAL_DATA`       | A path pointing to a .json file containing book data. Such a file will be autegenerated when running `make setup` at this location | books.json                                                   |
+| `FLASK_RUN_HOST`     | The host to run the Flask application on                     | localhost                                                    |
+| `FLASK_RUN_PORT`     | The port to run the Flask application on                     | 5000                                                         |
+| `FRONTEND_PORT`      | The port to run the React application on. (See [Serve](https://github.com/vercel/serve) documentation for more information) | 3000                                                         |
+| `BROWSER`            | The browser to open the react app in. WIll be ignored if application is configured for production | Will use system default browser                              |
+| `PYTHON_PATH`        | The path to a python executable to use for the project. Must be `>=3.8.0, <=3.8.3`. Useful if the default version of python on your `PATH` is not compatible. Can either be a full path to the executable like `path/to/python`, or if the python executable is already inm your path (e.g. as `python3.8`) you can simply set to `python3.8` | By default will use the version attatched to `python` in your `PATH` |
 
 **Note:** A `.env` file is required, with at least a new secret key
 

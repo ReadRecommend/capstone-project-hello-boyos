@@ -17,8 +17,13 @@ help:
 	@echo "---------------------------------------------------------------------"
 .PHONY: clean
 
+PYTHON_PATH ?= python
 setup:
 	@curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+	@poetry self update --preview
+	@if [ $(PYTHON_PATH) = "python" ]; then\
+		poetry env use $(PYTHON_PATH);\
+	fi
 	@poetry install
 	@poetry run python -m nltk.downloader wordnet stopwords
 	@npm install --prefix frontend
