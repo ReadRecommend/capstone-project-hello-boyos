@@ -30,15 +30,15 @@ class Discover extends Component {
     };
 
     getRecentlyReadRecommendations = (books, user) => {
-        let promiseArray = [];
+        let bookIDs = [];
         books.forEach((book) => {
-            promiseArray = promiseArray.concat(
-                getRecommendations("content", user.id, book.id, 2).then((res) =>
-                    res.json()
-                )
-            );
+            bookIDs.push(book.id);
         });
-        return Promise.all(promiseArray);
+        return getRecommendations("content", user.id, null, 20, bookIDs).then(
+            (res) => {
+                return res.json();
+            }
+        );
     };
 
     handleSubmit = (event) => {

@@ -146,7 +146,7 @@ if "y" in dummy_users:
     print(Fore.CYAN + "=========================================")
     print(
         Fore.CYAN
-        + "Dummy user info is:\nusername: JohnSmith \tpassword: hunter2\nusername: JaneDoe\tpassword: pass123"
+        + "Dummy user info:\nusername: JohnSmith \tpassword: hunter2\nusername: JaneDoe\tpassword: pass123"
     )
     print(Fore.CYAN + "=========================================")
 

@@ -1,8 +1,6 @@
-import random
-
 from flask import jsonify, request
 
-from backend.errors import ResourceNotFound
+from backend.errors import InvalidRequest, ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
 from backend.recommendation import (
     DEFAULT_NRECOMMEND,
@@ -133,19 +131,38 @@ def get_following():
 @recommendation_bp.route("/content", methods=["POST"])
 def get_content():
     request_data = request.json
-    book_id = extract_integer(request_data, "bookID")
-    seed_book = Book.query.filter_by(id=book_id).first()
-    if not seed_book:
-        raise ResourceNotFound("A book with this ID does not exist")
-
     n_recommend = extract_integer(
         request_data, "n_recommend", default_value=DEFAULT_NRECOMMEND
     )
 
     recommender = ContentRecommender(ngram_range=(1, 1))
-    most_similar_books = recommender.recommend(
-        seed_book, n_recommend=POOL_SIZE * n_recommend
-    )
+
+    # Get recommendations from single book or list of books
+    book_id = extract_integer(request_data, "bookID", required=False)
+    book_ids = request_data.get("bookIDs")
+
+    # Recommending from single seed book ID
+    if book_id:
+        seed = Book.query.filter_by(id=book_id).first()
+        if not seed:
+            raise ResourceNotFound("A book with this ID does not exist")
+
+    # Recommending from list of book IDs
+    elif book_ids:
+        seed = Book.query.filter(Book.id.in_(book_ids)).all()
+        if not len(seed) == len(book_ids):
+            raise ResourceNotFound(
+                "One of more books with a provided bookID does not exist"
+            )
+    else:
+        raise InvalidRequest("One of 'bookID' or 'bookIDs' is a required key")
+
+    try:
+        most_similar_books = recommender.recommend(
+            seed, n_recommend=POOL_SIZE * n_recommend
+        )
+    except ValueError:
+        raise InvalidRequest("The provided bookID(s) did not correspond to books")
 
     # If a user id is provided, remove overlap between a user's books and the genre books
     if user_id := extract_integer(request_data, "userID", required=False):

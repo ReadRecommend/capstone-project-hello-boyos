@@ -107,20 +107,34 @@ class ContentRecommender:
 
         Returns:
             List[Book]: A list of the most similar books to the provided book
-        """
-        book_content = self.get_clean_content(seed)
 
+        Raises:
+            ValueError: If seed is not a book or list of books
+        """
+        if isinstance(seed, Book):
+            book_content = self.get_clean_content(seed)
+            n_seed = 1
+            seed_language = seed.language
+        elif isinstance(seed, list) and all(isinstance(book, Book) for book in seed):
+            book_content = " ".join([self.get_clean_content(book) for book in seed])
+            n_seed = len(seed)
+            # Get most frequent language from seed books
+            seed_languages = [book.language for book in seed]
+            seed_language = max(set(seed_languages), key=seed_languages.count,)
+        else:
+            raise ValueError("seed should be a Book or list of Books")
         book_tfidf_words = self._tfidf.transform(pd.Series(book_content))
         all_tfidf_words = self._tfidf.transform(self._book_df["content"])
 
         similarities = cosine_similarity(book_tfidf_words, all_tfidf_words)[0]
-        # Find the indices of the most similar books (1: n_recommend + 1 is to exclude the source book)
-        top_indices = (-similarities).argsort()[1 : n_recommend + 1]
+        # Find the indices of the most similar books (n_seed: n_recommend + n_seed
+        # is to exclude the seed book/s)
+        top_indices = (-similarities).argsort()[n_seed : n_recommend + n_seed]
         top_similarities = similarities[top_indices]
         top_ids = self._book_df.loc[top_indices, "id"].values
 
         recommended_books = Book.query.filter(
-            Book.id.in_(top_ids), Book.language == seed.language
+            Book.id.in_(top_ids), Book.language == seed_language
         ).all()
 
         # weight similarity score by the books rating to order the recommendations

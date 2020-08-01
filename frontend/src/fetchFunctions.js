@@ -310,6 +310,7 @@ export function getRecommendations(
     userID,
     bookID,
     nRecommend = 10,
+    bookIDs = null,
     author = null,
     genre = null
 ) {
@@ -322,6 +323,7 @@ export function getRecommendations(
             userID: userID,
             bookID: bookID,
             n_recommend: nRecommend,
+            bookIDs: bookIDs,
             author: author,
             genre: genre,
         }),
