@@ -169,7 +169,8 @@ while True:
 
 print(Fore.CYAN + "=========================================")
 print(
-    Fore.CYAN + f"Admin info:\nusername: {admin_username} \tpassword: {admin_password2}"
+    Fore.CYAN
+    + f"Admin info:\nusername: {admin_username} \tpassword: {'*'*len(admin_password2)}"
 )
 print(Fore.CYAN + "=========================================")
 
