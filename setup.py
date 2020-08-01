@@ -93,55 +93,62 @@ db.create_all()
 initial_data = os.getenv("INITIAL_DATA", "books.json")
 json_to_db(initial_data)
 
-print("Adding dummy non-book data")
-user1 = Reader(
-    username="JohnSmith",
-    email="john.smith@gmail.com",
-    password=guard.hash_password("hunter2"),
-    roles="user",
-)
-user2 = Reader(
-    username="JaneDoe",
-    email="jane.doe@gmail.com",
-    password=guard.hash_password("pass123"),
-    roles="user",
-)
-
-
-user1.follows.append(user2)
-user1.followers.append(user2)
-
-# Only add collections if there are books
-if Book.query.first():
-    user1.collections.append(
-        Collection(
-            name="Main", books=Book.query.order_by(db.func.random()).limit(5).all()
-        )
+dummy_users = input("Would you like to create 2 dummy users? [y/n]\n")
+if "y" in dummy_users:
+    print("Adding dummy non-book data")
+    user1 = Reader(
+        username="JohnSmith",
+        email="john.smith@gmail.com",
+        password=guard.hash_password("hunter2"),
+        roles="user",
     )
-    user2.collections.append(
-        Collection(
-            name="Main", books=Book.query.order_by(db.func.random()).limit(5).all()
-        )
+    user2 = Reader(
+        username="JaneDoe",
+        email="jane.doe@gmail.com",
+        password=guard.hash_password("pass123"),
+        roles="user",
     )
 
-    classics = Genre.query.filter_by(name="Classics").first()
-    user1.collections.append(
-        Collection(
-            name="Classics",
-            books=Book.query.filter(Book.genres.contains(classics)).limit(10).all(),
-        )
-    )
+    user1.follows.append(user2)
+    user1.followers.append(user2)
 
-    scifi = Genre.query.filter_by(name="Science Fiction").first()
-    user2.collections.append(
-        Collection(
-            name="SciFi",
-            books=Book.query.filter(Book.genres.contains(scifi)).limit(10).all(),
+    # Only add collections if there are books
+    if Book.query.first():
+        user1.collections.append(
+            Collection(
+                name="Main", books=Book.query.order_by(db.func.random()).limit(5).all()
+            )
         )
+        user2.collections.append(
+            Collection(
+                name="Main", books=Book.query.order_by(db.func.random()).limit(5).all()
+            )
+        )
+
+        classics = Genre.query.filter_by(name="Classics").first()
+        user1.collections.append(
+            Collection(
+                name="Classics",
+                books=Book.query.filter(Book.genres.contains(classics)).limit(10).all(),
+            )
+        )
+
+        scifi = Genre.query.filter_by(name="Science Fiction").first()
+        user2.collections.append(
+            Collection(
+                name="SciFi",
+                books=Book.query.filter(Book.genres.contains(scifi)).limit(10).all(),
+            )
+        )
+    else:
+        user1.collections.append(Collection(name="Main"))
+        user2.collections.append(Collection(name="Main"))
+    print(Fore.CYAN + "=========================================")
+    print(
+        Fore.CYAN
+        + "Dummy user info is:\nusername: JohnSmith \tpassword: hunter2\nusername: JaneDoe\tpassword: pass123"
     )
-else:
-    user1.collections.append(Collection(name="Main"))
-    user2.collections.append(Collection(name="Main"))
+    print(Fore.CYAN + "=========================================")
 
 print("Creating admin role:")
 admin_username = input("Choose an admin username (admin): ") or "admin"
