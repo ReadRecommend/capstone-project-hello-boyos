@@ -164,6 +164,12 @@ while True:
         break
     print(Fore.RED + "Passwords did not match, please try again")
 
+print(Fore.CYAN + "=========================================")
+print(
+    Fore.CYAN + f"Admin info:\nusername: {admin_username} \tpassword: {admin_password2}"
+)
+print(Fore.CYAN + "=========================================")
+
 admin = Reader(
     username=admin_username,
     email="admin@readrecommend.com",
