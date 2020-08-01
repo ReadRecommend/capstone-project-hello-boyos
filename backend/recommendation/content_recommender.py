@@ -4,6 +4,8 @@ import re
 
 import pandas as pd
 from nltk.tokenize import RegexpTokenizer
+from nltk import PorterStemmer
+import nltk.corpus as corpus
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -54,7 +56,7 @@ class ContentRecommender:
             except FileNotFoundError:
                 self.train(ngram_range=ngram_range)
 
-        if self._book_df.shape[0] < Book.query.count() + RETRAIN_THRESHOLD:
+        if Book.query.count() - self._book_df.shape[0] > RETRAIN_THRESHOLD:
             self.train(ngram_range=ngram_range)
 
     def train(self, ngram_range=(1, 2)):
@@ -83,7 +85,7 @@ class ContentRecommender:
         self._book_df = book_df
 
         self._tfidf = TfidfVectorizer(
-            stop_words="english", ngram_range=ngram_range, strip_accents="unicode"
+            ngram_range=ngram_range, strip_accents="unicode",
         ).fit(book_df["content"])
 
         # Persist the TFIDFVectorizer and the dataframe of books locally
@@ -92,13 +94,13 @@ class ContentRecommender:
             pickle.dump(self._tfidf, f)
         book_df.to_parquet(f"{self._save_path}/book_df.parquet")
 
-    def recommend(self, book, n_recommend=20):
-        """Get a list of the most similar books to a provided book
+    def recommend(self, seed, n_recommend=20):
+        """Get a list of the most similar books to a provided book, or list of books
 
         Similarity is defined as the cosine similarity across the TFIDF vector of the content
 
         Args:
-            book (Book): The "seed" book that we are looking for recommendations from
+            seed (Union[Book, List[Book]): The "seed" book or books that we are looking for recommendations from
             n_recommend (int, optional): The number of books to recommend. Note: As books from other languages
             are excluded after this limit is enforced, the actual length of the returned list may
             be less than `n_recommend`. Defaults to 20.
@@ -106,7 +108,7 @@ class ContentRecommender:
         Returns:
             List[Book]: A list of the most similar books to the provided book
         """
-        book_content = self.get_clean_content(book)
+        book_content = self.get_clean_content(seed)
 
         book_tfidf_words = self._tfidf.transform(pd.Series(book_content))
         all_tfidf_words = self._tfidf.transform(self._book_df["content"])
@@ -118,7 +120,7 @@ class ContentRecommender:
         top_ids = self._book_df.loc[top_indices, "id"].values
 
         recommended_books = Book.query.filter(
-            Book.id.in_(top_ids), Book.language == book.language
+            Book.id.in_(top_ids), Book.language == seed.language
         ).all()
 
         # weight similarity score by the books rating to order the recommendations
@@ -148,37 +150,25 @@ class ContentRecommender:
         authors = " ".join([author.name for author in book.authors])
 
         content = " ".join([title, summary, genres, authors])
-        return ContentRecommender.clean_data(content)
+        return ContentRecommender.clean_data(content, book.language)
 
     @staticmethod
-    def clean_data(text):
+    def clean_data(text, language):
         """Uniformly clean up a piece of text
 
         Args:
             text (str): The string to clean
+            language (str): The language of the text
 
         Returns:
             str: The clean string
         """
         text = ContentRecommender._remove_html(text)
-        text = ContentRecommender._remove_punctuation(text)
         text = text.lower()
-        return text
-
-    @staticmethod
-    def _remove_punctuation(text):
-        """Removes any punctuation from a string
-
-        Args:
-            text (str): The text to remove punctuation from
-
-        Returns:
-            str: the cleaned string
-        """
-        tokenizer = RegexpTokenizer(r"\w+")
-        text = tokenizer.tokenize(text)
-        text = " ".join(text)
-        return text
+        words = ContentRecommender._tokenize(text)
+        words = ContentRecommender._remove_stopwords(words, language)
+        words = ContentRecommender._stem(words)
+        return " ".join(words)
 
     @staticmethod
     def _remove_html(text):
@@ -192,3 +182,50 @@ class ContentRecommender:
         """
         html_pattern = re.compile("<.*?>")
         return html_pattern.sub(r"", text)
+
+    @staticmethod
+    def _tokenize(text):
+        """Removes any punctuation from a string and tokenize
+
+        Args:
+            text (str): The text to remove punctuation from
+
+        Returns:
+            List[str]: The tokenized string
+        """
+        tokenizer = RegexpTokenizer(r"\w+")
+        words = tokenizer.tokenize(text)
+        return words
+
+    @staticmethod
+    def _remove_stopwords(words, language):
+        """Removes any stopwords from a list of stopwords
+
+        Args:
+            words (str): The list of words to remove stopwords from
+            langauge (str): The language of the words
+
+        Returns:
+            List[str]: The words with stopwords removed
+        """
+        try:
+            stopwords = corpus.stopwords.words(language)
+        except OSError:
+            return words
+        words = [word for word in words if word not in stopwords]
+        return words
+
+    @staticmethod
+    def _stem(words):
+        """Stem all words in list of strings
+
+        Args:
+            text (List[str]): The list of words to stem
+
+        Returns:
+            List[str]: The list of stemmed words
+        """
+        stemmer = PorterStemmer()
+        words = [stemmer.stem(word) for word in words]
+        return words
+

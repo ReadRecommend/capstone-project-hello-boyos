@@ -16,6 +16,7 @@ setup:
 	@poetry install
 	@npm install --prefix frontend
 	@make initialise
+	@poetry run python -m nltk.downloader all
 .PHONY: setup
 
 initialise:
