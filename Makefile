@@ -21,7 +21,7 @@ PYTHON_PATH ?= python
 setup:
 	@curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
 	@poetry self update --preview
-	@if [ $(PYTHON_PATH) = "python" ]; then\
+	@if [ $(PYTHON_PATH) != "python" ]; then\
 		poetry env use $(PYTHON_PATH);\
 	fi
 	@poetry install
