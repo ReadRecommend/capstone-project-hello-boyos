@@ -120,14 +120,16 @@ class NavigationBar extends Component {
                             </NavDropdown.Item>
                         </NavDropdown>
                     )}
+                    <Nav.Link href="/discover">Discover</Nav.Link>
                     {this.props.loggedInRole === "User" && (
                         <>
-                            <Nav.Link href="/discover">Discover</Nav.Link>
                             <Nav.Link href="/goals">My Goals</Nav.Link>
                         </>
                     )}
-                </Nav>                
-                {(this.props.location.pathname !== "/search" && this.props.location.pathname !== "/usrsearch") && this.renderSearchBar()}
+                </Nav>
+                {this.props.location.pathname !== "/search" &&
+                    this.props.location.pathname !== "/usrsearch" &&
+                    this.renderSearchBar()}
                 {this.renderRedirect()}
                 <Nav style={{ marginRight: "10px" }}>
                     <BootstrapSwitchButton
