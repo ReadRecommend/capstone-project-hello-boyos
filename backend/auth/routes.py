@@ -86,4 +86,3 @@ def refresh():
 
     new_token = guard.refresh_jwt_token(old_token)
     return jsonify({"access_token": new_token}), 200
-

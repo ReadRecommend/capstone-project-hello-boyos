@@ -66,4 +66,3 @@ class TestFollowers:
         assert response.status_code == 400
         response = client.delete("/follow", json={"INVALID": 123})
         assert response.status_code == 400
-

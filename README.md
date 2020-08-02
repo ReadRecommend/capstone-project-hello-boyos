@@ -36,7 +36,7 @@ The following variables are supported in the `.env` file:
 | `INITIAL_DATA`       | A path pointing to a .json file containing book data. Such a file will be autegenerated when running `make setup` at this location | books.json                                                   |
 | `FLASK_RUN_HOST`     | The host to run the Flask application on                     | localhost                                                    |
 | `FLASK_RUN_PORT`     | The port to run the Flask application on                     | 5000                                                         |
-| `FRONTEND_PORT`      | The port to run the React application on. (See [Serve](https://github.com/vercel/serve) documentation for more information) | 3000                                                         |
+| `FRONTEND_PORT`      | The port to run the React application on                     | 3000                                                         |
 | `BROWSER`            | The browser to open the react app in. WIll be ignored if application is configured for production | Will use system default browser                              |
 | `PYTHON_PATH`        | The path to a python executable to use for the project. Must be `>=3.8.0, <=3.8.3`. Useful if the default version of python on your `PATH` is not compatible. Can either be a full path to the executable like `path/to/python`, or if the python executable is already inm your path (e.g. as `python3.8`) you can simply set to `python3.8` | By default will use the version attatched to `python` in your `PATH` |
 
