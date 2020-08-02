@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { getReview } from "../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
+import { Spinner } from "react-bootstrap";
 
 class ReviewList extends Component {
     constructor(props) {
@@ -10,6 +11,7 @@ class ReviewList extends Component {
             reviewList: [],
             reviewPage: this.props.reviewPage,
             nReviews: this.props.reviewsPerPage,
+            loading: false,
         };
     }
 
@@ -18,6 +20,7 @@ class ReviewList extends Component {
     }
 
     updateReviews() {
+        this.setState({ loading: true });
         getReview(this.props.bookID, this.state.reviewPage, this.state.nReviews)
             .then((res) => {
                 if (!res.ok) {
@@ -29,7 +32,7 @@ class ReviewList extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ reviewList: json });
+                this.setState({ reviewList: json, loading: false });
             });
     }
 
@@ -49,16 +52,29 @@ class ReviewList extends Component {
     }
 
     render() {
-        return this.state.reviewList.map((review) => (
-            <ReviewListItem
-                key={review.reader.id}
-                book_id={review.book_id}
-                creation_date={review.creation_date}
-                reader={review.reader.username}
-                score={review.score}
-                review={review.review}
-            />
-        ));
+        if (this.state.loading === true) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "relative",
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else {
+            return this.state.reviewList.map((review) => (
+                <ReviewListItem
+                    key={review.reader.id}
+                    book_id={review.book_id}
+                    creation_date={review.creation_date}
+                    reader={review.reader.username}
+                    score={review.score}
+                    review={review.review}
+                />
+            ));
+        }
     }
 }
 
