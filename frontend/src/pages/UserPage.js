@@ -21,6 +21,7 @@ class UserPage extends Component {
             collectionList: [],
             currentCollection: {},
             currentUser: null,
+            loadingCollection: false,
         };
     }
 
@@ -62,12 +63,16 @@ class UserPage extends Component {
     selected collection can then be displayed.
     */
     selectCollection = (id) => {
+        this.setState({ loadingCollection: true });
         getCollection(id)
             .then((res) => {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ currentCollection: json });
+                this.setState({
+                    currentCollection: json,
+                    loadingCollection: false,
+                });
             })
             .catch((error) => {
                 // An error occurred
@@ -83,6 +88,7 @@ class UserPage extends Component {
     };
 
     selectOverview = (overviewName) => {
+        this.setState({ loadingCollection: true });
         getCollectionOverview(this.state.userPageInfo.username, overviewName)
             .then((res) => {
                 if (!res.ok) {
@@ -94,7 +100,10 @@ class UserPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ currentCollection: json });
+                this.setState({
+                    currentCollection: json,
+                    loadingCollection: false,
+                });
             })
             .catch((error) => {
                 // An error occurred
@@ -187,14 +196,27 @@ class UserPage extends Component {
                             <Col>
                                 <h1>{this.state.currentCollection.name}</h1>
                                 <br></br>
-                                <Collection
-                                    key={this.state.currentCollection.id}
-                                    currentCollection={
-                                        this.state.currentCollection
-                                    }
-                                    userCollections={this.state.collectionList}
-                                    editable={false}
-                                />
+                                {this.state.loadingCollection ? (
+                                    <Spinner
+                                        animation="border"
+                                        style={{
+                                            position: "absolute",
+                                            left: "50%",
+                                            top: "50%",
+                                        }}
+                                    />
+                                ) : (
+                                    <Collection
+                                        key={this.state.currentCollection.id}
+                                        currentCollection={
+                                            this.state.currentCollection
+                                        }
+                                        userCollections={
+                                            this.state.collectionList
+                                        }
+                                        editable={false}
+                                    />
+                                )}
                             </Col>
                         </Row>
                     </Container>
