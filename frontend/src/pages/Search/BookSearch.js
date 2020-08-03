@@ -8,7 +8,7 @@ import {
     Spinner,
 } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import SearchResults from "../../components/Books/BookList.js";
+import BookList from "../../components/Books/BookList.js";
 import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 
@@ -57,8 +57,8 @@ class BookSearch extends Component {
     /**
      * changePage changes the viewable list of books presented to the
      * user by taking a new slice, the size of booksPerPage, from the currentSearchList
-     * and sets currentDisplayList to show this. 
-     * @param {int} newPage 
+     * and sets currentDisplayList to show this.
+     * @param {int} newPage
      */
     changePage = (newPage) => {
         const { booksPerPage, currentSearchList, numberOfPages } = this.state;
@@ -82,10 +82,10 @@ class BookSearch extends Component {
             );
         }
     };
-    
+
     /**
-     * refreshPageList 
-     * @param {int} activePage 
+     * refreshPageList
+     * @param {int} activePage
      */
     refreshPageList = (activePage) => {
         let list = [];
@@ -257,10 +257,10 @@ class BookSearch extends Component {
                             There are currently no results to display.{" "}
                         </h3>
                     ) : (
-                        <SearchResults
+                        <BookList
                             books={this.state.currentDisplayList}
                             loadingResults={this.state.loadingResults}
-                        ></SearchResults>
+                        ></BookList>
                     )}
                     <br></br>
                     <Container>

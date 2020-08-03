@@ -23,7 +23,7 @@ import ReviewList from "../../components/Reviews/ReviewList";
 import AddReview from "../../components/Reviews/AddReview";
 import ErrorPage from "../../components/General/ErrorPage";
 import { toast } from "react-toastify";
-import SearchResults from "../../components/Books/BookList.js";
+import BookList from "../../components/Books/BookList.js";
 import { bookDetailsContext } from "../../BookDetailsContext";
 import { BsArrowRepeat } from "react-icons/bs";
 
@@ -411,9 +411,7 @@ class BookPage extends Component {
             );
         } else {
             return (
-                <SearchResults
-                    books={this.state.currentRecommendations}
-                ></SearchResults>
+                <BookList books={this.state.currentRecommendations}></BookList>
             );
         }
     };
