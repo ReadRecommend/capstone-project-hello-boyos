@@ -51,3 +51,22 @@ Made small modifications and bug fixes to the code I wrote and features I create
 Created the user pages, where any user can view the collections of another user
 Used React Context to fix the navbar not registering if you are logged in/out properly
 Added error checking, proper form inputs and bug fixes to the admin book adding screen, completing it
+
+Week 7
+Meeting on Wednesday
+    Performed Retrospective B
+Started on a admin page to remove books
+Completed admin page to view a list of books, complete with sortable and searchable table
+Added route to backend to remove books, and allowed you to do that from the admin remove book page
+Updated navbar to differentiate between user and admin and display the appropriate links
+
+Week 8
+Implemented a Goals page and goal functionality, where the user can view a diagram of their goals and number of books read each month.
+
+Week 9
+Did a large amount refactoring of the frontend, fixing warnings, removing redundant code, ensuring proper error checking, and moving fetches to an external file
+Implemented an admin user list where an admin can view a list of all users in the database and delete them as required
+Did further refactoring and implementation of QOL features, such as more clear error and success messages
+
+Week 10
+Did further refactoring and implementation of QOL features
