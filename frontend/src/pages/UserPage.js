@@ -9,7 +9,7 @@ import FollowButton from "../components/FollowButton";
 import Collection from "../components/Collection";
 import { toast } from "react-toastify";
 import { Container, Col, Row, Spinner } from "react-bootstrap";
-import Error from "../components/Error";
+import ErrorPage from "../components/ErrorPage";
 
 class UserPage extends Component {
     constructor(props) {
@@ -20,7 +20,7 @@ class UserPage extends Component {
             userPageInfo: {},
             collectionList: [],
             currentCollection: {},
-            currentUser: null,
+            loadingCollection: false,
         };
     }
 
@@ -47,9 +47,6 @@ class UserPage extends Component {
 
                 // Select the initial collection
                 this.selectCollection(this.state.collectionList[0]["id"]);
-                if (this.props.initialUserInfo) {
-                    this.setState({ currentUser: this.props.initialUserInfo });
-                }
             })
             .catch((error) => {
                 this.setState({ userPageInfo: null, loading: false });
@@ -62,12 +59,16 @@ class UserPage extends Component {
     selected collection can then be displayed.
     */
     selectCollection = (id) => {
+        this.setState({ loadingCollection: true });
         getCollection(id)
             .then((res) => {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ currentCollection: json });
+                this.setState({
+                    currentCollection: json,
+                    loadingCollection: false,
+                });
             })
             .catch((error) => {
                 // An error occurred
@@ -83,6 +84,7 @@ class UserPage extends Component {
     };
 
     selectOverview = (overviewName) => {
+        this.setState({ loadingCollection: true });
         getCollectionOverview(this.state.userPageInfo.username, overviewName)
             .then((res) => {
                 if (!res.ok) {
@@ -94,7 +96,10 @@ class UserPage extends Component {
                 return res.json();
             })
             .then((json) => {
-                this.setState({ currentCollection: json });
+                this.setState({
+                    currentCollection: json,
+                    loadingCollection: false,
+                });
             })
             .catch((error) => {
                 // An error occurred
@@ -150,13 +155,18 @@ class UserPage extends Component {
                         <h2>{user.username}'s Profile</h2>
                         <Row>
                             <Col md="2">
-                                {this.state.currentUser && (
-                                    <FollowButton
-                                        user={user}
-                                        currentUser={this.state.currentUser}
-                                        notify={this.notify}
-                                    />
-                                )}
+                                {this.props.initialUserInfo &&
+                                    !this.props.initialUserInfo.roles.includes(
+                                        "admin"
+                                    ) && (
+                                        <FollowButton
+                                            user={user}
+                                            currentUser={
+                                                this.props.initialUserInfo
+                                            }
+                                            notify={this.notify}
+                                        />
+                                    )}
                                 <h4>Books</h4>
                                 <CollectionList
                                     collectionList={[
@@ -187,14 +197,27 @@ class UserPage extends Component {
                             <Col>
                                 <h1>{this.state.currentCollection.name}</h1>
                                 <br></br>
-                                <Collection
-                                    key={this.state.currentCollection.id}
-                                    currentCollection={
-                                        this.state.currentCollection
-                                    }
-                                    userCollections={this.state.collectionList}
-                                    editable={false}
-                                />
+                                {this.state.loadingCollection ? (
+                                    <Spinner
+                                        animation="border"
+                                        style={{
+                                            position: "absolute",
+                                            left: "50%",
+                                            top: "50%",
+                                        }}
+                                    />
+                                ) : (
+                                    <Collection
+                                        key={this.state.currentCollection.id}
+                                        currentCollection={
+                                            this.state.currentCollection
+                                        }
+                                        userCollections={
+                                            this.state.collectionList
+                                        }
+                                        editable={false}
+                                    />
+                                )}
                             </Col>
                         </Row>
                     </Container>
@@ -203,10 +226,10 @@ class UserPage extends Component {
         } else {
             // Didn't find a valid user, or the user is an admin who shouldn't have a page
             return (
-                <Error
+                <ErrorPage
                     errorCode="404"
                     errorMessage="The user you're looking for does not exist"
-                ></Error>
+                ></ErrorPage>
             );
         }
     }

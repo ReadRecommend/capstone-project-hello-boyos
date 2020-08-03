@@ -52,7 +52,6 @@ class BookCard extends Component {
             return (
                 <Button
                     variant="success"
-                    // style={{ position: "absolute", bottom: "1%", left: "5%" }}
                     className="float-left"
                     size="sm"
                     onClick={this.handleModal}
@@ -77,7 +76,6 @@ class BookCard extends Component {
             return (
                 <Button
                     variant="danger"
-                    // style={{ position: "absolute", bottom: "1%", right: "5%" }}
                     className="float-right"
                     size="sm"
                     onClick={this.props.removeBook.bind(book, book.id)}
@@ -148,14 +146,13 @@ class BookCard extends Component {
                         />
                         <br></br>
                         <small>
-                            {book.ave_rating} from{" "}
+                            {book.ave_rating.toFixed(2)} from{" "}
                             {book.n_ratings.toLocaleString()} reviews
                         </small>
                         {/* <Card.Text></Card.Text> */}
                     </Card.Body>
                     {this.props.editable && (
                         <Card.Footer>
-                            {console.log("Here")}
                             {this.addButton()}
                             {this.removeButton()}
                         </Card.Footer>

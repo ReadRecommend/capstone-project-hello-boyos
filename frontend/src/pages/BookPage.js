@@ -17,7 +17,7 @@ import {
 import StarRatings from "react-star-ratings";
 import ReviewList from "../components/ReviewList";
 import AddReview from "../components/AddReview";
-import Error from "../components/Error";
+import ErrorPage from "../components/ErrorPage";
 import { toast } from "react-toastify";
 import SearchResults from "../components/SearchResults.js";
 import { bookDetailsContext } from "../BookDetailsContext";
@@ -61,6 +61,9 @@ class BookPage extends Component {
                     },
                     this.handleRecommendation
                 );
+            })
+            .catch(() => {
+                this.setState({ book: null });
             });
 
         getReviewPages(
@@ -333,7 +336,6 @@ class BookPage extends Component {
 
     updatePerPage = (event) => {
         this.setState({ reviewsPerPage: event.target.value }, () => {
-
             getReviewPages(
                 this.props.match.params.bookID,
                 this.state.reviewsPerPage
@@ -343,15 +345,11 @@ class BookPage extends Component {
                 })
                 .then((json) => {
                     this.setState({ totalReviewPages: json.count }, () => {
-                        this.movePage(1)
-                    }
-
-                    )
-                })
-
-
-        })
-    }
+                        this.movePage(1);
+                    });
+                });
+        });
+    };
 
     updatePage = () => {
         this.setState({ loading: true }, () => {
@@ -364,14 +362,57 @@ class BookPage extends Component {
                 })
                 .then((json) => {
                     this.setState({ totalReviewPages: json.count }, () => {
-                        this.movePage(1)
+                        this.movePage(1);
+                    });
+                });
 
-                    })
+            getBook(this.props.match.params.bookID)
+                .then((res) => {
+                    if (!res.ok) {
+                        // Something went wrong, likely there is no book with the id specified in the url
+                        return res.text().then((text) => {
+                            throw Error(text);
+                        });
+                    }
+
+                    // Found a valid book
+                    return res.json();
                 })
-            this.setState({ loading: false })
-        })
+                .then((json) => {
+                    this.setState({
+                        book: json,
+                    });
+                });
+            this.setState({ loading: false });
+        });
+    };
 
-    }
+    renderRecommendations = () => {
+        if (this.state.loadingRecommendations) {
+            return (
+                <Spinner
+                    animation="border"
+                    style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                    }}
+                />
+            );
+        } else if (this.state.currentRecommendations.length === 0) {
+            return (
+                <h5 style={{ textAlign: "center", color: "grey" }}>
+                    No books found
+                </h5>
+            );
+        } else {
+            return (
+                <SearchResults
+                    books={this.state.currentRecommendations}
+                ></SearchResults>
+            );
+        }
+    };
 
     render() {
         const book = this.state.book;
@@ -390,10 +431,10 @@ class BookPage extends Component {
         }
         if (!book) {
             return (
-                <Error
+                <ErrorPage
                     errorCode={404}
                     errorMessage="The book you are looking for doesn't exist"
-                ></Error>
+                ></ErrorPage>
             );
         }
         return (
@@ -420,8 +461,8 @@ class BookPage extends Component {
                                     />
                                 </div>
                             ) : (
-                                    <BlindCover book={book}></BlindCover>
-                                )}
+                                <BlindCover book={book}></BlindCover>
+                            )}
                             <Media.Body>
                                 {!this.context && (
                                     <>
@@ -435,20 +476,22 @@ class BookPage extends Component {
                                         </h5>{" "}
                                     </>
                                 )}
-                                {!this.context && <h6>
-                                    <small>
-                                        Read by {book.n_readers} user
-                                        {book.n_readers === 1 ? "" : "s"}
-                                    </small>
-                                </h6>}
+                                {!this.context && (
+                                    <h6>
+                                        <small>
+                                            Read by {book.n_readers} user
+                                            {book.n_readers === 1 ? "" : "s"}
+                                        </small>
+                                    </h6>
+                                )}
                                 <p>
-                                    {user ? (
+                                    {user && !user.roles.includes("admin") && (
                                         <AddBookModal
                                             book={book}
                                             user={user}
                                             notify={this.notify}
                                         />
-                                    ) : null}
+                                    )}
                                 </p>
                                 <Tabs defaultActiveKey="summary">
                                     <Tab eventKey="summary" title="Summary">
@@ -461,24 +504,26 @@ class BookPage extends Component {
                                             eventKey="reviews"
                                             title="Reviews + Ratings"
                                         >
-                                            {this.props.initialUserInfo && (
-                                                <>
-                                                    <br></br>
-                                                    <AddReview
-                                                        bookID={
-                                                            this.props.match
-                                                                .params.bookID
-                                                        }
-                                                        readerID={
-                                                            this.props
-                                                                .initialUserInfo
-                                                                .id
-                                                        }
-                                                        notify={this.notify}
-                                                        success={this.updatePage}
-                                                    />
-                                                </>
-                                            )}
+                                            {user &&
+                                                !user.roles.includes(
+                                                    "admin"
+                                                ) && (
+                                                    <>
+                                                        <br></br>
+                                                        <AddReview
+                                                            bookID={
+                                                                this.props.match
+                                                                    .params
+                                                                    .bookID
+                                                            }
+                                                            readerID={user.id}
+                                                            notify={this.notify}
+                                                            success={
+                                                                this.updatePage
+                                                            }
+                                                        />
+                                                    </>
+                                                )}
                                             <br></br>
                                             <h5>Average Rating</h5>
                                             <StarRatings
@@ -498,10 +543,21 @@ class BookPage extends Component {
 
                                             <div>
                                                 Reviews per page
-                                                <select id="perPage" onChange={this.updatePerPage} value={this.state.reviewsPerPage}>
+                                                <select
+                                                    id="perPage"
+                                                    onChange={
+                                                        this.updatePerPage
+                                                    }
+                                                    value={
+                                                        this.state
+                                                            .reviewsPerPage
+                                                    }
+                                                >
                                                     <option value="1">1</option>
                                                     <option value="5">5</option>
-                                                    <option value="10">10</option>
+                                                    <option value="10">
+                                                        10
+                                                    </option>
                                                 </select>
                                             </div>
 
@@ -599,24 +655,7 @@ class BookPage extends Component {
                                                 </InputGroup.Append>
                                             </InputGroup>
                                             <br></br>
-                                            {this.state
-                                                .loadingRecommendations ? (
-                                                    <Spinner
-                                                        animation="border"
-                                                        style={{
-                                                            position: "absolute",
-                                                            left: "50%",
-                                                            top: "50%",
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <SearchResults
-                                                        books={
-                                                            this.state
-                                                                .currentRecommendations
-                                                        }
-                                                    ></SearchResults>
-                                                )}
+                                            {this.renderRecommendations()}
                                         </Form>
                                     </Tab>
                                 </Tabs>

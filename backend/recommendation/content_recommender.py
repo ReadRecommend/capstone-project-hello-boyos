@@ -1,14 +1,16 @@
 import os
 import pickle
 import re
-from typing import List, Tuple
 
 import pandas as pd
 from nltk.tokenize import RegexpTokenizer
+from nltk import PorterStemmer
+import nltk.corpus as corpus
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 from backend.model.schema import Book
+from backend.recommendation import RETRAIN_THRESHOLD
 
 
 class ContentRecommender:
@@ -22,18 +24,20 @@ class ContentRecommender:
     def __init__(
         self,
         save_path="backend/recommendation/static",
-        ngram_range: Tuple[int, int] = (1, 2),
-        force_retrain: bool = False,
+        ngram_range=(1, 2),
+        force_retrain=False,
     ):
         """Initialise a ContentRecommender and train it if necessary
 
         By default, a new ContentRecommender will load the dataframe of books and the trained
         TFIDFVectorizer from `save_path`. If the persisted objects are not available the model will retrain.
+        Once RETRAIN_THRESHOLD new books have been added to the system, the ContentRecommender will
+        automatically retrain
 
         Args:
-            save_path: Where the persisted book content and TFIDFVectorizer are saved.
+            save_path (str): Where the persisted book content and TFIDFVectorizer are saved.
                 Defaults to "backend/recommendation/static".
-            ngram_range (optional): Which n_grams the vectorizer considers. See the sklearn
+            ngram_range (Tuple[int, int], optional): Which n_grams the vectorizer considers. See the sklearn
                 documentation for more information
                 https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn-feature-extraction-text-tfidfvectorizer.
                 Defaults to (1, 2).
@@ -52,16 +56,23 @@ class ContentRecommender:
             except FileNotFoundError:
                 self.train(ngram_range=ngram_range)
 
-    def train(self, ngram_range: Tuple[int, int] = (1, 2)):
+        if Book.query.count() - self._book_df.shape[0] > RETRAIN_THRESHOLD:
+            self.train(ngram_range=ngram_range)
+
+    def train(self, ngram_range=(1, 2)):
         """Train the TFIDFVectorizer over all content from all books in the database
 
         Args:
-            ngram_range (optional): Which n_grams the vectorizer considers. See the sklearn
+            ngram_range (Tuple[int, int], optional): Which n_grams the vectorizer considers. See the sklearn
                 documentation for more information
                 https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html#sklearn-feature-extraction-text-tfidfvectorizer.
                 Defaults to (1, 2).
         """
         books = Book.query.all()
+
+        # If there are no books in the database, return without training
+        if not books:
+            return
 
         # Generate a dataframe of all books in the database, holding their id and content
         book_df = pd.DataFrame()
@@ -74,7 +85,7 @@ class ContentRecommender:
         self._book_df = book_df
 
         self._tfidf = TfidfVectorizer(
-            stop_words="english", ngram_range=ngram_range, strip_accents="unicode"
+            ngram_range=ngram_range, strip_accents="unicode",
         ).fit(book_df["content"])
 
         # Persist the TFIDFVectorizer and the dataframe of books locally
@@ -83,33 +94,47 @@ class ContentRecommender:
             pickle.dump(self._tfidf, f)
         book_df.to_parquet(f"{self._save_path}/book_df.parquet")
 
-    def recommend(self, book: Book, n_recommend: int = 20) -> List[Book]:
-        """Get a list of the most similar books to a provided book
+    def recommend(self, seed, n_recommend=20):
+        """Get a list of the most similar books to a provided book, or list of books
 
         Similarity is defined as the cosine similarity across the TFIDF vector of the content
 
         Args:
-            book: The "seed" book that we are looking for recommendations from
-            n_recommend (optional): The number of books to recommend. Note: As books from other languages
+            seed (Union[Book, List[Book]): The "seed" book or books that we are looking for recommendations from
+            n_recommend (int, optional): The number of books to recommend. Note: As books from other languages
             are excluded after this limit is enforced, the actual length of the returned list may
             be less than `n_recommend`. Defaults to 20.
 
         Returns:
             List[Book]: A list of the most similar books to the provided book
-        """
-        book_content = self.get_clean_content(book)
 
+        Raises:
+            ValueError: If seed is not a book or list of books
+        """
+        if isinstance(seed, Book):
+            book_content = self.get_clean_content(seed)
+            n_seed = 1
+            seed_language = seed.language
+        elif isinstance(seed, list) and all(isinstance(book, Book) for book in seed):
+            book_content = " ".join([self.get_clean_content(book) for book in seed])
+            n_seed = len(seed)
+            # Get most frequent language from seed books
+            seed_languages = [book.language for book in seed]
+            seed_language = max(set(seed_languages), key=seed_languages.count,)
+        else:
+            raise ValueError("seed should be a Book or list of Books")
         book_tfidf_words = self._tfidf.transform(pd.Series(book_content))
         all_tfidf_words = self._tfidf.transform(self._book_df["content"])
 
         similarities = cosine_similarity(book_tfidf_words, all_tfidf_words)[0]
-        # Find the indices of the most similar books (1: n_recommend + 1 is to exclude the source book)
-        top_indices = (-similarities).argsort()[1 : n_recommend + 1]
+        # Find the indices of the most similar books (n_seed: n_recommend + n_seed
+        # is to exclude the seed book/s)
+        top_indices = (-similarities).argsort()[n_seed : n_recommend + n_seed]
         top_similarities = similarities[top_indices]
         top_ids = self._book_df.loc[top_indices, "id"].values
 
         recommended_books = Book.query.filter(
-            Book.id.in_(top_ids), Book.language == book.language
+            Book.id.in_(top_ids), Book.language == seed_language
         ).all()
 
         # weight similarity score by the books rating to order the recommendations
@@ -123,12 +148,12 @@ class ContentRecommender:
         return recommendations
 
     @staticmethod
-    def get_clean_content(book: Book) -> str:
+    def get_clean_content(book):
         """Aggregate a books fields into one string, then clean that string
 
         Fields aggregated are: Title, summary, genres, authors
         Args:
-            book: The Book who's content to aggregate and clean
+            book (Book): The Book who's content to aggregate and clean
 
         Returns:
             str: The clean content string
@@ -139,47 +164,83 @@ class ContentRecommender:
         authors = " ".join([author.name for author in book.authors])
 
         content = " ".join([title, summary, genres, authors])
-        return ContentRecommender.clean_data(content)
+        return ContentRecommender.clean_data(content, book.language)
 
     @staticmethod
-    def clean_data(text: str) -> str:
+    def clean_data(text, language):
         """Uniformly clean up a piece of text
 
         Args:
-            text: The string to clean
+            text (str): The string to clean
+            language (str): The language of the text
 
         Returns:
             str: The clean string
         """
         text = ContentRecommender._remove_html(text)
-        text = ContentRecommender._remove_punctuation(text)
         text = text.lower()
-        return text
+        words = ContentRecommender._tokenize(text)
+        words = ContentRecommender._remove_stopwords(words, language)
+        words = ContentRecommender._stem(words)
+        return " ".join(words)
 
     @staticmethod
-    def _remove_punctuation(text: str) -> str:
-        """Removes any punctuation from a string
-
-        Args:
-            text: The text to remove punctuation from
-
-        Returns:
-            str: the cleaned string
-        """
-        tokenizer = RegexpTokenizer(r"\w+")
-        text = tokenizer.tokenize(text)
-        text = " ".join(text)
-        return text
-
-    @staticmethod
-    def _remove_html(text: str) -> str:
+    def _remove_html(text):
         """Remove any html tags from the string
 
         Args:
-            text: The string to remove html tags from
+            text (str): The string to remove html tags from
 
         Returns:
             str: The cleaned string
         """
         html_pattern = re.compile("<.*?>")
         return html_pattern.sub(r"", text)
+
+    @staticmethod
+    def _tokenize(text):
+        """Removes any punctuation from a string and tokenize
+
+        Args:
+            text (str): The text to remove punctuation from
+
+        Returns:
+            List[str]: The tokenized string
+        """
+        tokenizer = RegexpTokenizer(r"\w+")
+        words = tokenizer.tokenize(text)
+        return words
+
+    @staticmethod
+    def _remove_stopwords(words, language):
+        """Removes any stopwords from a list of stopwords
+
+        Args:
+            words (str): The list of words to remove stopwords from
+            langauge (str): The language of the words
+
+        Returns:
+            List[str]: The words with stopwords removed
+        """
+        if not isinstance(language, str):
+            return words
+        try:
+            stopwords = corpus.stopwords.words(language.lower())
+        except OSError:
+            return words
+        words = [word for word in words if word not in stopwords]
+        return words
+
+    @staticmethod
+    def _stem(words):
+        """Stem all words in list of strings
+
+        Args:
+            text (List[str]): The list of words to stem
+
+        Returns:
+            List[str]: The list of stemmed words
+        """
+        stemmer = PorterStemmer()
+        words = [stemmer.stem(word) for word in words]
+        return words

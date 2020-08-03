@@ -1,29 +1,23 @@
-from backend.errors import InvalidRequest
 import numpy as np
+from backend.user.utils import get_all_books
+from backend.recommendation import POOL_SIZE, DEFAULT_NRECOMMEND
+from random import sample
+from backend.model.schema import Reader
+from backend.errors import ResourceNotFound
 
 
-def validate_integer(variable, variable_name):
-    """Validate a given variable is acceptable as required int
+def remove_reader_overlap(reader_id, book_list):
+    reader = Reader.query.filter_by(id=reader_id).first()
+    if not reader:
+        raise ResourceNotFound("A user with the specified ID does not exist")
+    reader_books = get_all_books(reader)
+    return list(set(book_list) - set(reader_books))
 
-    Args:
-        variable (str): The variable to validate
-        variable_name (str): The name of the variable, used for error messages
 
-    Raises:
-        InvalidRequest: if variable is None
-        InvalidRequest: if the variable is not parseable as an integer
-
-    Returns:
-        int: the variable if it can successfully be cast to an integer
-    """
-    if not variable:
-        message = f"{variable_name} is a required field"
-        raise InvalidRequest(message)
-    try:
-        return int(variable)
-    except:
-        message = f"{variable_name} should be parseable as an integer"
-        raise InvalidRequest(message)
+def sample_top_books(book_list, n_recommend=DEFAULT_NRECOMMEND):
+    sorted_books = sorted(book_list, key=weighted_rating, reverse=True)
+    top_books = sorted_books[: POOL_SIZE * n_recommend]
+    return sample(top_books, min(n_recommend, len(top_books)))
 
 
 def weighted_rating(book, Q=3000):

@@ -1,202 +1,190 @@
-import random
-
 from flask import jsonify, request
 
-from backend.errors import ResourceNotFound
+from backend.errors import InvalidRequest, ResourceNotFound
 from backend.model.schema import Author, Book, Genre, Reader, books_schema
-from backend.recommendation import POOL_SIZE, recommendation_bp, DEFAULT_NRECOMMEND
+from backend.recommendation import (
+    DEFAULT_NRECOMMEND,
+    POOL_SIZE,
+    recommendation_bp,
+)
 from backend.recommendation.content_recommender import ContentRecommender
-from backend.recommendation.utils import validate_integer, weighted_rating
-from backend.user.utils import sort_books
-
-# TODO make reader ID optional
+from backend.recommendation.utils import (
+    remove_reader_overlap,
+    sample_top_books,
+)
+from backend.user.utils import get_all_books
+from backend.utils import extract_integer
 
 
 @recommendation_bp.route("/author", methods=["POST"])
 def get_author():
-
-    n_recommend = validate_integer(
-        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    request_data = request.json
+    n_recommend = extract_integer(
+        request_data, "n_recommend", default_value=DEFAULT_NRECOMMEND
     )
 
     # Seed Book
-    book_id = request.json.get("bookID")
-    book_id = validate_integer(book_id, "bookID")
-
-    book = Book.query.filter_by(id=book_id).first()
-    if not book:
+    book_id = extract_integer(request_data, "bookID")
+    seed_book = Book.query.filter_by(id=book_id).first()
+    if not seed_book:
         raise ResourceNotFound("A book with this ID does not exist")
 
-    # Author NAME
-    if request.json.get("author"):
-        author_name = request.json.get("author")
-        author_books = Author.query.filter_by(name=author_name).first()
-        if not author_books:
+    # If an author's name is provided, use their books
+    if author_name := request_data.get("author"):
+        author = Author.query.filter_by(name=author_name).first()
+        if not author:
             raise ResourceNotFound("An author with this name does not exist")
-        author_books = author_books.books
-        if book in author_books:
-            author_books.remove(book)
+        all_author_books = author.books
+
+    # If no author name provided, use books from all authors of the seed book
     else:
-        # If no author name provided:
-        authors = book.authors
-        author_books = set()
+        authors = seed_book.authors
+        all_author_books = set()
         for author in authors:
-            author_name = author.name
-            author_book = Author.query.filter_by(name=author_name).first()
-            if not author_book:
-                raise ResourceNotFound("An author with this name does not exist")
-            author_book = author_book.books
-            author_books.update(set(author_book))
-        if book in author_books:
-            author_books.remove(book)
+            author_books = author.books
+            all_author_books.update(set(author_books))
 
-    return_books = sorted(list(set(author_books)), key=weighted_rating, reverse=True)
+    all_author_books = list(all_author_books)
 
-    if request.json.get("userID"):
-        user_id = validate_integer(request.json.get("userID"), "userID")
-        reader = Reader.query.filter_by(id=user_id).first()
-        if not reader:
-            raise ResourceNotFound("A user with the specified ID does not exist")
-        user_books = sort_books(reader)
-        return_books = sorted(
-            list(set(return_books) - set(user_books)), key=weighted_rating, reverse=True
-        )
-    return_books = return_books[: POOL_SIZE * n_recommend]
-    return_books = random.sample((return_books), min(n_recommend, len(return_books)))
+    # Remove seed book if present
+    all_author_books = [book for book in all_author_books if book is not seed_book]
 
-    return jsonify(books_schema.dump(return_books))
+    # If a user id is provided, remove overlap between a user's books and the authors books
+    if user_id := extract_integer(request_data, "userID", required=False):
+        all_author_books = remove_reader_overlap(user_id, all_author_books)
+
+    recommendations = sample_top_books(all_author_books, n_recommend)
+    return jsonify(books_schema.dump(recommendations))
 
 
 @recommendation_bp.route("/genre", methods=["POST"])
 def get_genre():
-
-    n_recommend = validate_integer(
-        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    request_data = request.json
+    n_recommend = extract_integer(
+        request_data, "n_recommend", default_value=DEFAULT_NRECOMMEND
     )
 
     # Seed Book
-    book_id = request.json.get("bookID")
-    book_id = validate_integer(book_id, "bookID")
-
-    book = Book.query.filter_by(id=book_id).first()
-    if not book:
+    book_id = extract_integer(request_data, "bookID")
+    seed_book = Book.query.filter_by(id=book_id).first()
+    if not seed_book:
         raise ResourceNotFound("A book with this ID does not exist")
 
-    # Genre NAME
-    if request.json.get("genre"):
-        genre = request.json.get("genre")
-        genre_books = Genre.query.filter_by(name=genre).first()
-        if not genre_books:
+    # If a genre name is provided, use books from that genre
+    if genre_name := request.json.get("genre"):
+        genre = Genre.query.filter_by(name=genre_name).first()
+        if not genre:
             raise ResourceNotFound("A genre with this name does not exist")
+        all_genre_books = genre.books
 
-        genre_books = genre_books.books
-        if book in genre_books:
-            genre_books.remove(book)
+    # If no genre name provided, use books from all genres of the seed book
     else:
-        # If no genre name provided:
-        genres = book.genres
-        genre_books = set()
-
+        genres = seed_book.genres
+        all_genre_books = set()
         for genre in genres:
-            genre = genre.name
-            genre_book = Genre.query.filter_by(name=genre).first()
-            if not genre_book:
-                raise ResourceNotFound("A genre with this name does not exist")
-            genre_book = genre_book.books
-            genre_books.update(set(genre_book))
+            genre_books = genre.books
+            all_genre_books.update(set(genre_books))
 
-        if book in genre_books:
-            genre_books.remove(book)
+    all_genre_books = list(all_genre_books)
 
-    return_books = sorted(list(set(genre_books)), key=weighted_rating, reverse=True)
+    # Remove seed book if present
+    all_genre_books = [book for book in all_genre_books if book is not seed_book]
 
-    if request.json.get("userID"):
-        user_id = validate_integer(request.json.get("userID"), "userID")
-        reader = Reader.query.filter_by(id=user_id).first()
-        if not reader:
-            raise ResourceNotFound("A user with the specified ID does not exist")
-        user_books = sort_books(reader)
-        return_books = sorted(
-            list(set(return_books) - set(user_books)), key=weighted_rating, reverse=True
-        )
+    # If a user id is provided, remove overlap between a user's books and the genre books
+    if user_id := extract_integer(request_data, "userID", required=False):
+        all_genre_books = remove_reader_overlap(user_id, all_genre_books)
 
-    return_books = return_books[: POOL_SIZE * n_recommend]
-    return_books = random.sample((return_books), min(n_recommend, len(return_books)))
-
-    return jsonify(books_schema.dump(return_books))
+    recommendations = sample_top_books(all_genre_books, n_recommend)
+    return jsonify(books_schema.dump(recommendations))
 
 
 @recommendation_bp.route("/following", methods=["POST"])
 def get_following():
-    user_id = validate_integer(request.json.get("userID"), "userID")
-
+    request_data = request.json
+    user_id = extract_integer(request_data, "userID")
     reader = Reader.query.filter_by(id=user_id).first()
     if not reader:
         raise ResourceNotFound("A user with the specified ID does not exist")
 
-    user_books = sort_books(reader)
-
-    follows = Reader.query.filter_by(id=user_id).first().follows
+    follows = reader.follows
     if not follows:
         raise ResourceNotFound(
             "The user with the specified ID does not follow any users"
         )
 
-    n_recommend = validate_integer(
-        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    n_recommend = extract_integer(
+        request_data, "n_recommend", default_value=DEFAULT_NRECOMMEND
     )
 
-    following_books = []
+    all_following_books = set()
+    for followed_user in follows:
+        all_following_books.update(set(get_all_books(followed_user)))
 
-    for following in follows:
-        following_books = following_books + sort_books(following)
+    all_following_books = list(all_following_books)
 
-    following_books = list(dict.fromkeys(following_books))
+    all_following_books = remove_reader_overlap(reader.id, all_following_books)
+    recommendations = sample_top_books(all_following_books, n_recommend)
 
-    unread_books = sorted(
-        list(set(following_books) - set(user_books)), key=weighted_rating, reverse=True,
-    )[: POOL_SIZE * n_recommend]
-    unread_books = random.sample(unread_books, min(n_recommend, len(unread_books)))
-
-    return jsonify(books_schema.dump(unread_books))
+    return jsonify(books_schema.dump(recommendations))
 
 
 @recommendation_bp.route("/content", methods=["POST"])
 def get_content():
-    book_id = request.json.get("bookID")
-
-    book_id = validate_integer(book_id, "bookID")
-
-    book = Book.query.filter_by(id=book_id).first()
-    if not book:
-        raise ResourceNotFound("A book with this ID does not exist")
-
-    n_recommend = validate_integer(
-        request.json.get("nRecommend", DEFAULT_NRECOMMEND), "nRecommend"
+    request_data = request.json
+    n_recommend = extract_integer(
+        request_data, "n_recommend", default_value=DEFAULT_NRECOMMEND
     )
 
     recommender = ContentRecommender(ngram_range=(1, 1))
-    recommendations = recommender.recommend(book, n_recommend=POOL_SIZE * n_recommend)
 
-    if request.json.get("userID"):
-        user_id = validate_integer(request.json.get("userID"), "userID")
-        reader = Reader.query.filter_by(id=user_id).first()
-        if not reader:
-            raise ResourceNotFound("A user with the specified ID does not exist")
-        reader_books = sort_books(reader)
-        recommendations = list(set(recommendations) - set(reader_books))
+    # Get recommendations from single book or list of books
+    book_id = extract_integer(request_data, "bookID", required=False)
+    book_ids = request_data.get("bookIDs")
 
-    recommendations = random.sample(
-        recommendations, min(n_recommend, len(recommendations))
-    )
+    # Recommending from single seed book ID
+    if book_id:
+        seed = Book.query.filter_by(id=book_id).first()
+        if not seed:
+            raise ResourceNotFound("A book with this ID does not exist")
+
+    # Recommending from list of book IDs
+    elif book_ids:
+        seed = Book.query.filter(Book.id.in_(book_ids)).all()
+        if not len(seed) == len(book_ids):
+            raise ResourceNotFound(
+                "One of more books with a provided bookID does not exist"
+            )
+    else:
+        raise InvalidRequest("One of 'bookID' or 'bookIDs' is a required key")
+
+    try:
+        most_similar_books = recommender.recommend(
+            seed, n_recommend=POOL_SIZE * n_recommend
+        )
+    except ValueError:
+        raise InvalidRequest("The provided bookID(s) did not correspond to books")
+
+    # If a user id is provided, remove overlap between a user's books and the genre books
+    if user_id := extract_integer(request_data, "userID", required=False):
+        most_similar_books = remove_reader_overlap(user_id, most_similar_books)
+
+    recommendations = sample_top_books(most_similar_books)
 
     return jsonify(books_schema.dump(recommendations))
 
 
 @recommendation_bp.route("/top_rated", methods=["POST"])
 def get_top():
-    n_recommend = validate_integer(request.json.get("nRecommend", 10), "nRecommend")
-    books = Book.query.filter(Book.ave_rating > 4).all()
-    books = sorted(books, key=weighted_rating, reverse=True)[: POOL_SIZE * n_recommend]
-    books = random.sample(books, min(n_recommend, len(books)))
-    return jsonify(books_schema.dump(books))
+    request_data = request.json
+    n_recommend = extract_integer(
+        request_data, "n_recommend", default_value=DEFAULT_NRECOMMEND
+    )
+
+    top_rated_books = Book.query.filter(Book.ave_rating > 4).all()
+
+    # If a user id is provided, remove overlap between a user's books and the genre books
+    if user_id := extract_integer(request_data, "userID", required=False):
+        top_rated_books = remove_reader_overlap(user_id, top_rated_books)
+
+    recommendations = sample_top_books(top_rated_books, n_recommend)
+    return jsonify(books_schema.dump(recommendations))

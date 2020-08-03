@@ -26,7 +26,7 @@ class Search extends Component {
             currentSearchList: [],
             currentDisplayList: [],
             currentPage: 1,
-            booksPerPage: 9,
+            booksPerPage: 12,
             numberOfPages: 1,
             pages: [],
             loadingResults: false,
@@ -229,7 +229,7 @@ class Search extends Component {
     };
 
     render() {
-        const { currentPage } = this.state;
+        const { currentPage , numberOfPages, } = this.state;
         return (
             <div className="Search">
                 <Container>
@@ -264,15 +264,37 @@ class Search extends Component {
                     )}
                     <br></br>
                     <Container>
-                        <div class="pagination justify-content-center">
+                        <div className="pagination justify-content-center">
                             <Pagination>
                                 <Pagination.Prev
                                     onClick={() =>
                                         this.changePage(currentPage - 1)
                                     }
                                 />
-                                {!(this.state.numberOfPages === 0) &&
+                                {(currentPage > 3) &&
+                                    <><Pagination.Item
+                                        key={1}
+                                        active={1 === currentPage}
+                                        onClick={() => this.changePage(1)}
+                                    >
+                                        1
+                                    </Pagination.Item> 
+
+                                    <Pagination.Ellipsis /> </>
+                                }
+                                {!(numberOfPages === 0) &&
                                     this.state.pages}
+                                {(this.state.currentPage < numberOfPages - 3) &&
+                                    <> <Pagination.Ellipsis /> 
+
+                                    <Pagination.Item
+                                        key={numberOfPages}
+                                        active={numberOfPages === currentPage}
+                                        onClick={() => this.changePage(numberOfPages)}
+                                    >
+                                        {numberOfPages}
+                                    </Pagination.Item> </>
+                                }
                                 <Pagination.Next
                                     onClick={() =>
                                         this.changePage(currentPage + 1)

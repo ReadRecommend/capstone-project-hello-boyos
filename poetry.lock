@@ -822,8 +822,9 @@ python-versions = "*"
 version = "1.12.1"
 
 [metadata]
-content-hash = "98d5462aec1eb8da25b1242ad3a479d087050dab92d59b90e38981eea42514fc"
-python-versions = "3.8.3"
+content-hash = "42866f5143b96495ee202e5a2b01cd06f76b19e2c6e429c6a2687e02af427373"
+lock-version = "1.0"
+python-versions = ">= 3.8.0, < 3.8.4"
 
 [metadata.files]
 aniso8601 = [

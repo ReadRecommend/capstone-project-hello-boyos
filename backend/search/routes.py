@@ -12,8 +12,9 @@ from backend.model.schema import (
 
 @search_bp.route("", methods=["POST"])
 def search():
-    search_term = request.json.get("search")
-    rating_filter = request.json.get("filter")
+    request_data = request.json
+    search_term = request_data.get("search", "")
+    rating_filter = request_data.get("filter", "No Filter")
 
     if rating_filter == "No Filter":
         rating_filter = 0
@@ -39,34 +40,9 @@ def search():
     return jsonify(books_schema.dump(books))
 
 
-@search_bp.route("/<search_term>", methods=["POST"])
-def navSearch(search_term):
-    search_term = f"%{search_term}%"
-
-    books = Book.query.filter(
-        (
-            Book.authors.any(Author.name.ilike(search_term))
-            | Book.title.ilike(search_term)
-        )
-    ).all()
-
-    return jsonify(books_schema.dump(books))
-
-
 @search_bp.route("/users", methods=["POST"])
 def usersearch():
     search_term = request.json.get("search")
-    search_term = f"%{search_term}%"
-
-    users = Reader.query.filter(
-        Reader.username.ilike(search_term) & Reader.roles.contains("user")
-    ).all()
-
-    return jsonify(readers_schema.dump(users))
-
-
-@search_bp.route("/users/<search_term>", methods=["POST"])
-def navUsersearch(search_term):
     search_term = f"%{search_term}%"
 
     users = Reader.query.filter(
