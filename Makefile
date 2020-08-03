@@ -15,7 +15,7 @@ help:
 	@echo "make clean: re-initialise database"
 	@echo "make run: run the project"
 	@echo "---------------------------------------------------------------------"
-.PHONY: clean
+.PHONY: help
 
 PYTHON_PATH ?= python
 setup:
