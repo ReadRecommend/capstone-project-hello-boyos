@@ -485,13 +485,13 @@ class BookPage extends Component {
                                     </h6>
                                 )}
                                 <p>
-                                    {user ? (
+                                    {user && !user.roles.includes("admin") && (
                                         <AddBookModal
                                             book={book}
                                             user={user}
                                             notify={this.notify}
                                         />
-                                    ) : null}
+                                    )}
                                 </p>
                                 <Tabs defaultActiveKey="summary">
                                     <Tab eventKey="summary" title="Summary">
@@ -504,26 +504,26 @@ class BookPage extends Component {
                                             eventKey="reviews"
                                             title="Reviews + Ratings"
                                         >
-                                            {this.props.initialUserInfo && (
-                                                <>
-                                                    <br></br>
-                                                    <AddReview
-                                                        bookID={
-                                                            this.props.match
-                                                                .params.bookID
-                                                        }
-                                                        readerID={
-                                                            this.props
-                                                                .initialUserInfo
-                                                                .id
-                                                        }
-                                                        notify={this.notify}
-                                                        success={
-                                                            this.updatePage
-                                                        }
-                                                    />
-                                                </>
-                                            )}
+                                            {user &&
+                                                !user.roles.includes(
+                                                    "admin"
+                                                ) && (
+                                                    <>
+                                                        <br></br>
+                                                        <AddReview
+                                                            bookID={
+                                                                this.props.match
+                                                                    .params
+                                                                    .bookID
+                                                            }
+                                                            readerID={user.id}
+                                                            notify={this.notify}
+                                                            success={
+                                                                this.updatePage
+                                                            }
+                                                        />
+                                                    </>
+                                                )}
                                             <br></br>
                                             <h5>Average Rating</h5>
                                             <StarRatings

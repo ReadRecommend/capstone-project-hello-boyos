@@ -20,7 +20,6 @@ class UserPage extends Component {
             userPageInfo: {},
             collectionList: [],
             currentCollection: {},
-            currentUser: null,
             loadingCollection: false,
         };
     }
@@ -48,9 +47,6 @@ class UserPage extends Component {
 
                 // Select the initial collection
                 this.selectCollection(this.state.collectionList[0]["id"]);
-                if (this.props.initialUserInfo) {
-                    this.setState({ currentUser: this.props.initialUserInfo });
-                }
             })
             .catch((error) => {
                 this.setState({ userPageInfo: null, loading: false });
@@ -159,13 +155,18 @@ class UserPage extends Component {
                         <h2>{user.username}'s Profile</h2>
                         <Row>
                             <Col md="2">
-                                {this.state.currentUser && (
-                                    <FollowButton
-                                        user={user}
-                                        currentUser={this.state.currentUser}
-                                        notify={this.notify}
-                                    />
-                                )}
+                                {this.props.initialUserInfo &&
+                                    !this.props.initialUserInfo.roles.includes(
+                                        "admin"
+                                    ) && (
+                                        <FollowButton
+                                            user={user}
+                                            currentUser={
+                                                this.props.initialUserInfo
+                                            }
+                                            notify={this.notify}
+                                        />
+                                    )}
                                 <h4>Books</h4>
                                 <CollectionList
                                     collectionList={[
