@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import { getBook, getReviewPages, getRecommendations } from "../fetchFunctions";
-import AddBookModal from "../components/AddBookModal";
-import BlindCover from "../components/BlindCover";
+import {
+    getBook,
+    getReviewPages,
+    getRecommendations,
+} from "../../fetchFunctions";
+import AddBookModal from "../../components/Books/AddBookModal";
+import BlindCover from "../../components/Books/BlindCover";
 import {
     Container,
     Row,
@@ -15,12 +19,12 @@ import {
     InputGroup,
 } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
-import ReviewList from "../components/ReviewList";
-import AddReview from "../components/AddReview";
-import ErrorPage from "../components/ErrorPage";
+import ReviewList from "../../components/Reviews/ReviewList";
+import AddReview from "../../components/Reviews/AddReview";
+import ErrorPage from "../../components/General/ErrorPage";
 import { toast } from "react-toastify";
-import SearchResults from "../components/SearchResults.js";
-import { bookDetailsContext } from "../BookDetailsContext";
+import SearchResults from "../../components/Books/BookList.js";
+import { bookDetailsContext } from "../../BookDetailsContext";
 import { BsArrowRepeat } from "react-icons/bs";
 
 class BookPage extends Component {

@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { Form, Container, Spinner, InputGroup } from "react-bootstrap";
-import SearchResults from "../components/SearchResults.js";
-import { getRecommendations, getCollectionOverview } from "../fetchFunctions";
+import BookList from "../../components/Books/BookList.js";
+import {
+    getRecommendations,
+    getCollectionOverview,
+} from "../../fetchFunctions";
 import { toast } from "react-toastify";
 import { BsArrowRepeat } from "react-icons/bs";
 
@@ -191,9 +194,9 @@ class Discover extends Component {
                             }}
                         />
                     ) : (
-                        <SearchResults
+                        <BookList
                             books={this.state.currentRecommendations}
-                        ></SearchResults>
+                        ></BookList>
                     )}
                 </Container>
             </div>

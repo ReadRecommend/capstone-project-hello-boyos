@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Main from "./Main";
-import NavigationBar from "./components/NavBar.js";
+import NavigationBar from "./components/Navbar/NavigationBar";
 import { loginContext } from "./LoginContext";
 import { bookDetailsContext } from "./BookDetailsContext";
 import { ToastContainer } from "react-toastify";

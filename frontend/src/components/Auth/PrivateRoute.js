@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
-import { verifyUser, refreshToken } from "../fetchFunctions";
-import ErrorPage from "./ErrorPage";
+import { verifyUser, refreshToken } from "../../fetchFunctions";
+import ErrorPage from "../General/ErrorPage";
 import PropTypes from "prop-types";
 import { Cookies } from "react-cookie";
 

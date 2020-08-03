@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { addToCollection } from "../fetchFunctions";
+import { addToCollection } from "../../fetchFunctions";
 import { Modal, Button, Form } from "react-bootstrap";
 import PropTypes from "prop-types";
 

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { CardDeck } from "react-bootstrap";
-import BookCard from "../components/BookCard.js";
+import BookCard from "./BookCard.js";
 
-class SearchResults extends Component {
+class BookList extends Component {
     render() {
         return (
             <div>
@@ -16,4 +16,4 @@ class SearchResults extends Component {
     }
 }
 
-export default SearchResults;
+export default BookList;

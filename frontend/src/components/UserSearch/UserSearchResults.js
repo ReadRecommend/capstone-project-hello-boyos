@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { CardDeck } from "react-bootstrap";
 
-import UserSearchResultsItem from "../components/UserSearchResultsItem.js";
+import UserSearchResultsItem from "./UserSearchResultsItem.js";
 
 class UserSearchResults extends Component {
     render() {

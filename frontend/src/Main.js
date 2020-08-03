@@ -1,23 +1,23 @@
 import React, { Component } from "react";
 import { Switch, Route } from "react-router-dom";
 
-import PrivateRoute from "./components/PrivateRoute";
-import ErrorPage from "./components/ErrorPage";
+import PrivateRoute from "./components/Auth/PrivateRoute";
+import ErrorPage from "./components/General/ErrorPage";
 import AdminAddBook from "./pages/Admin/AdminAddBook";
 import AdminBookList from "./pages/Admin/AdminBookList";
 import AdminUserList from "./pages/Admin/AdminUserList";
-import UserHome from "./pages/UserHome";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import CreateAccount from "./pages/CreateAccount";
-import Logout from "./pages/Logout";
-import UserPage from "./pages/UserPage";
+import UserHome from "./pages/Home/UserHome";
+import Home from "./pages/Home/Home";
+import Login from "./pages/Account/Login";
+import CreateAccount from "./pages/Account/CreateAccount";
+import Logout from "./pages/Account/Logout";
+import UserPage from "./pages/Users/UserPage";
 import GoalPage from "./pages/Goals/GoalPage";
 
-import BookPage from "./pages/BookPage";
-import Search from "./pages/Search";
-import UserSearch from "./pages/UserSearch";
-import Discover from "./pages/Discover";
+import BookPage from "./pages/Books/BookPage";
+import BookSearch from "./pages/Search/BookSearch";
+import UserSearch from "./pages/Search/UserSearch";
+import Discover from "./pages/Recommendation/Discover";
 import { toast } from "react-toastify";
 
 class Main extends Component {
@@ -103,7 +103,7 @@ class Main extends Component {
                     <PrivateRoute
                         exact
                         path="/search"
-                        component={Search}
+                        component={BookSearch}
                         roles={["user", "everyone"]}
                         key="search"
                         notifyError={this.notifyError}

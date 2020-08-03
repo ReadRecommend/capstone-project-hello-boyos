@@ -5,7 +5,7 @@ import Datetime from "react-datetime";
 import { toast } from "react-toastify";
 import { withRouter } from "react-router-dom";
 
-import "../../pages/YearPicker.css";
+import "../../pages/Styles/YearPicker.css";
 import { updateGoal } from "../../fetchFunctions";
 
 class AddGoalModal extends Component {

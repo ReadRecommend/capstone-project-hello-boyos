@@ -3,7 +3,7 @@ import { Button, Form, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Redirect } from "react-router";
 
-import { createAccount } from "../fetchFunctions";
+import { createAccount } from "../../fetchFunctions";
 
 class CreateAccount extends Component {
     constructor(props) {

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Modal, Card, Button, ListGroup, ListGroupItem } from "react-bootstrap";
 import StarRatings from "react-star-ratings";
-import BlindCover from "../components/BlindCover";
-import { bookDetailsContext } from "../BookDetailsContext";
+import BlindCover from "./BlindCover";
+import { bookDetailsContext } from "../../BookDetailsContext";
 
 /*
 The BookCard class deals with displaying the books. In a collection / search results or similar

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { getReview } from "../fetchFunctions";
+import { getReview } from "../../fetchFunctions";
 import ReviewListItem from "./ReviewListItem";
 import { Spinner } from "react-bootstrap";
 

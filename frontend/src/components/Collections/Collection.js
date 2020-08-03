@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { CardDeck } from "react-bootstrap";
 
-import BookCard from "./BookCard";
+import BookCard from "../Books/BookCard";
 
 /*
 The collection contains collection-items, which themselves contain books to be

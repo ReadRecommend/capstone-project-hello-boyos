@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Modal, Button, Container, Col, Row, Spinner } from "react-bootstrap";
 import PropTypes from "prop-types";
-import Collection from "../components/Collection";
-import CollectionList from "../components/CollectionList/CollectionList";
-import AddCollection from "../components/CollectionList/AddCollection";
-import FollowList from "../components/FollowList";
+import Collection from "../../components/Collections/Collection";
+import CollectionList from "../../components/CollectionList/CollectionList";
+import AddCollection from "../../components/CollectionList/AddCollection";
+import FollowList from "../../components/Followers/FollowList";
 import {
     unfollowUser,
     getCollectionOverview,
@@ -13,7 +13,7 @@ import {
     removeFromCollection,
     getCollection,
     addToCollection,
-} from "../fetchFunctions";
+} from "../../fetchFunctions";
 import { toast } from "react-toastify";
 
 class UserHome extends Component {

@@ -3,13 +3,13 @@ import {
     getUserById,
     getCollectionOverview,
     getCollection,
-} from "../fetchFunctions";
-import CollectionList from "../components/CollectionList/CollectionList";
-import FollowButton from "../components/FollowButton";
-import Collection from "../components/Collection";
+} from "../../fetchFunctions";
+import CollectionList from "../../components/CollectionList/CollectionList";
+import FollowButton from "../../components/Followers/FollowButton";
+import Collection from "../../components/Collections/Collection";
 import { toast } from "react-toastify";
 import { Container, Col, Row, Spinner } from "react-bootstrap";
-import ErrorPage from "../components/ErrorPage";
+import ErrorPage from "../../components/General/ErrorPage";
 
 class UserPage extends Component {
     constructor(props) {

@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
 import { Redirect } from "react-router";
 import BootstrapSwitchButton from "bootstrap-switch-button-react";
-import { bookDetailsContext } from "../BookDetailsContext";
+import { bookDetailsContext } from "../../BookDetailsContext";
 
 class NavigationBar extends Component {
     constructor(props) {

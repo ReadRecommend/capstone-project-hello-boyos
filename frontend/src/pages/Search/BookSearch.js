@@ -8,13 +8,13 @@ import {
     Spinner,
 } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import SearchResults from "../components/SearchResults.js";
+import SearchResults from "../../components/Books/BookList.js";
 import Pagination from "react-bootstrap/Pagination";
 import { toast } from "react-toastify";
 
-import { bookSearch } from "../fetchFunctions";
+import { bookSearch } from "../../fetchFunctions";
 
-class Search extends Component {
+class BookSearch extends Component {
     constructor(props) {
         super(props);
 
@@ -219,7 +219,7 @@ class Search extends Component {
     };
 
     render() {
-        const { currentPage , numberOfPages, } = this.state;
+        const { currentPage, numberOfPages } = this.state;
         return (
             <div className="Search">
                 <Container>
@@ -261,30 +261,36 @@ class Search extends Component {
                                         this.changePage(currentPage - 1)
                                     }
                                 />
-                                {(currentPage > 3) &&
-                                    <><Pagination.Item
-                                        key={1}
-                                        active={1 === currentPage}
-                                        onClick={() => this.changePage(1)}
-                                    >
-                                        1
-                                    </Pagination.Item> 
-
-                                    <Pagination.Ellipsis /> </>
-                                }
-                                {!(numberOfPages === 0) &&
-                                    this.state.pages}
-                                {(this.state.currentPage < numberOfPages - 3) &&
-                                    <> <Pagination.Ellipsis /> 
-
-                                    <Pagination.Item
-                                        key={numberOfPages}
-                                        active={numberOfPages === currentPage}
-                                        onClick={() => this.changePage(numberOfPages)}
-                                    >
-                                        {numberOfPages}
-                                    </Pagination.Item> </>
-                                }
+                                {currentPage > 3 && (
+                                    <>
+                                        <Pagination.Item
+                                            key={1}
+                                            active={1 === currentPage}
+                                            onClick={() => this.changePage(1)}
+                                        >
+                                            1
+                                        </Pagination.Item>
+                                        <Pagination.Ellipsis />{" "}
+                                    </>
+                                )}
+                                {!(numberOfPages === 0) && this.state.pages}
+                                {this.state.currentPage < numberOfPages - 3 && (
+                                    <>
+                                        {" "}
+                                        <Pagination.Ellipsis />
+                                        <Pagination.Item
+                                            key={numberOfPages}
+                                            active={
+                                                numberOfPages === currentPage
+                                            }
+                                            onClick={() =>
+                                                this.changePage(numberOfPages)
+                                            }
+                                        >
+                                            {numberOfPages}
+                                        </Pagination.Item>{" "}
+                                    </>
+                                )}
                                 <Pagination.Next
                                     onClick={() =>
                                         this.changePage(currentPage + 1)
@@ -299,4 +305,4 @@ class Search extends Component {
     }
 }
 
-export default Search;
+export default BookSearch;

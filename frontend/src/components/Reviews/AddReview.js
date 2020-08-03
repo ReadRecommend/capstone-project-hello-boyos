@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Form, Button, Accordion, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 
-import { addReview } from "../fetchFunctions";
+import { addReview } from "../../fetchFunctions";
 
 class AddReview extends Component {
     constructor(props) {

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import { Cookies } from "react-cookie";
-import { loginContext } from "../LoginContext";
+import { loginContext } from "../../LoginContext";
 import { toast } from "react-toastify";
 
-import { logIn } from "../fetchFunctions";
+import { logIn } from "../../fetchFunctions";
 
 class Login extends Component {
     constructor(props) {

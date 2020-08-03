@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Button, Form, Container, Spinner } from "react-bootstrap";
 import InputGroup from "react-bootstrap/InputGroup";
-import UserSearchResults from "../components/UserSearchResults.js";
+import UserSearchResults from "../../components/UserSearch/UserSearchResults.js";
 import { toast } from "react-toastify";
 
-import { searchUsers } from "../fetchFunctions";
+import { searchUsers } from "../../fetchFunctions";
 
 class Search extends Component {
     constructor(props) {
@@ -32,7 +32,7 @@ class Search extends Component {
     };
 
     handleSubmit = (event) => {
-        if(event) event.preventDefault();
+        if (event) event.preventDefault();
         this.setState({ loading: true });
 
         searchUsers(this.state.search)
@@ -121,12 +121,11 @@ class Search extends Component {
                                 <Button
                                     variant="primary"
                                     type="submit"
-                                    
                                     value="Search"
                                 >
                                     Search
                                 </Button>
-                            </InputGroup.Append>                            
+                            </InputGroup.Append>
                         </InputGroup>
                     </Form>
                     <br></br>
