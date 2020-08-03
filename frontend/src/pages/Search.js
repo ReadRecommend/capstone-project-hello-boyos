@@ -54,6 +54,12 @@ class Search extends Component {
         });
     };
 
+    /**
+     * changePage changes the viewable list of books presented to the
+     * user by taking a new slice, the size of booksPerPage, from the currentSearchList
+     * and sets currentDisplayList to show this. 
+     * @param {int} newPage 
+     */
     changePage = (newPage) => {
         const { booksPerPage, currentSearchList, numberOfPages } = this.state;
         if (numberOfPages === 0) {
@@ -76,7 +82,11 @@ class Search extends Component {
             );
         }
     };
-
+    
+    /**
+     * refreshPageList 
+     * @param {int} activePage 
+     */
     refreshPageList = (activePage) => {
         let list = [];
 
@@ -218,7 +228,6 @@ class Search extends Component {
         );
     };
 
-    //TODO: Page reloads before booksPerPage is updated
     render() {
         const { currentPage } = this.state;
         return (
