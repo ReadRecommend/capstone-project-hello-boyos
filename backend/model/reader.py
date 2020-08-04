@@ -22,7 +22,6 @@ class Reader(db.Model):
         primaryjoin=(id == followers.c.follower_id),
         secondaryjoin=(id == followers.c.reader_id),
         backref="followers",
-        cascade="all,delete",
     )
 
     def __repr__(self):
