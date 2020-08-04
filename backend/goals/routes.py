@@ -41,14 +41,12 @@ def get_goals(year):
             CollectionMembership.query.filter(
                 CollectionMembership.date_added >= start_date,
                 CollectionMembership.date_added <= end_date,
+                CollectionMembership.collection.has(reader_id=reader.id),
             )
-            .join(Collection, Collection.id == CollectionMembership.collection_id)
-            .join(Reader, Reader.id == reader.id)
             .distinct(CollectionMembership.book_id)
             .count()
         )
 
-        print(n_read)
         if n_read > 0:
             found_goal = False
             for goal in goals:
@@ -66,7 +64,6 @@ def get_goals(year):
                 }
                 goals.append(new_goal)
 
-    print(goals)
     return jsonify(goals)
 
 

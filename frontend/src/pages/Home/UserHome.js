@@ -312,7 +312,7 @@ class UserHome extends Component {
                     currentCollection={this.state.currentCollection}
                     removeBook={this.removeBook}
                     userCollections={this.state.collectionList}
-                    addToCollection={addToCollection}
+                    addToCollection={this.addBookToCollection}
                     editable={
                         true &&
                         this.state.currentCollection.name !== "All" &&
