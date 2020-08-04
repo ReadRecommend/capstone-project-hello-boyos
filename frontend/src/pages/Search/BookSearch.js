@@ -49,6 +49,7 @@ class BookSearch extends Component {
     };
 
     updateFilter = (event) => {
+        if (event) event.persist();
         this.setState({ filter: event.target.value }, () => {
             this.handleSubmit(event); // Call asynchronously
         });

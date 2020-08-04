@@ -137,19 +137,22 @@ class BookCard extends Component {
                                 </>
                             )}
                         </Card.Text>
-                        <StarRatings
-                            rating={book.ave_rating}
-                            starRatedColor="gold"
-                            numberOfStars={5}
-                            starDimension="20px"
-                            name="rating"
-                        />
-                        <br></br>
-                        <small>
-                            {book.ave_rating.toFixed(2)} from{" "}
-                            {book.n_ratings.toLocaleString()} reviews
-                        </small>
-                        {/* <Card.Text></Card.Text> */}
+                        {!this.context && (
+                            <>
+                                <StarRatings
+                                    rating={book.ave_rating}
+                                    starRatedColor="gold"
+                                    numberOfStars={5}
+                                    starDimension="20px"
+                                    name="rating"
+                                />
+                                <br></br>
+                                <small>
+                                    {book.ave_rating.toFixed(2)} from{" "}
+                                    {book.n_ratings.toLocaleString()} reviews
+                                </small>
+                            </>
+                        )}
                     </Card.Body>
                     {this.props.editable && (
                         <Card.Footer>
