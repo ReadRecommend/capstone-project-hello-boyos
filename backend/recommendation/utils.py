@@ -25,7 +25,7 @@ def weighted_rating(book, Q=3000):
 
     Args:
         book (Book): The book to score
-        Q (int, optional): The weighting factor of more reviews. For larger Q, each 
+        Q (int, optional): The weighting factor of more reviews. For larger Q, each
         individual review is weighted less. Good estimate can be found as M/ln(2),
         where M is a 'moderate' amount of ratings. Defaults to 3000.
     """

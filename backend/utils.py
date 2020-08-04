@@ -7,7 +7,7 @@ def extract_integers(data, variable_names, default_value=None, required=True):
     Args:
         data (dict): The dictionary containing the data to extract
         variable_names (List[str]): The list of keys expected in the dictionary
-        default_value (int, optional): If supplied this value will be used for all keys that don't exist. 
+        default_value (int, optional): If supplied this value will be used for all keys that don't exist.
             required is not used if this is supplied. Defaults to None.
         required (bool, optional): Whether or not to raise an error if all variable names are not keys. Defaults to True.
 
@@ -47,8 +47,7 @@ def extract_integer(data, variable_name, default_value=None, required=True):
         if required:
             message = f"{variable_name} is a required field"
             raise InvalidRequest(message)
-        else:
-            return variable
+        return variable
     try:
         int_variable = int(variable)
     except (ValueError, TypeError):
