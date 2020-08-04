@@ -204,6 +204,7 @@ class BookSearch extends Component {
                         placeholder="Search book"
                         value={this.state.search}
                         onChange={this.updateSearch}
+                        style={{width: "70%" }}
                     />
 
                     <Form.Control
@@ -227,7 +228,7 @@ class BookSearch extends Component {
                         <DropdownButton
                             id="per-page-dropdown"
                             title="Books Per Page"
-                            style={{ float: "right" }}
+                            style={{ float: "right"}}
                         >
                             {this.getBooksPerPageDropdown()}
                         </DropdownButton>
