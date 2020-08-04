@@ -141,7 +141,14 @@ class GoalPage extends Component {
                 />
             );
         } else if (this.state.data.length === 0 && !this.state.loadingGraph) {
-            return <p>No Goals found for this year...</p>;
+            return (
+                <>
+                    <br></br>
+                    <h5 style={{ textAlign: "center", color: "grey" }}>
+                        No goals or reading history found for this year
+                    </h5>
+                </>
+            );
         } else {
             return (
                 <>

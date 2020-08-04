@@ -6,11 +6,10 @@ import flask_praetorian
 from backend import db
 from backend.errors import InvalidRequest
 from backend.goals import goals_bp
-from backend.goals.utils import validate_goal
+from backend.goals.utils import get_all_goals, validate_goal
 from backend.model.schema import (
     ReaderGoal,
     Reader,
-    Collection,
     CollectionMembership,
     goal_schema,
     goals_schema,
@@ -31,40 +30,9 @@ def get_goals(year):
 
     reader_goals = ReaderGoal.query.filter_by(year=year, reader_id=reader.id).all()
     goals = goals_schema.dump(reader_goals)
+    all_goals = get_all_goals(goals, reader, year)
 
-    for month in range(1, 13):
-        # Count the amount of books we added to collections for each month
-        num_days = calendar.monthrange(year, month)[1]
-        start_date = datetime.date(year, month, 1)
-        end_date = datetime.date(year, month, num_days)
-        n_read = (
-            CollectionMembership.query.filter(
-                CollectionMembership.date_added >= start_date,
-                CollectionMembership.date_added <= end_date,
-                CollectionMembership.collection.has(reader_id=reader.id),
-            )
-            .distinct(CollectionMembership.book_id)
-            .count()
-        )
-
-        if n_read > 0:
-            found_goal = False
-            for goal in goals:
-                if goal["month"] == month:
-                    goal["n_read"] = n_read
-                    found_goal = True
-                    break
-            if found_goal == False:
-                # No goal set for this month, but still need to return n_read
-                new_goal = {
-                    "month": month,
-                    "year": year,
-                    "goal": None,
-                    "n_read": n_read,
-                }
-                goals.append(new_goal)
-
-    return jsonify(goals)
+    return jsonify(all_goals)
 
 
 @goals_bp.route("", methods=["PUT"])
