@@ -65,6 +65,13 @@ ReadRecommend comes with a `Makefile` to make installing and running the applica
 
 -   [Node](https://nodejs.org/en/download/)
 
+
+
+Additionally, if you are using WIndows you may run into issues the Makefiles are not natively supported. Please install and use one of the following applications and use it to setup this project.
+
+- [Cygwin](https://www.cygwin.com/)
+- [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+
 ### Setup
 
 Once Node and Python have been installed, run:
