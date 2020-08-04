@@ -53,8 +53,8 @@ def get_all_goals(goals, reader, year):
         )
 
         if n_read > 0:
-            if month_goal := [goal for goal in goals if goal["month"] == month][0]:
-                month_goal["n_read"] = n_read
+            if month_goal := [goal for goal in goals if goal["month"] == month]:
+                month_goal[0]["n_read"] = n_read
             else:
                 # No goal set for this month, but still need to return n_read
                 new_goal = {
