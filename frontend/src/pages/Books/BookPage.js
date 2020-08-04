@@ -542,25 +542,37 @@ class BookPage extends Component {
                                                 {book.n_ratings.toLocaleString()}{" "}
                                                 reviews
                                             </small>
-
                                             <div>
-                                                Reviews per page
-                                                <select
-                                                    id="perPage"
-                                                    onChange={
-                                                        this.updatePerPage
-                                                    }
-                                                    value={
-                                                        this.state
-                                                            .reviewsPerPage
-                                                    }
-                                                >
-                                                    <option value="1">1</option>
-                                                    <option value="5">5</option>
-                                                    <option value="10">
-                                                        10
-                                                    </option>
-                                                </select>
+                                                <Form inline>
+                                                    <Form.Label className="my-1 mr-2">
+                                                        Reviews per page{" "}
+                                                    </Form.Label>
+                                                    <Form.Control
+                                                        className="my-1 mr-sm-2"
+                                                        style={{
+                                                            width: "75px",
+                                                        }}
+                                                        as="select"
+                                                        id="perPage"
+                                                        onChange={
+                                                            this.updatePerPage
+                                                        }
+                                                        value={
+                                                            this.state
+                                                                .reviewsPerPage
+                                                        }
+                                                    >
+                                                        <option value="1">
+                                                            1
+                                                        </option>
+                                                        <option value="5">
+                                                            5
+                                                        </option>
+                                                        <option value="10">
+                                                            10
+                                                        </option>
+                                                    </Form.Control>
+                                                </Form>
                                             </div>
 
                                             <ReviewList
