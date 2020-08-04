@@ -9,14 +9,14 @@ class FollowList extends Component {
         if (follows.length === 0) {
             return (
                 <>
-                    <h3
+                    <h5
                         style={{
                             textAlign: "center",
                             color: "grey",
                         }}
                     >
                         Not following anyone...
-                    </h3>
+                    </h5>
                     <br></br>
                     <center>
                         <Button href="/usrsearch">Find users to follow</Button>
