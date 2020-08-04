@@ -12,7 +12,7 @@ $(foreach v,$(VARS),$(eval $(shell echo export $(v)="$($(v))")))
 help:
 	@echo "---------------------------ReadRecommend-----------------------------"
 	@echo "make setup: download and install required tools, scrape dummy data"
-	@echo "make clean: re-initialise database"
+	@echo "make clean: re-initialise database - DELETES ALL CURRENT DATA IN DB"
 	@echo "make run: run the project"
 	@echo "---------------------------------------------------------------------"
 .PHONY: help
