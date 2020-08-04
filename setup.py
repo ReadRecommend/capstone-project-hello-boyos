@@ -1,8 +1,7 @@
 import json
 import os
 from getpass import getpass
-import readline
-
+import sys
 import psycopg2
 from colorama import Fore, init
 from dotenv import load_dotenv
@@ -18,6 +17,11 @@ from backend.model.reader import Reader
 from backend.recommendation.content_recommender import ContentRecommender
 
 init(autoreset=True)
+
+if sys.platform.startswith("win"):
+    import pyreadline
+else:
+    import readline
 
 
 def json_to_db(path):
