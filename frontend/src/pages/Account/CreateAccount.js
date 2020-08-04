@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Form, Container } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { Redirect } from "react-router";
-
+import ReactPasswordStrength from "react-password-strength";
 import { createAccount } from "../../fetchFunctions";
 
 class CreateAccount extends Component {
@@ -25,8 +25,10 @@ class CreateAccount extends Component {
         this.setState({ email: event.target.value });
     };
 
-    updatePassword = (event) => {
-        this.setState({ password: event.target.value });
+    updatePassword = (state, result) => {
+        if (state.isValid) {
+            this.setState({ password: state.password });
+        }
     };
 
     updatePasswordConfirm = (event) => {
@@ -103,14 +105,19 @@ class CreateAccount extends Component {
                             </Form.Group>
                             <Form.Group>
                                 <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
+                                <ReactPasswordStrength
                                     name="password"
                                     placeholder="Password"
                                     value={this.state.password}
-                                    onChange={this.updatePassword}
-                                    required
-                                />
+                                    changeCallback={this.updatePassword}
+                                    minLength={6}
+                                    inputProps={{
+                                        autoComplete: "off",
+                                        className: "form-control",
+                                        width: "90%",
+                                    }}
+                                    style={{ border: 0 }}
+                                ></ReactPasswordStrength>
                             </Form.Group>
                             <Button
                                 variant="primary"
