@@ -16,7 +16,6 @@ class AddGoalModal extends Component {
             timePeriod: null,
             dateInput: null,
             goal: 1,
-            nRead: 0,
         };
     }
 
@@ -38,16 +37,13 @@ class AddGoalModal extends Component {
 
     // Function that handles cleanup on closing of the modal
     onClose = () => {
-        this.setState(
-            { timePeriod: null, goal: 1, nRead: 0 },
-            this.props.closeModal
-        );
+        this.setState({ timePeriod: null, goal: 1 }, this.props.closeModal);
     };
 
     // Function that closes the modal and changes the year selection on the goal page
     closeAndSelect = (year) => {
         this.setState(
-            { timePeriod: null, goal: 1, nRead: 0 },
+            { timePeriod: null, goal: 1 },
             this.props.updateGraph.bind(this, year)
         );
     };
@@ -64,8 +60,7 @@ class AddGoalModal extends Component {
         updateGoal(
             this.state.timePeriod.month,
             this.state.timePeriod.year,
-            this.state.goal,
-            this.state.nRead
+            this.state.goal
         )
             .then((res) => {
                 if (!res.ok) {
@@ -122,16 +117,6 @@ class AddGoalModal extends Component {
                                 type="number"
                                 name="goal"
                                 value={this.state.goal}
-                                onChange={this.onGenericChange}
-                            />
-                        </Form.Group>
-
-                        <Form.Group>
-                            <Form.Label>Number Read</Form.Label>
-                            <Form.Control
-                                type="number"
-                                name="nRead"
-                                value={this.state.nRead}
                                 onChange={this.onGenericChange}
                             />
                         </Form.Group>

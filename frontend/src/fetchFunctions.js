@@ -287,7 +287,7 @@ export function getGoals(year) {
     });
 }
 
-export function updateGoal(month, year, goal, n_read) {
+export function updateGoal(month, year, goal) {
     return fetch(`${apiUrl}/goals`, {
         method: "PUT",
         headers: {
@@ -297,7 +297,6 @@ export function updateGoal(month, year, goal, n_read) {
             month: month,
             year: year,
             goal: goal,
-            n_read: n_read,
         }),
         credentials: "include",
     });

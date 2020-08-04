@@ -9,10 +9,12 @@ class Collection(db.Model):
     reader_id = db.Column(db.Integer, db.ForeignKey("reader.id"), nullable=False)
 
     book_memberships = db.relationship(
-        "CollectionMembership", back_populates="collection"
+        "CollectionMembership", back_populates="collection", cascade="all, delete"
     )
     books = association_proxy(
-        "book_memberships", "book", creator=lambda book: CollectionMembership(book=book)
+        "book_memberships",
+        "book",
+        creator=lambda book: CollectionMembership(book=book),
     )
 
     def __repr__(self):

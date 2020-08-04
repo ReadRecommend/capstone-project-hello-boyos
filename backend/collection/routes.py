@@ -6,10 +6,10 @@ import flask_praetorian
 from backend import db
 from backend.collection import collection_bp
 from backend.errors import AuthenticationError, InvalidRequest, ResourceNotFound
-from backend.goals.utils import decrease_goal, increase_goal
 from backend.model.schema import (
     Book,
     Collection,
+    CollectionMembership,
     Reader,
     collection_schema,
     reader_schema,
@@ -32,7 +32,7 @@ def get_collection(collection_id):
 
 @collection_bp.route("", methods=["POST", "DELETE"])
 @flask_praetorian.roles_required("user")
-def add_collection():
+def add_delete_collection():
     collection_data = request.json
     reader_id = extract_integer(collection_data, "reader_id")
     collection_name = collection_data.get("name")
@@ -101,14 +101,6 @@ def modify_collection():
 
     # Add the chosen book to the collection, if it's not already there.
     if request.method == "POST" and book not in collection.books:
-        # Check if this book already exists in our all collection. If it doesn't, we need to update goals.
-        all_books = get_all_books(user)
-        if not (book in all_books):
-            # Increase n_read of goal
-            year = datetime.now().year
-            month = datetime.now().month
-            increase_goal(user.id, month, year)
-
         # Add book to collection
         collection.books.append(book)
         db.session.add(collection)
@@ -116,18 +108,13 @@ def modify_collection():
 
     # Remove the book from the collection if it is in it.
     elif request.method == "DELETE" and book in collection.books:
+        collection_membership = CollectionMembership.query.filter_by(
+            book_id=book.id, collection_id=collection.id
+        ).first()
+
         # Remove book from collection
         collection.books.remove(book)
         db.session.add(collection)
         db.session.commit()
-
-        # Check if the book is still somewhere in our all collection after deletion.
-        # If it isn't, we need to update goals
-        all_books = get_all_books(user)
-        if book not in all_books:
-            # Decrease the n_read value of the goal for this month
-            year = datetime.now().year
-            month = datetime.now().month
-            decrease_goal(user.id, month, year)
 
     return jsonify(collection_schema.dump(collection))

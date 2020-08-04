@@ -163,6 +163,14 @@ class BookSearch extends Component {
                 return res.json();
             })
             .then((books) => {
+                // Shuffle the array
+                for (let i = books.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * i);
+                    const temp = books[i];
+                    books[i] = books[j];
+                    books[j] = temp;
+                }
+
                 this.setState(
                     {
                         currentSearchList: books,
