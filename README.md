@@ -2,6 +2,12 @@
 
 ReadRecommend is a book recommendation and book catalogue web application. It is made up of three main components. A [Postgresql](https://www.postgresql.org/) database stores information accessed by a RESTful API implemented with [Flask](https://flask.palletsprojects.com/en/1.1.x/). While the API is directly accessible, a web frontend is implemented in [React.js](https://www.postgresql.org/).
 
+## Video Demo
+
+For a video demo that demonstrates basic functionality, see this video:
+
+[Video Demo](https://www.youtube.com/watch?v=0DTfXklQi60/)
+
 ## Setup
 
 ### Postgres Database
