@@ -24,7 +24,7 @@
         "react-password-strength": "^2.4.0",
         "react-router": "^5.2.0",
         "react-router-dom": "^5.2.0",
-        "react-scripts": "^3.4.1",
+        "react-scripts": "^5.0.1",
         "react-star-ratings": "^2.3.0",
         "react-tag-input": "^6.4.3",
         "react-toastify": "^6.0.8",
